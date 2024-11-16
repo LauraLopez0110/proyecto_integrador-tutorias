@@ -1,0 +1,89 @@
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Registro</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <style>
+            /* Agrega un estilo básico para los mensajes flash */
+            .flash {
+                padding: 10px;
+                margin-bottom: 20px;
+                border-radius: 5px;
+                color: #fff;
+            }
+            .success {
+                background-color: #28a745; /* Verde para mensajes de éxito */
+            }
+            .danger {
+                background-color: #dc3545; /* Rojo para mensajes de error */
+            }
+            .hidden {
+                display: none; /* Oculta elementos con esta clase */
+            }
+        </style>
+    
+    </head>
+    <body>
+        <h1>Registrar Usuario</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="post">
+            <input type="text" name="username" placeholder="Usuario" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <input type="text" name="identificacion" placeholder="Identificación" required> 
+            
+            <label for="role">Selecciona el tipo de usuario:</label>
+            <select name="role" id="role"required onchange="toggleFields()">
+                <option value="" disabled selected>Seleccione un rol</option>
+                <option value="student">Estudiante</option>
+                <option value="teacher">Profesor</option>
+                <option value="admin">Administrador</option>
+            </select>
+            
+            <!-- Campos adicionales para Estudiantes -->
+            <div id="student-fields" class="hidden">
+                <input type="text" name="codigo" placeholder="Código de Estudiante">
+                <input type="text" name="nombre_completo_estudiante" placeholder="Nombre Completo">
+                <input type="text" name="semestre" placeholder="Semestre">
+                <input type="text" name="programa_academico" placeholder="Programa Académico">
+            </div>
+
+            <!-- Campos adicionales para Docentes -->
+            <div id="teacher-fields" class="hidden">
+                <input type="text" name="nombre_completo_docente" placeholder="Nombre Completo">
+                <input type="text" name="departamento" placeholder="Departamento">
+            </div>
+
+            <button type="submit">Registrar</button>
+        </form>
+        <a href="{{ url_for('login') }}">Iniciar Sesión</a>
+    </body>
+    <script>
+        function toggleFields() {
+            const role = document.getElementById('role').value;
+            const studentFields = document.getElementById('student-fields');
+            const teacherFields = document.getElementById('teacher-fields');
+
+            if (role === 'student') {
+                studentFields.classList.remove('hidden');
+                teacherFields.classList.add('hidden');
+            } else if (role === 'teacher') {
+                teacherFields.classList.remove('hidden');
+                studentFields.classList.add('hidden');
+            } else {
+                studentFields.classList.add('hidden');
+                teacherFields.classList.add('hidden');
+            }
+        }
+    </script>
+    </html>

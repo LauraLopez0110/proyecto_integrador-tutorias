@@ -1,0 +1,122 @@
+body {
+    font-family: Arial, sans-serif; 
+    background-color: #fff; 
+    color: #333; 
+    margin: 0; 
+    padding: 20px; 
+}
+
+h1 {
+    color: #2c3e50; 
+    text-align: center; 
+}
+
+
+/* Estilo específico para formularios de eliminación */
+form.delete-form {
+    background: transparent; /* Fondo transparente */
+    border: none; /* Sin borde */
+}
+
+input, select {
+    display: block; 
+    width: calc(100% - 16px); 
+    margin: 10px auto; 
+    padding: 10px; 
+    border: 1px solid #3498db; 
+    border-radius: 4px; 
+    transition: border-color 0.3s; 
+}
+
+input:focus, select:focus {
+    border-color: #2980b9; 
+    outline: none; 
+}
+
+button {
+    background-color: #3498db; 
+    color: white; 
+    padding: 10px; 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    margin-top: 10px; 
+}
+
+button:hover {
+    background-color: #2980b9; 
+}
+
+a {
+    background-color: #3498db; 
+    color: white; 
+    text-decoration: none; 
+    padding: 8px; 
+    border-radius: 4px; 
+    display: inline-block; 
+    text-align: center; 
+    width: auto; 
+    margin-top: 8px; 
+    font-size: 14px; 
+}
+
+a:hover {
+    background-color: #2980b9; 
+    text-decoration: none; 
+}
+
+/* Estilo para el botón de eliminación */
+.delete-button {
+    background-color: #e74c3c; 
+    color: white; 
+    padding: 10px; 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    margin-top: 10px; 
+    transition: background-color 0.3s; 
+    box-shadow: 0 0 5px white; /* Sombra blanca */
+}
+
+.delete-button:hover {
+    background-color: #c0392b; 
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 24px; 
+    }
+
+    form {
+        padding: 15px; 
+    }
+
+    input, select {
+        padding: 8px; 
+    }
+
+    button {
+        padding: 8px; 
+    }
+
+    a {
+        padding: 6px; 
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 20px; 
+    }
+
+    form {
+        width: 90%; 
+    }
+
+    input, select, button, a {
+        font-size: 14px; 
+    }
+}

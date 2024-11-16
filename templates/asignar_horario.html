@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asignar Horario</title>
+</head>
+<body>
+    <h1>Asignar Horario a la Tutoría: {{ tutoria.espacio_academico }}</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <!-- Selección de día -->
+        <label for="dia">Seleccionar Día:</label>
+        <select id="dia" name="dia" required>
+            <option value="lunes">Lunes</option>
+            <option value="martes">Martes</option>
+            <option value="miercoles">Miércoles</option>
+            <option value="jueves">Jueves</option>
+            <option value="viernes">Viernes</option>
+        </select><br><br>
+
+        <!-- Selección de hora -->
+        <label for="hora">Seleccionar Hora:</label>
+        <select id="hora" name="hora" required>
+            <option value="8:00-9:00">8:00 - 9:00</option>
+            <option value="9:00-10:00">9:00 - 10:00</option>
+            <option value="10:00-11:00">10:00 - 11:00</option>
+            <option value="11:00-12:00">11:00 - 12:00</option>
+            <option value="12:00-13:00">12:00 - 13:00</option>
+            <option value="13:00-14:00">13:00 - 14:00</option>
+            <option value="14:00-15:00">14:00 - 15:00</option>
+            <option value="15:00-16:00">15:00 - 16:00</option>
+            <option value="16:00-17:00">16:00 - 17:00</option>
+            <option value="17:00-18:00">17:00 - 18:00</option>
+        </select><br><br>
+
+        <button type="submit">Asignar Horario</button>
+    </form>
+
+    <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+</body>
+</html>

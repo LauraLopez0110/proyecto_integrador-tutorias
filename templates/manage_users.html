@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Administrar Usuarios</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='manage_users.css') }}">
+
+    <style>
+        /* Agrega un estilo básico para los mensajes flash */
+        .flash {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: #fff;
+        }
+        .success {
+            background-color: #28a745; /* Verde para mensajes de éxito */
+        }
+        .danger {
+            background-color: #dc3545; /* Rojo para mensajes de error */
+        }
+    </style>
+
+</head>
+<body>
+    <h1>Administrar Usuarios</h1>
+
+    <!-- Bloque para mostrar mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Rol</th>
+            <th>Identificación</th>
+            <th>Acciones</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+            <td>{{ user.identificacion }}</td>
+            <td>
+                <!-- Formulario para eliminar usuario -->
+                <form method="post" style="display:inline;">
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                    <button type="submit" name="action" value="delete">Eliminar</button>
+                </form>
+                <a href="{{ url_for('edit_user', user_id=user.id) }}">Editar</a>
+                <a href="{{ url_for('detalle_user', user_id=user.id) }}">Ver más</a>
+
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+</body>
+</html>

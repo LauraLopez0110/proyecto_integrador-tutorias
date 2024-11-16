@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Perfil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Añade estilos para mensajes flash */
+        .flash {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .flash.success {
+            background-color: #d4edda; /* Verde claro */
+            color: #155724; /* Verde oscuro */
+        }
+        .flash.danger {
+            background-color: #f8d7da; /* Rojo claro */
+            color: #721c24; /* Rojo oscuro */
+        }
+    </style>
+</head>
+<body>
+    <h1>Editar Perfil</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <label for="password">Nombre de Usuario:</label>
+        <input type="text" name="username" value="{{ user.username }}" required>
+        <label for="password">Número de Identificación:</label>
+        <input type="text" name="identificacion" value="{{ user.identificacion }}" required>
+
+        <!-- Campo para cambiar la contraseña -->
+        <label for="password">Nueva Contraseña (opcional):</label>
+        <input type="password" name="password" placeholder="Dejar en blanco para no cambiar">
+        
+        <button type="submit">Actualizar</button>
+    </form>
+    <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+    <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
+</body>
+</html>

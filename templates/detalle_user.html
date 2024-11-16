@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles del Usuario</title>
+</head>
+<body>
+    <h1>Detalles del Usuario</h1>
+    
+    <!-- Información General del Usuario -->
+    <h2>Información General</h2>
+    <p><strong>Nombre de Usuario:</strong> {{ user.username }}</p>
+    <p><strong>Identificación:</strong> {{ user.identificacion }}</p>
+    <p><strong>Rol:</strong> {{ user.role }}</p>
+
+    <!-- Información Específica del Estudiante -->
+    {% if user.role == 'student' and estudiante %}
+        <h2>Información del Estudiante</h2>
+        <p><strong>Código del Estudiante:</strong> {{ estudiante.codigo }}</p>
+        <p><strong>Nombre Completo:</strong> {{ estudiante.nombre_completo_estudiante }}</p>
+        <p><strong>Semestre:</strong> {{ estudiante.semestre }}</p>
+        <p><strong>Programa Académico:</strong> {{ estudiante.programa_academico }}</p>
+    {% endif %}
+
+    <!-- Información Específica del Docente -->
+    {% if user.role == 'teacher' and docente %}
+        <h2>Información del Docente</h2>
+        <p><strong>Nombre Completo:</strong> {{ docente.nombre_completo_docente }}</p>
+        <p><strong>Departamento:</strong> {{ docente.departamento }}</p>
+    {% endif %}
+
+    <a href="{{ url_for('manage_users') }}">Volver a Usuarios</a>
+</body>
+</html>

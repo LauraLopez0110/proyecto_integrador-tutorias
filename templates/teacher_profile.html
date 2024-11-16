@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ver Perfil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Añade estilos para mensajes flash */
+        .flash {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .flash.success {
+            background-color: #d4edda; /* Verde claro */
+            color: #155724; /* Verde oscuro */
+        }
+        .flash.danger {
+            background-color: #f8d7da; /* Rojo claro */
+            color: #721c24; /* Rojo oscuro */
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <h1>Perfil del Profesor</h1>
+        
+        <!-- Mensajes flash de éxito o error -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Mostrando los datos del estudiante -->
+        <div class="profile-field">
+            <label>Nombre Completo:</label>
+            <span class="profile-value">{{ profesor.nombre_completo_docente }}</span>
+        </div>
+        
+        <div class="profile-field">
+            <label>Departamento:</label>
+            <span class="profile-value">{{ profesor.departamento }}</span>
+        </div>
+
+        </div>
+        <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+        <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
+
+    </div>
+</body>
+</html>

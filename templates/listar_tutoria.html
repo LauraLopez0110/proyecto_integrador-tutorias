@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Tutorías</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Lista de Tutorías del Docente</h1>
+
+    {% if tutorias %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Tutoría</th>
+                    <th>Materia</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tutoria in tutorias %}
+                    <tr>
+                        <td>{{ tutoria.id }}</td>
+                        <td>{{ tutoria.materia }}</td>
+                        <td>{{ tutoria.fecha }}</td>
+                        <td>{{ tutoria.hora }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No se encontraron tutorías para este docente.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('dashboard') }}">Volver al Dashboard</a></p>
+</body>
+</html>

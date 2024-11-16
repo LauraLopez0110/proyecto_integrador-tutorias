@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Usuario</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Estilo básico para los mensajes flash */
+        .flash {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: #fff;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #28a745; /* Verde para mensajes de éxito */
+        }
+        .danger {
+            background-color: #dc3545; /* Rojo para mensajes de error */
+        }
+        .warning {
+            background-color: #ffc107; /* Amarillo para mensajes de advertencia */
+            color: #333;
+        }
+        .hidden {
+            display: none; /* Oculta elementos con esta clase */
+        }
+    </style>
+</head>
+<body onload="toggleFields()">
+    <h1>Editar Usuario</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="post">
+
+        <label for="username">Usuario:</label>
+        <input type="text" name="username" id="username" value="{{ user.username }}" required>
+    
+        
+       
+        <label for="identificacion">Identificación:</label>
+        <input type="text" name="identificacion" value="{{ user.identificacion }}" required>
+
+
+        <label for="role">Selecciona el tipo de usuario:</label>
+        <select name="role" id="role" onchange="toggleFields()" required>
+            <option value="student" {% if user.role == 'student' %}selected{% endif %}>Estudiante</option>
+            <option value="teacher" {% if user.role == 'teacher' %}selected{% endif %}>Profesor</option>
+            <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Administrador</option>
+        </select>
+        
+        <!-- Campo para cambiar la contraseña -->
+        <label for="password">Nueva Contraseña (opcional):</label>
+        <input type="password" name="password" placeholder="Dejar en blanco para no cambiar">
+        
+         <!-- Campos adicionales para Estudiantes -->
+<div id="student-fields" class="{{ 'hidden' if user.role != 'student' }}">
+    <label for="codigo">Código</label>
+    <input type="text" id="codigo" name="codigo" placeholder="Código" value="{{ est.codigo if est else '' }}">
+
+    <label for="nombre_completo_estudiante">Nombre Completo:</label>
+    <input type="text" id="nombre_completo_estudiante" name="nombre_completo_estudiante" placeholder="Nombre Completo" value="{{ est.nombre_completo_estudiante if est else '' }}">
+
+    <label for="semestre">Semestre:</label>
+    <input type="text" id="semestre" name="semestre" placeholder="Semestre" value="{{ est.semestre if est else '' }}">
+
+    <label for="programa_academico">Programa Académico:</label>
+    <input type="text" id="programa_academico" name="programa_academico" placeholder="Programa Académico" value="{{ est.programa_academico if est else '' }}">
+</div>
+
+
+        <!-- Campos adicionales para Docentes -->
+    <div id="teacher-fields" class="{{ 'hidden' if user.role != 'teacher' }}">
+    <label for="nombre_completo_docente">Nombre Completo:</label>
+    <input type="text" id="nombre_completo_docente" name="nombre_completo_docente" placeholder="Nombre Completo" value="{{ doc.nombre_completo_docente if doc else '' }}">
+
+    <label for="departamento">Departamento:</label>
+    <input type="text" id="departamento" name="departamento" placeholder="Departamento" value="{{ doc.departamento if doc else '' }}">
+    </div>
+
+        <button type="submit">Actualizar</button>
+    </form>
+    <a href="{{ url_for('manage_users') }}">Volver a la administración de usuarios</a>
+    <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
+</body>
+<script>
+    function toggleFields() {
+        const role = document.getElementById('role').value;
+        const studentFields = document.getElementById('student-fields');
+        const teacherFields = document.getElementById('teacher-fields');
+
+        if (role === 'student') {
+            studentFields.classList.remove('hidden');
+            teacherFields.classList.add('hidden');
+        } else if (role === 'teacher') {
+            teacherFields.classList.remove('hidden');
+            studentFields.classList.add('hidden');
+        } else {
+            studentFields.classList.add('hidden');
+            teacherFields.classList.add('hidden');
+        }
+    }
+</script>
+</html>

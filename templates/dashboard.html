@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Dashboard</title>
+        <link rel="stylesheet"
+            href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <h1>Bienvenido, {{ username }}!</h1>
+        <p>Tu rol es: {{ role }}</p>
+        <p>Tu identificación es: {{ user.identificacion }}</p>
+        <!-- Muestra la identificación -->
+
+        {% if role == 'admin' %}
+        <!-- Solo muestra el enlace si el usuario es administrador -->
+        <p><a href="{{ url_for('edit_profile') }}" class="button">Editar Perfil</a></p>
+        <p><a href="{{ url_for('manage_users') }}">Administrar Usuarios</a></p>
+        <p><a href="{{ url_for('manage_tutorias') }}">Admin tutorías</a></p>
+        <p><a href="{{ url_for('register') }}">Crear Nuevo Usuario</a></p>
+        {% elif role in ['student', 'teacher'] %}
+        <!-- Botón para estudiantes y profesores -->
+        <p><a href="{{ url_for('edit_profile') }}" class="button">Editar
+                Perfil</a></p>
+        {% endif %}
+
+        {%if role == 'student'%}
+        <a href="{{ url_for('student_profile') }}">Ver más</a>
+        {% endif%}
+
+        {%if role == 'teacher'%}
+        <a href="{{ url_for('teacher_profile') }}">Ver más</a>
+        <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}">Tutorias</a>
+        {% endif%}
+
+
+        <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
+    </body>
+</html>
