@@ -1,8 +1,12 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request
 from flask_bcrypt import Bcrypt
 from config import Config
+<<<<<<< HEAD
 from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria, Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaCompromiso
 # Importa db y User, Tutoria
+=======
+from models import Inscripcion, db, User,Tutoria, Estudiante, Docente, HorariosTutoria # Importa db y User, Tutoria
+>>>>>>> cff21447d5581119d8b1633ad8cec97c7ade3079
 from datetime import datetime
 from sqlalchemy.orm import joinedload
 
@@ -527,7 +531,15 @@ def asignar_horarios_tutorias(tutoria_id):
 
     # Si la solicitud es GET, se muestra el formulario para asignar horario
     return render_template('asignar_horario.html', tutoria=tutoria)
+@app.route('/student/inscribirse/<int:tutoria_id>', methods=['GET', 'POST'])
+def inscribirse_tutoria(tutoria_id):
+    user = db.session.get(User, session['user_id'])
+    
+    if not user or user.role != 'student':
+        flash("Acceso denegado. Solo los estudiantes pueden acceder a esta sección.", "danger")
+        return redirect(url_for('dashboard'))
 
+<<<<<<< HEAD
 @app.route('/teacher/tutorias-apartadas/<int:docente_id>', methods=['GET'])
 def listar_tutorias_apartadas(docente_id):
     # Consultar tutorías del docente que tengan inscripciones
@@ -547,6 +559,54 @@ def listar_tutorias_apartadas(docente_id):
     return render_template('tutorias_apartadas.html', tutorias=tutorias_inscritas)
 
 
+=======
+    tutoria = Tutoria.query.get(tutoria_id)
+    if not tutoria:
+        flash("Tutoría no encontrada.", "danger")
+        return redirect(url_for('dashboard'))
+    
+    # Filtrar horarios sin inscripciones (disponibles)
+    horarios_tutorias = HorariosTutoria.query.filter(
+        HorariosTutoria.tutoria_id == tutoria_id, 
+        ~HorariosTutoria.inscripciones.any()  # Esto filtra los horarios sin inscripciones
+    ).all()
+
+    if request.method == 'POST':
+        horario_id = request.form.get('horario')
+        
+        if not horario_id:
+            flash("Debe seleccionar un horario.", "danger")
+            return render_template('inscripcion.html', tutoria=tutoria, horarios=horarios_tutorias)
+        
+        horario = HorariosTutoria.query.get(horario_id)
+        if not horario or horario.inscripciones:
+            flash("El horario seleccionado ya no está disponible.", "danger")
+            return redirect(url_for('inscribirse_tutoria', tutoria_id=tutoria_id))
+        
+        # Verificar si el estudiante ya está inscrito en esta tutoría
+        inscripcion_existente = Inscripcion.query.filter_by(estudiante_id=user.id, tutoria_id=tutoria_id).first()
+        if inscripcion_existente:
+            flash("Ya estás inscrito en esta tutoría.", "warning")
+            return redirect(url_for('dashboard'))
+
+        # Crear inscripción
+        nueva_inscripcion = Inscripcion(estudiante_id=user.id, tutoria_id=tutoria_id, horario_id=horario_id)
+
+        db.session.add(nueva_inscripcion)
+        db.session.commit()
+
+        flash("Inscripción realizada con éxito.", "success")
+        return redirect(url_for('dashboard'))
+    
+    return render_template('inscripcion.html', tutoria=tutoria, horarios=horarios_tutorias)
+
+@app.route('/tutorias/disponibles', methods=['GET'])
+def tutorias_disponibles():
+    # Consulta todas las tutorías
+    tutorias = Tutoria.query.all()
+
+    return render_template('tutoria_disponible.html', tutorias=tutorias)
+>>>>>>> cff21447d5581119d8b1633ad8cec97c7ade3079
 
 if __name__ == '__main__':
     app.run(debug=True)  # Inicia la aplicación en modo debug

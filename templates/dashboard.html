@@ -1,39 +1,120 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title>Dashboard</title>
-        <link rel="stylesheet"
-            href="{{ url_for('static', filename='style.css') }}">
-    </head>
-    <body>
-        <h1>Bienvenido, {{ username }}!</h1>
-        <p>Tu rol es: {{ role }}</p>
-        <p>Tu identificación es: {{ user.identificacion }}</p>
-        <!-- Muestra la identificación -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f3ff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .title-container {
+            margin-bottom: 1rem;
+        }
+        h1 {
+            color: #1a5f7a;
+            margin-bottom: 1.5rem;
+            padding-top: 1rem;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+        .button, a {
+            display: inline-block;
+            background-color: #1a5f7a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            margin-bottom: 0;
+        }
+        .button:hover, a:hover {
+            background-color: #14475c;
+            text-decoration: none;
+        }
+        .logout {
+            background-color: #dc3545;
+            margin-top: 1rem;
+        }
+        .logout:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-container">
+            <h1>Bienvenido, {{ username }}!</h1>
+        </div>
+        <p>Tu rol es: <strong>{{ role }}</strong></p>
+        <p>Tu identificación es: <strong>{{ user.identificacion }}</strong></p>
 
-        {% if role == 'admin' %}
-        <!-- Solo muestra el enlace si el usuario es administrador -->
-        <p><a href="{{ url_for('edit_profile') }}" class="button">Editar Perfil</a></p>
-        <p><a href="{{ url_for('manage_users') }}">Administrar Usuarios</a></p>
-        <p><a href="{{ url_for('manage_tutorias') }}">Admin tutorías</a></p>
-        <p><a href="{{ url_for('register') }}">Crear Nuevo Usuario</a></p>
-        {% elif role in ['student', 'teacher'] %}
-        <!-- Botón para estudiantes y profesores -->
-        <p><a href="{{ url_for('edit_profile') }}" class="button">Editar
-                Perfil</a></p>
-        {% endif %}
+        <div class="button-container">
+            {% if role == 'admin' %}
+            <a href="{{ url_for('edit_profile') }}" class="button">Editar Perfil</a>
+            <a href="{{ url_for('manage_users') }}" class="button">Administrar Usuarios</a>
+            <a href="{{ url_for('manage_tutorias') }}" class="button">Admin tutorías</a>
+            <a href="{{ url_for('register') }}" class="button">Crear Nuevo Usuario</a>
+            {% elif role in ['student', 'teacher'] %}
+            <a href="{{ url_for('edit_profile') }}" class="button">Editar Perfil</a>
+            {% endif %}
 
+<<<<<<< HEAD
         {%if role == 'student'%}
+        <a href="{{ url_for('tutorias_disponibles') }}">Ver tutorías disponibles</a>
         <a href="{{ url_for('student_profile') }}">Ver más</a>
         {% endif%}
+=======
+            {% if role == 'student' %}
+            <a href="{{ url_for('student_profile') }}" class="button">Ver más</a>
+            {% endif %}
+>>>>>>> 3757aed5e8a6bb762d118be2750ae16b2982e2c9
 
+<<<<<<< HEAD
         {%if role == 'teacher'%}
         <a href="{{ url_for('teacher_profile') }}">Ver más</a>
         <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}">Tutorias Asignadas</a>
         {% endif%}
+=======
+            {% if role == 'teacher' %}
+            <a href="{{ url_for('teacher_profile') }}" class="button">Ver más</a>
+            <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}" class="button">Tutorias</a>
+            {% endif %}
+        </div>
+>>>>>>> cff21447d5581119d8b1633ad8cec97c7ade3079
 
-
-        <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
-    </body>
+        <p><a href="{{ url_for('logout') }}" class="button logout">Cerrar Sesión</a></p>
+    </div>
+</body>
 </html>
