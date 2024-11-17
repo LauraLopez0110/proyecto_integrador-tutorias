@@ -30,7 +30,7 @@
 
         {%if role == 'teacher'%}
         <a href="{{ url_for('teacher_profile') }}">Ver más</a>
-        <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}">Tutorias</a>
+        <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}">Tutorias Asignadas</a>
         {% endif%}
 
 
