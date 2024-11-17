@@ -1,12 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request
 from flask_bcrypt import Bcrypt
 from config import Config
-<<<<<<< HEAD
 from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria, Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaCompromiso
 # Importa db y User, Tutoria
-=======
-from models import Inscripcion, db, User,Tutoria, Estudiante, Docente, HorariosTutoria # Importa db y User, Tutoria
->>>>>>> cff21447d5581119d8b1633ad8cec97c7ade3079
 from datetime import datetime
 from sqlalchemy.orm import joinedload
 
@@ -539,27 +535,6 @@ def inscribirse_tutoria(tutoria_id):
         flash("Acceso denegado. Solo los estudiantes pueden acceder a esta sección.", "danger")
         return redirect(url_for('dashboard'))
 
-<<<<<<< HEAD
-@app.route('/teacher/tutorias-apartadas/<int:docente_id>', methods=['GET'])
-def listar_tutorias_apartadas(docente_id):
-    # Consultar tutorías del docente que tengan inscripciones
-    
-    
-    tutorias_inscritas = (
-        Tutoria.query
-        .filter(
-            Tutoria.docente_id == docente_id,  # Filtrar por docente
-        )
-        .join(Inscripcion)  # Solo tutorías con inscripciones
-        .distinct()
-        .all()
-             
-    )
-
-    return render_template('tutorias_apartadas.html', tutorias=tutorias_inscritas)
-
-
-=======
     tutoria = Tutoria.query.get(tutoria_id)
     if not tutoria:
         flash("Tutoría no encontrada.", "danger")
@@ -606,8 +581,24 @@ def tutorias_disponibles():
     tutorias = Tutoria.query.all()
 
     return render_template('tutoria_disponible.html', tutorias=tutorias)
->>>>>>> cff21447d5581119d8b1633ad8cec97c7ade3079
 
+@app.route('/teacher/tutorias-apartadas/<int:docente_id>', methods=['GET'])
+def listar_tutorias_apartadas(docente_id):
+    # Consultar tutorías del docente que tengan inscripciones
+    
+    
+    tutorias_inscritas = (
+        Tutoria.query
+        .filter(
+            Tutoria.docente_id == docente_id,  # Filtrar por docente
+        )
+        .join(Inscripcion)  # Solo tutorías con inscripciones
+        .distinct()
+        .all()
+             
+    )
+
+    return render_template('tutorias_apartadas.html', tutorias=tutorias_inscritas)
 if __name__ == '__main__':
     app.run(debug=True)  # Inicia la aplicación en modo debug
 

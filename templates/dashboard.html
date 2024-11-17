@@ -90,29 +90,16 @@
             <a href="{{ url_for('edit_profile') }}" class="button">Editar Perfil</a>
             {% endif %}
 
-<<<<<<< HEAD
         {%if role == 'student'%}
         <a href="{{ url_for('tutorias_disponibles') }}">Ver tutorías disponibles</a>
         <a href="{{ url_for('student_profile') }}">Ver más</a>
         {% endif%}
-=======
-            {% if role == 'student' %}
-            <a href="{{ url_for('student_profile') }}" class="button">Ver más</a>
-            {% endif %}
->>>>>>> 3757aed5e8a6bb762d118be2750ae16b2982e2c9
 
-<<<<<<< HEAD
         {%if role == 'teacher'%}
         <a href="{{ url_for('teacher_profile') }}">Ver más</a>
         <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}">Tutorias Asignadas</a>
+        <a href="{{ url_for('listar_tutorias_apartadas', docente_id=docente.id) }}">Tutorias Apartadas</a>
         {% endif%}
-=======
-            {% if role == 'teacher' %}
-            <a href="{{ url_for('teacher_profile') }}" class="button">Ver más</a>
-            <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}" class="button">Tutorias</a>
-            {% endif %}
-        </div>
->>>>>>> cff21447d5581119d8b1633ad8cec97c7ade3079
 
         <p><a href="{{ url_for('logout') }}" class="button logout">Cerrar Sesión</a></p>
     </div>
