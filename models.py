@@ -77,7 +77,7 @@ class Compromiso(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     descripcion = db.Column(db.Text, nullable=False)
     
-class FormatoTutoria_Compromiso(db.Model):
+class FormatoTutoriaCompromiso(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     formato_tutoria_id = db.Column(db.Integer, db.ForeignKey('formato_tutoria.id', ondelete='CASCADE'))
     compromiso_id = db.Column(db.Integer, db.ForeignKey('compromiso.id', ondelete='CASCADE'))

@@ -1,8 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request
 from flask_bcrypt import Bcrypt
 from config import Config
-from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria # Importa db y User, Tutoria
+from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria, Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaCompromiso
+# Importa db y User, Tutoria
 from datetime import datetime
+from sqlalchemy.orm import joinedload
+
 
 app = Flask(__name__)
 app.config.from_object(Config)  # Carga la configuración desde el objeto Config
@@ -524,6 +527,25 @@ def asignar_horarios_tutorias(tutoria_id):
 
     # Si la solicitud es GET, se muestra el formulario para asignar horario
     return render_template('asignar_horario.html', tutoria=tutoria)
+
+@app.route('/teacher/tutorias-apartadas/<int:docente_id>', methods=['GET'])
+def listar_tutorias_apartadas(docente_id):
+    # Consultar tutorías del docente que tengan inscripciones
+    
+    
+    tutorias_inscritas = (
+        Tutoria.query
+        .filter(
+            Tutoria.docente_id == docente_id,  # Filtrar por docente
+        )
+        .join(Inscripcion)  # Solo tutorías con inscripciones
+        .distinct()
+        .all()
+             
+    )
+
+    return render_template('tutorias_apartadas.html', tutorias=tutorias_inscritas)
+
 
 
 if __name__ == '__main__':
