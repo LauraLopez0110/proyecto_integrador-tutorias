@@ -2,66 +2,144 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrar Usuarios</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='manage_users.css') }}">
-
     <style>
-        /* Agrega un estilo básico para los mensajes flash */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f3ff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+        .title-container {
+            margin-bottom: 1rem;
+        }
+        h1 {
+            color: #1a5f7a;
+            margin-bottom: 1.5rem;
+            padding-top: 1rem;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        th, td {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+        }
+        th {
+            background-color: #1a5f7a;
+            color: white;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        .button, button, a {
+            display: inline-block;
+            background-color: #1a5f7a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+        .button:hover, button:hover, a:hover {
+            background-color: #14475c;
+            text-decoration: none;
+        }
         .flash {
             padding: 10px;
-            margin-bottom: 20px;
+            margin: 10px 0;
             border-radius: 5px;
-            color: #fff;
+            font-weight: bold;
+            text-align: center;
         }
-        .success {
-            background-color: #28a745; /* Verde para mensajes de éxito */
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
         }
-        .danger {
-            background-color: #dc3545; /* Rojo para mensajes de error */
+        .flash.danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .delete-button {
+            background-color: #dc3545;
+        }
+        .delete-button:hover {
+            background-color: #c82333;
         }
     </style>
-
 </head>
 <body>
-    <h1>Administrar Usuarios</h1>
+    <div class="container">
+        <div class="title-container">
+            <h1>Administrar Usuarios</h1>
+        </div>
 
-    <!-- Bloque para mostrar mensajes flash -->
-    {% with messages = get_flashed_messages(with_categories=True) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="flash {{ category }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Usuario</th>
-            <th>Rol</th>
-            <th>Identificación</th>
-            <th>Acciones</th>
-        </tr>
-        {% for user in users %}
-        <tr>
-            <td>{{ user.id }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.role }}</td>
-            <td>{{ user.identificacion }}</td>
-            <td>
-                <!-- Formulario para eliminar usuario -->
-                <form method="post" style="display:inline;">
-                    <input type="hidden" name="user_id" value="{{ user.id }}">
-                    <button type="submit" name="action" value="delete">Eliminar</button>
-                </form>
-                <a href="{{ url_for('edit_user', user_id=user.id) }}">Editar</a>
-                <a href="{{ url_for('detalle_user', user_id=user.id) }}">Ver más</a>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Identificación</th>
+                <th>Acciones</th>
+            </tr>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.identificacion }}</td>
+                <td>
+                    <form method="post" style="display:inline;">
+                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                        <button type="submit" name="action" value="delete" class="button delete-button">Eliminar</button>
+                    </form>
+                    <a href="{{ url_for('edit_user', user_id=user.id) }}" class="button">Editar</a>
+                    <a href="{{ url_for('detalle_user', user_id=user.id) }}" class="button">Ver más</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
 
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-
-    <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+        <div class="button-container">
+            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+        </div>
+    </div>
 </body>
 </html>
