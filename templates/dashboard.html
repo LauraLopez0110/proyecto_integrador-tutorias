@@ -25,6 +25,7 @@
         {% endif %}
 
         {%if role == 'student'%}
+        <a href="{{ url_for('tutorias_disponibles') }}">Ver tutorías disponibles</a>
         <a href="{{ url_for('student_profile') }}">Ver más</a>
         {% endif%}
 

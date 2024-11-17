@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tutorías Disponibles</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        thead {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            font-size: 16px;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        a {
+            display: block;
+            width: fit-content;
+            margin: 20px auto;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: white;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        a:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Tutorías Disponibles</h1>
+
+    {% if tutorias %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre de la Tutoría</th>
+                    <th>Día</th>
+                    <th>Hora</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tutoria in tutorias %}
+                    {% for horario in tutoria.horarios %}
+                        <tr>
+                            <td>{{ tutoria.codigo }}</td>
+                            <td>{{ tutoria.espacio_academico }}</td>
+                            <td>{{ horario.dia }}</td>
+                            <td>{{ horario.hora }}</td>
+                            <td>
+                                <form action="{{ url_for('inscribirse_tutoria', tutoria_id=tutoria.id, horario_id=horario.id) }}" method="POST">
+                                    <button type="submit" class="btn-inscribirse">Inscribirse</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay tutorías disponibles.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('dashboard') }}">Volver al Dashboard</a></p>
+</body>
+</html>
