@@ -2,33 +2,139 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles del Usuario</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f3ff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .title-container {
+            margin-bottom: 1rem;
+        }
+        h1, h2 {
+            color: #1a5f7a;
+            margin-bottom: 1.5rem;
+            padding-top: 1rem;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+        }
+        .profile-field {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .profile-field strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1a5f7a;
+            font-weight: bold;
+        }
+        .profile-value {
+            display: block;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 100%;
+            background-color: #f8f8f8;
+        }
+        .button-container {
+            margin-top: 2rem;
+        }
+        .button, a {
+            display: inline-block;
+            background-color: #1a5f7a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+        .button:hover, a:hover {
+            background-color: #14475c;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Detalles del Usuario</h1>
-    
-    <!-- Información General del Usuario -->
-    <h2>Información General</h2>
-    <p><strong>Nombre de Usuario:</strong> {{ user.username }}</p>
-    <p><strong>Identificación:</strong> {{ user.identificacion }}</p>
-    <p><strong>Rol:</strong> {{ user.role }}</p>
+    <div class="container">
+        <div class="title-container">
+            <h1>Detalles del Usuario</h1>
+        </div>
+        
+        <h2>Información General</h2>
+        <div class="profile-field">
+            <strong>Nombre de Usuario:</strong>
+            <span class="profile-value">{{ user.username }}</span>
+        </div>
+        <div class="profile-field">
+            <strong>Identificación:</strong>
+            <span class="profile-value">{{ user.identificacion }}</span>
+        </div>
+        <div class="profile-field">
+            <strong>Rol:</strong>
+            <span class="profile-value">{{ user.role }}</span>
+        </div>
 
-    <!-- Información Específica del Estudiante -->
-    {% if user.role == 'student' and estudiante %}
-        <h2>Información del Estudiante</h2>
-        <p><strong>Código del Estudiante:</strong> {{ estudiante.codigo }}</p>
-        <p><strong>Nombre Completo:</strong> {{ estudiante.nombre_completo_estudiante }}</p>
-        <p><strong>Semestre:</strong> {{ estudiante.semestre }}</p>
-        <p><strong>Programa Académico:</strong> {{ estudiante.programa_academico }}</p>
-    {% endif %}
+        {% if user.role == 'student' and estudiante %}
+            <h2>Información del Estudiante</h2>
+            <div class="profile-field">
+                <strong>Código del Estudiante:</strong>
+                <span class="profile-value">{{ estudiante.codigo }}</span>
+            </div>
+            <div class="profile-field">
+                <strong>Nombre Completo:</strong>
+                <span class="profile-value">{{ estudiante.nombre_completo_estudiante }}</span>
+            </div>
+            <div class="profile-field">
+                <strong>Semestre:</strong>
+                <span class="profile-value">{{ estudiante.semestre }}</span>
+            </div>
+            <div class="profile-field">
+                <strong>Programa Académico:</strong>
+                <span class="profile-value">{{ estudiante.programa_academico }}</span>
+            </div>
+        {% endif %}
 
-    <!-- Información Específica del Docente -->
-    {% if user.role == 'teacher' and docente %}
-        <h2>Información del Docente</h2>
-        <p><strong>Nombre Completo:</strong> {{ docente.nombre_completo_docente }}</p>
-        <p><strong>Departamento:</strong> {{ docente.departamento }}</p>
-    {% endif %}
+        {% if user.role == 'teacher' and docente %}
+            <h2>Información del Docente</h2>
+            <div class="profile-field">
+                <strong>Nombre Completo:</strong>
+                <span class="profile-value">{{ docente.nombre_completo_docente }}</span>
+            </div>
+            <div class="profile-field">
+                <strong>Departamento:</strong>
+                <span class="profile-value">{{ docente.departamento }}</span>
+            </div>
+        {% endif %}
 
-    <a href="{{ url_for('manage_users') }}">Volver a Usuarios</a>
+        <div class="button-container">
+            <a href="{{ url_for('manage_users') }}" class="button">Volver a Usuarios</a>
+        </div>
+    </div>
 </body>
 </html>
