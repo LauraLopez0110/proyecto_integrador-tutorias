@@ -9,17 +9,18 @@ CREATE TABLE tutoria (
 CREATE TABLE estudiante (
     id INT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(20) NOT NULL UNIQUE, -- Código único por estudiante
-    nombre_completo_estudiante VARCHAR(100),
     semestre VARCHAR(20),
     programa_academico VARCHAR(100),
     estudiante_id INT, -- Referencia a la tabla user
+    estado ENUM('Activo', 'Inactivo', 'Graduado') DEFAULT 'Activo', -- Campo de estado
     FOREIGN KEY (estudiante_id) REFERENCES user(id) ON DELETE CASCADE -- Relación con la tabla user, con eliminación en cascada
 );
 
 CREATE TABLE docente (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_completo_docente VARCHAR(100),
     departamento VARCHAR(100),
+    correo_institucional VARCHAR(100) NOT NULL UNIQUE, -- Correo institucional
+    fecha_ingreso DATE, -- Fecha de ingreso a la universidad
     docente_id INT,
     FOREIGN KEY (docente_id) REFERENCES user(id) ON DELETE CASCADE -- Relación con la tabla user, con eliminación en cascada
 );

@@ -17,6 +17,7 @@ class User(db.Model):
     password = db.Column(db.String(128), nullable=False)
     role = db.Column(db.Enum('admin', 'student', 'teacher'), nullable=False)
     identificacion = db.Column(db.String(50), unique=True, nullable=False)
+    nombre_completo = db.Column(db.String(200), nullable=False)
 
 # Define el modelo Compromiso
 class Compromiso(db.Model):
@@ -34,6 +35,7 @@ def create_admin_user():
     password = '1234'  # Cambia por la contraseña deseada
     role = 'admin'
     identificacion = '8787'  # Un identificador único
+    nombre_completo = 'Administrador'
 
     # Verificar si el usuario ya existe
     existing_user = User.query.filter((User.username == username) | (User.identificacion == identificacion)).first()
@@ -45,7 +47,7 @@ def create_admin_user():
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
         # Crear el usuario
-        admin_user = User(username=username, password=hashed_password, role=role, identificacion=identificacion)
+        admin_user = User(username=username, password=hashed_password, role=role, identificacion=identificacion, nombre_completo=nombre_completo)
 
         # Agregar y guardar en la base de datos
         db.session.add(admin_user)

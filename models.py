@@ -7,8 +7,9 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
-    role = db.Column(db.Enum('admin', 'student', 'teacher'), nullable=False)
+    role = db.Column(db.Enum('student', 'teacher', 'admin'), nullable=False)
     identificacion = db.Column(db.String(50), unique=True, nullable=False)  
+    nombre_completo = db.Column(db.String(200), nullable=False)
 
 class Tutoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,17 +22,18 @@ class Tutoria(db.Model):
 class Estudiante(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     codigo = db.Column(db.String(20), unique=True, nullable=False)
-    nombre_completo_estudiante = db.Column(db.String(100))
     semestre = db.Column(db.String(20))
     programa_academico = db.Column(db.String(100))
+    estado = db.Column(db.Enum('Activo', 'Inactivo', 'Graduado'))
     estudiante_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
 
     estudiante = db.relationship('User', backref='estudiantes')  # Relación inversa
     
 class Docente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nombre_completo_docente = db.Column(db.String(100))
     departamento = db.Column(db.String(100))
+    correo_institucional = db.Column(db.String(100), unique=True, nullable=False)
+    fecha_ingreso = db.Column(db.Date, nullable=False)
     docente_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
 
     docente = db.relationship('User', backref='docentes')  # Relación inversa

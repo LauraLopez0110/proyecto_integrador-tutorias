@@ -11,5 +11,6 @@ CREATE TABLE user (
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role ENUM('admin', 'student', 'teacher') NOT NULL,
-    identificacion VARCHAR(50) NOT NULL UNIQUE 
+    identificacion VARCHAR(50) NOT NULL UNIQUE,
+    nombre_completo VARCHAR(200) NOT NULL 
 );
