@@ -117,7 +117,7 @@
 
         <div class="profile-field">
             <label>Nombre Completo:</label>
-            <span class="profile-value">{{ estudiante.nombre_completo_estudiante }}</span>
+            <span class="profile-value">{{ estudiante.estudiante.nombre_completo }}</span>
         </div>
         
         <div class="profile-field">
@@ -138,6 +138,10 @@
         <div class="profile-field">
             <label>Programa Académico:</label>
             <span class="profile-value">{{ estudiante.programa_academico }}</span>
+        </div>
+        <div class="profile-field">
+            <label>Estado:</label>
+            <span class="profile-value">{{ estudiante.estado }}</span>
         </div>
 
         <div class="button-container">
