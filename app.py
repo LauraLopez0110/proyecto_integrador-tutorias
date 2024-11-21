@@ -574,41 +574,43 @@ def inscribirse_tutoria(tutoria_id):
     if not tutoria:
         flash("Tutoría no encontrada.", "danger")
         return redirect(url_for('dashboard'))
+
+    # Obtener el docente relacionado con esta tutoría
+    docente = tutoria.docente  # Asegúrate que la tutoría tiene una relación con el docente (User)
     
-    # Filtrar horarios sin inscripciones (disponibles)
-    horarios_tutorias = HorariosTutoria.query.filter(
-        HorariosTutoria.tutoria_id == tutoria_id, 
-        ~HorariosTutoria.inscripciones.any()  # Esto filtra los horarios sin inscripciones
-    ).all()
+    # Obtener el horario ya asignado para esta tutoría
+    horario_asignado = HorariosTutoria.query.filter(
+        HorariosTutoria.tutoria_id == tutoria_id,
+        HorariosTutoria.estado == 'Disponible',  # Solo horarios disponibles
+        ~HorariosTutoria.inscripciones.any()  # Horarios sin inscripciones
+    ).first()
+
+    if not horario_asignado:
+        flash("No hay horarios disponibles para esta tutoría.", "danger")
+        return redirect(url_for('dashboard'))
 
     if request.method == 'POST':
-        horario_id = request.form.get('horario')
-        
-        if not horario_id:
-            flash("Debe seleccionar un horario.", "danger")
-            return render_template('inscripcion.html', tutoria=tutoria, horarios=horarios_tutorias)
-        
-        horario = HorariosTutoria.query.get(horario_id)
-        if not horario or horario.inscripciones:
-            flash("El horario seleccionado ya no está disponible.", "danger")
-            return redirect(url_for('inscribirse_tutoria', tutoria_id=tutoria_id))
-        
         # Verificar si el estudiante ya está inscrito en esta tutoría
         inscripcion_existente = Inscripcion.query.filter_by(estudiante_id=user.id, tutoria_id=tutoria_id).first()
         if inscripcion_existente:
             flash("Ya estás inscrito en esta tutoría.", "warning")
             return redirect(url_for('dashboard'))
 
-        # Crear inscripción
-        nueva_inscripcion = Inscripcion(estudiante_id=user.id, tutoria_id=tutoria_id, horario_id=horario_id)
-
+        # Crear inscripción en el horario asignado
+        nueva_inscripcion = Inscripcion(estudiante_id=user.id, tutoria_id=tutoria_id, horario_id=horario_asignado.id)
         db.session.add(nueva_inscripcion)
+
+        # Cambiar el estado del horario a 'No disponible'
+        horario_asignado.estado = 'No disponible'
         db.session.commit()
 
         flash("Inscripción realizada con éxito.", "success")
         return redirect(url_for('dashboard'))
-    
-    return render_template('inscripcion.html', tutoria=tutoria, horarios=horarios_tutorias)
+
+    # Renderizar la página con la información de la tutoría y el horario asignado
+    return render_template('inscripcion.html', tutoria=tutoria, docente=docente, horario=horario_asignado)
+
+
 
 @app.route('/tutorias/disponibles', methods=['GET'])
 def tutorias_disponibles():

@@ -83,6 +83,7 @@
                     <th>Nombre de la Tutoría</th>
                     <th>Día</th>
                     <th>Hora</th>
+                    <th>Estado</th>
                     <th>Acción</th>
                 </tr>
             </thead>
@@ -95,9 +96,20 @@
                             <td>{{ horario.dia }}</td>
                             <td>{{ horario.hora }}</td>
                             <td>
-                                <form action="{{ url_for('inscribirse_tutoria', tutoria_id=tutoria.id, horario_id=horario.id) }}" method="POST">
-                                    <button type="submit" class="btn-inscribirse">Inscribirse</button>
-                                </form>
+                                {% if horario.estado == 'Disponible' %}
+                                    <span style="color: green;">Disponible</span>
+                                {% else %}
+                                    <span style="color: red;">No disponible</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if horario.estado == 'Disponible' %}
+                                    <form action="{{ url_for('inscribirse_tutoria', tutoria_id=tutoria.id, horario_id=horario.id) }}" method="GET">
+                                        <button type="submit" class="btn-inscribirse">Inscribirse</button>
+                                    </form>
+                                {% else %}
+                                    <button type="button" class="btn-inscribirse" disabled>No disponible</button>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
