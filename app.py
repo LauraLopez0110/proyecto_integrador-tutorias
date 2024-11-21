@@ -537,8 +537,6 @@ def asignar_horarios_tutorias(tutoria_id):
         flash('Tutoría no encontrada', 'error')
         return redirect(url_for('dashboard'))  # Redirige al dashboard si la tutoría no existe
 
-    # Recuperar todos los bloques de horarios disponibles
-    bloques_horarios = BloqueHorario.query.all()
 
     if request.method == 'POST':
         bloque_horario_id = request.form.get('bloque_horario')  # ID del bloque horario seleccionado
@@ -548,16 +546,13 @@ def asignar_horarios_tutorias(tutoria_id):
             flash('Debe seleccionar un bloque horario', 'error')
             return render_template('asignar_horario.html', tutoria=tutoria, bloques_horarios=bloques_horarios)
         
-        # Verificar que el bloque horario seleccionado exista
-        bloque_horario = BloqueHorario.query.get(bloque_horario_id)
-        if not bloque_horario:
-            flash('El bloque horario seleccionado no es válido', 'error')
-            return render_template('asignar_horario.html', tutoria=tutoria, bloques_horarios=bloques_horarios)
+    
         
         # Crear el nuevo horario
         new_horario = HorariosTutoria(
             tutoria_id=tutoria_id,
-            bloque_horario_id=bloque_horario.id,
+            dia = request.form['dia'],
+            hora = request.form['hora'],
             estado='Disponible'
         )
         db.session.add(new_horario)
@@ -567,7 +562,7 @@ def asignar_horarios_tutorias(tutoria_id):
         return redirect(url_for('listar_tutorias_por_docente', docente_id=user.id))  # Redirige al dashboard del docente
 
     # Si la solicitud es GET, se muestra el formulario para asignar horario
-    return render_template('asignar_horario.html', tutoria=tutoria, bloques_horarios=bloques_horarios)
+    return render_template('asignar_horario.html', tutoria=tutoria)
 
 @app.route('/student/inscribirse/<int:tutoria_id>', methods=['GET', 'POST'])
 def inscribirse_tutoria(tutoria_id):
