@@ -24,7 +24,7 @@ class Compromiso(db.Model):
     __tablename__ = 'compromiso'
     id = db.Column(db.Integer, primary_key=True)
     descripcion = db.Column(db.Text, nullable=False)
-    
+
 # Crear la base de datos y las tablas
 with app.app_context():
     db.create_all()
@@ -74,7 +74,9 @@ def insertar_compromisos():
 
     db.session.commit()
     print("Compromisos insertados correctamente.")
+    
+    
 # Llama a la función para crear el usuario
 with app.app_context():
     create_admin_user()
-    insertar_compromisos()  # Insertar compromisos después de crear el usuario
+    insertar_compromisos()   # Insertar compromisos

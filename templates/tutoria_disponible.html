@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <title>Lista de Tutorías Disponibles</title>
     <style>
         body {
@@ -74,7 +75,6 @@
 </head>
 <body>
     <h1>Lista de Tutorías Disponibles</h1>
-
     {% if tutorias %}
         <table>
             <thead>
@@ -107,7 +107,6 @@
     {% else %}
         <p>No hay tutorías disponibles.</p>
     {% endif %}
-
     <p><a href="{{ url_for('dashboard') }}">Volver al Dashboard</a></p>
 </body>
 </html>

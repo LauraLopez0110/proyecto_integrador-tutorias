@@ -20,11 +20,12 @@
                     </div>
                 {% endif %}
             {% endwith %}
-        <div class="title-container">
+        
             <h1>Bienvenido, {{ username }}!</h1>
-        </div>
+        <div class="footer">
         <p>Tu rol es: <strong>{{ role }}</strong></p>
         <p>Tu identificación es: <strong>{{ user.identificacion }}</strong></p>
+        </div>
 
         <div class="button-container">
             {% if role == 'admin' %}

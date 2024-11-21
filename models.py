@@ -38,13 +38,15 @@ class Docente(db.Model):
 
     docente = db.relationship('User', backref='docentes')  # Relación inversa
     
+
 class HorariosTutoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tutoria_id = db.Column(db.Integer, db.ForeignKey('tutoria.id'))
     dia = db.Column(db.Enum('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'), nullable=False)
-    hora = db.Column(db.Enum('8:00-9:00', '9:00-10:00', '10:00-11:00', '11:00-12:00', 
-                             '12:00-13:00', '13:00-14:00', '14:00-15:00', '15:00-16:00',
-                             '16:00-17:00', '17:00-18:00'), nullable=False)
+    hora = db.Column(db.Enum(
+    '08:00 AM - 09:00 AM','09:00 AM - 10:00 AM','10:00 AM - 11:00 AM','11:00 AM - 12:00 PM','12:00 PM - 01:00 PM',
+    '01:00 PM - 02:00 PM','02:00 PM - 03:00 PM','03:00 PM - 04:00 PM','04:00 PM - 05:00 PM','05:00 PM - 06:00 PM'), nullable=False)
+    estado = db.Column(db.Enum('Disponible', 'No disponible'), nullable=False)
     
     tutoria = db.relationship('Tutoria', backref='horarios')
     
@@ -62,6 +64,7 @@ class Inscripcion(db.Model):
 
 class FormatoTutoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    tutoria_id = db.Column(db.Integer, db.ForeignKey('tutoria.id', ondelete='CASCADE'))  # Asociación directa
     docente_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
     periodo_academico = db.Column(db.String(50), nullable=False)
     estudiante_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
@@ -69,10 +72,11 @@ class FormatoTutoria(db.Model):
     semestre_estudiante = db.Column(db.String(20), nullable=False)
     asignatura = db.Column(db.String(100), nullable=False)  # Equivalente a espacio académico
     temas_tratados = db.Column(db.Text, nullable=True)
-    fecha = db.Column(db.Date, nullable=False)
+    fecha_realizacion = db.Column(db.Date, nullable=False)
 
     docente = db.relationship('User', foreign_keys=[docente_id], backref='formatos_docente')
     estudiante = db.relationship('User', foreign_keys=[estudiante_id], backref='formatos_estudiante')
+    tutoria = db.relationship('Tutoria', backref='formatos_tutoria')  # Relación inversa
 
 
 class Compromiso(db.Model):
@@ -84,5 +88,5 @@ class FormatoTutoriaCompromiso(db.Model):
     formato_tutoria_id = db.Column(db.Integer, db.ForeignKey('formato_tutoria.id', ondelete='CASCADE'))
     compromiso_id = db.Column(db.Integer, db.ForeignKey('compromiso.id', ondelete='CASCADE'))
     
-    tutoria = db.relationship('FormatoTutoria', backref='compromisos')
-    compromiso = db.relationship('Compromiso', backref='formatos_tutorias')
+    tutoria = db.relationship('FormatoTutoria', backref='compromiso_relaciones')  # Relación inversa mejor definida
+    compromiso = db.relationship('Compromiso', backref='tutoria_relaciones')

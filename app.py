@@ -1,10 +1,10 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request
 from flask_bcrypt import Bcrypt
 from config import Config
-from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria, Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaCompromiso
+from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria
+from models import Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaCompromiso
 # Importa db y User, Tutoria
 from datetime import datetime
-from sqlalchemy.orm import joinedload
 
 
 app = Flask(__name__)
@@ -543,22 +543,27 @@ def asignar_horarios_tutorias(tutoria_id):
         flash('Tutoría no encontrada', 'error')
         return redirect(url_for('dashboard'))  # Redirige al dashboard si la tutoría no existe
 
-    # Manejo del formulario POST para asignar horario
     if request.method == 'POST':
-        dia = request.form.get('dia')
-        hora = request.form.get('hora')
-        
+        dia = request.form.get('dia')  # Día seleccionado
+        hora = request.form.get('hora')  # Hora seleccionada
+
+        # Validar que se haya seleccionado un día y una hora
         if not dia or not hora:
-            flash('Debe seleccionar un día y una hora', 'error')
-            return render_template('asignar_horario.html', tutoria=tutoria)  # Muestra el formulario con el mensaje de error
+            flash('Debe seleccionar tanto el día como la hora', 'error')
+            return render_template('asignar_horario.html', tutoria=tutoria)
         
         # Crear el nuevo horario
-        new_horario = HorariosTutoria(dia=dia, hora=hora, tutoria_id=tutoria_id)
+        new_horario = HorariosTutoria(
+            tutoria_id=tutoria_id,
+            dia=dia,
+            hora=hora,
+            estado='Disponible'
+        )
         db.session.add(new_horario)
         db.session.commit()
 
         flash('Horario asignado correctamente', 'success')
-        return redirect(url_for('listar_tutorias_por_docente', docente_id=user.id))  # Redirige al dashboard del docente o página correspondiente
+        return redirect(url_for('listar_tutorias_por_docente', docente_id=user.id))  # Redirige al dashboard del docente
 
     # Si la solicitud es GET, se muestra el formulario para asignar horario
     return render_template('asignar_horario.html', tutoria=tutoria)
@@ -613,8 +618,10 @@ def inscribirse_tutoria(tutoria_id):
 
 @app.route('/tutorias/disponibles', methods=['GET'])
 def tutorias_disponibles():
+    
     # Consulta todas las tutorías
     tutorias = Tutoria.query.all()
+    
 
     return render_template('tutoria_disponible.html', tutorias=tutorias)
 
