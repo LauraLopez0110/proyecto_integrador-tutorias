@@ -40,8 +40,9 @@
         <form method="POST" class="form">
             <!-- Selección de día -->
             <div class="form-group">
-                <label for="dia" class="form-label">Seleccionar Día:</label>
-                <select id="dia" name="dia" class="form-select" required>
+                <label for="dia">Día:</label>
+                <select id="dia" name="dia" required>
+                    <option value="" disabled selected>Seleccione un día</option>
                     <option value="lunes">Lunes</option>
                     <option value="martes">Martes</option>
                     <option value="miercoles">Miércoles</option>
@@ -53,14 +54,19 @@
             <!-- Selección de hora -->
              <!-- Selección de bloque horario -->
              <div class="form-group">
-                <label for="bloque_horario" class="form-label">Seleccione un Horario:</label>
-                <select id="bloque_horario" name="bloque_horario" class="form-select" required>
-                    <option value="" disabled selected>Seleccione un horario</option>
-                    {% for bloque in bloques_horarios %}
-                        <option value="{{ bloque.id }}">
-                            {{ bloque.dia }}: {{ bloque.hora_inicio.strftime('%H:%M') }} - {{ bloque.hora_fin.strftime('%H:%M') }}
-                        </option>
-                    {% endfor %}
+                <label for="hora">Hora:</label>
+                <select id="hora" name="hora" required>
+                    <option value="" disabled selected>Seleccione una hora</option>
+                    <option value="08:00 AM - 09:00 AM">08:00 AM - 09:00 AM</option>
+                    <option value="09:00 AM - 10:00 AM">09:00 AM - 10:00 AM</option>
+                    <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                    <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+                    <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+                    <option value="01:00 PM - 02:00 PM">01:00 PM - 02:00 PM</option>
+                    <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
+                    <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+                    <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
+                    <option value="05:00 PM - 06:00 PM">05:00 PM - 06:00 PM</option>
                 </select>
             </div>
 

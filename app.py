@@ -537,22 +537,20 @@ def asignar_horarios_tutorias(tutoria_id):
         flash('Tutoría no encontrada', 'error')
         return redirect(url_for('dashboard'))  # Redirige al dashboard si la tutoría no existe
 
-
     if request.method == 'POST':
-        bloque_horario_id = request.form.get('bloque_horario')  # ID del bloque horario seleccionado
+        dia = request.form.get('dia')  # Día seleccionado
+        hora = request.form.get('hora')  # Hora seleccionada
 
-        # Validar que se haya seleccionado un bloque horario
-        if not bloque_horario_id:
-            flash('Debe seleccionar un bloque horario', 'error')
+        # Validar que se haya seleccionado un día y una hora
+        if not dia or not hora:
+            flash('Debe seleccionar tanto el día como la hora', 'error')
             return render_template('asignar_horario.html', tutoria=tutoria)
-        
-    
         
         # Crear el nuevo horario
         new_horario = HorariosTutoria(
             tutoria_id=tutoria_id,
-            dia = request.form['dia'],
-            hora = request.form['hora'],
+            dia=dia,
+            hora=hora,
             estado='Disponible'
         )
         db.session.add(new_horario)
