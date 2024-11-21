@@ -7,40 +7,43 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 </head>
 <body>
-    <h1>Tutorías Apartadas</h1>
+    <div class="container">
+        <h1>Tutorías Apartadas</h1>
 
-
-    {% if tutorias %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Espacio Académico</th>
-                    <th>Estudiantes Inscritos</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for tutoria in tutorias %}
+        {% if tutorias %}
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ tutoria.codigo }}</td>
-                        <td>{{ tutoria.espacio_academico }}</td>
-                        <td>
-                            <ul>
-                                {% for inscripcion in tutoria.inscripciones %}
-                                    <li>{{ inscripcion.estudiante.username}}</li>
-                                {% endfor %}
-                            </ul>
-                        </td>
-                        <td> <a href="" class="btn">Llenar Formulario</a> </td>
+                        <th>Código</th>
+                        <th>Espacio Académico</th>
+                        <th>Estudiantes Inscritos</th>
+                        <th>Acciones</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No hay tutorías apartadas para este docente.</p>
-    {% endif %}
+                </thead>
+                <tbody>
+                    {% for tutoria in tutorias %}
+                        <tr>
+                            <td>{{ tutoria.codigo }}</td>
+                            <td>{{ tutoria.espacio_academico }}</td>
+                            <td>
+                                <ul>
+                                    {% for inscripcion in tutoria.inscripciones %}
+                                        <a>{{ inscripcion.estudiante.nombre_completo }}</a>  <!-- Nombre completo del estudiante -->
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                <a href="" class="btn">Llenar Formulario</a> <!-- Acción para llenar formulario -->
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No hay tutorías apartadas para este docente.</p>
+        {% endif %}
 
-    <a href="{{ url_for('dashboard') }}" class="btn">Volver al Dashboard</a>
+        <a href="{{ url_for('dashboard') }}" class="btn">Volver al Dashboard</a>
+    </div>
 </body>
 </html>

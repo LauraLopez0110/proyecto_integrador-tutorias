@@ -25,8 +25,8 @@
         <div class="info-container">
             <h2>Información del Docente</h2>
             <p><strong>Nombre:</strong> {{ docente.nombre_completo }}</p>
-            <p><strong>Departamento:</strong> {{ docente.departamento }}</p>
-            <p><strong>Correo:</strong> {{ docente.correo_institucional }}</p>
+            <p><strong>Departamento:</strong> {{ docente_detalles.departamento }}</p>
+            <p><strong>Correo:</strong> {{ docente_detalles.correo_institucional }}</p>
         </div>
 
         <div class="info-container">
@@ -43,6 +43,7 @@
 
         <div class="button-container">
             <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+            <a href="{{ url_for('tutorias_disponibles') }}" class="button">Volver a tutorias disponibles</a>
         </div>
     </div>
 </body>

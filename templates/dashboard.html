@@ -41,6 +41,7 @@
         {%if role == 'student'%}
         <a href="{{ url_for('tutorias_disponibles') }}">Ver tutorías disponibles</a>
         <a href="{{ url_for('student_profile') }}">Detalle perfil</a>
+        <a href="{{ url_for('listar_tutorias_inscritas') }}">Tutorias inscritas</a>
         {% endif%}
 
         {%if role == 'teacher'%}
