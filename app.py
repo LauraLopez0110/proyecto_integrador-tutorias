@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request
 from flask_bcrypt import Bcrypt
 from config import Config
-from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria,BloqueHorario
+from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria
 from models import Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaCompromiso
 # Importa db y User, Tutoria
 from datetime import datetime

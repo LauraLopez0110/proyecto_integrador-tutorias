@@ -1,82 +1,91 @@
+-- Tabla de tutorías
 CREATE TABLE tutoria (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    codigo VARCHAR(20) NOT NULL UNIQUE,  -- Código único para la tutoría
-    espacio_academico VARCHAR(100) NOT NULL,
-    docente_id INT,
-    FOREIGN KEY (docente_id) REFERENCES user(id)  -- Relación con la tabla user
+    codigo VARCHAR(20) NOT NULL UNIQUE, -- Código único para la tutoría
+    espacio_academico VARCHAR(100) NOT NULL, -- Nombre del espacio académico
+    docente_id INT, -- Relación con el docente
+    FOREIGN KEY (docente_id) REFERENCES user(id) -- Clave foránea al usuario
 );
 
+-- Tabla de estudiantes
 CREATE TABLE estudiante (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    codigo VARCHAR(20) NOT NULL UNIQUE, -- Código único por estudiante
-    semestre VARCHAR(20),
-    programa_academico VARCHAR(100),
-    estudiante_id INT, -- Referencia a la tabla user
-    estado ENUM('Activo', 'Inactivo', 'Graduado') DEFAULT 'Activo', -- Campo de estado
-    FOREIGN KEY (estudiante_id) REFERENCES user(id) ON DELETE CASCADE -- Relación con la tabla user, con eliminación en cascada
+    codigo VARCHAR(20) NOT NULL UNIQUE, -- Código único para el estudiante
+    semestre VARCHAR(20), -- Semestre académico
+    programa_academico VARCHAR(100), -- Programa al que pertenece
+    estudiante_id INT NOT NULL, -- Relación con la tabla user
+    estado ENUM('Activo', 'Inactivo', 'Graduado') DEFAULT 'Activo', -- Estado del estudiante
+    FOREIGN KEY (estudiante_id) REFERENCES user(id) ON DELETE CASCADE -- Eliminar en cascada
 );
 
+-- Tabla de docentes
 CREATE TABLE docente (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    departamento VARCHAR(100),
-    correo_institucional VARCHAR(100) NOT NULL UNIQUE, -- Correo institucional
-    fecha_ingreso DATE, -- Fecha de ingreso a la universidad
-    docente_id INT,
-    FOREIGN KEY (docente_id) REFERENCES user(id) ON DELETE CASCADE -- Relación con la tabla user, con eliminación en cascada
+    departamento VARCHAR(100), -- Departamento académico del docente
+    correo_institucional VARCHAR(100) NOT NULL UNIQUE, -- Correo institucional único
+    fecha_ingreso DATE NOT NULL, -- Fecha de ingreso del docente
+    docente_id INT NOT NULL, -- Relación con la tabla user
+    FOREIGN KEY (docente_id) REFERENCES user(id) ON DELETE CASCADE -- Eliminar en cascada
 );
 
-CREATE TABLE bloque_horario (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    hora_inicio TIME NOT NULL, -- Hora de inicio del bloque
-    hora_fin TIME NOT NULL, -- Hora de fin del bloque
-    UNIQUE(hora_inicio, hora_fin) -- Evita duplicados
-);
-
+-- Tabla de horarios de tutorías
 CREATE TABLE horarios_tutoria (
     id INT AUTO_INCREMENT PRIMARY KEY,
     tutoria_id INT NOT NULL, -- Relación con la tutoría
-    bloque_horario_id INT NOT NULL, -- Relación con el bloque de horario
-    dia ENUM('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes') NOT NULL,
-    estado ENUM('Disponible', 'No disponible') NOT NULL,
-    FOREIGN KEY (tutoria_id) REFERENCES tutoria(id) ON DELETE CASCADE,
-    FOREIGN KEY (bloque_horario_id) REFERENCES bloque_horario(id) ON DELETE CASCADE
+    dia ENUM('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes') NOT NULL, -- Día de la tutoría
+    hora ENUM(
+        '08:00 AM - 09:00 AM',
+        '09:00 AM - 10:00 AM',
+        '10:00 AM - 11:00 AM',
+        '11:00 AM - 12:00 PM',
+        '01:00 PM - 02:00 PM',
+        '02:00 PM - 03:00 PM',
+        '03:00 PM - 04:00 PM',
+        '04:00 PM - 05:00 PM'
+    ) NOT NULL,
+    estado ENUM('Disponible', 'No disponible') NOT NULL, -- Estado del horario
+    FOREIGN KEY (tutoria_id) REFERENCES tutoria(id) ON DELETE CASCADE -- Eliminar en cascada
 );
 
+-- Tabla de inscripciones
 CREATE TABLE inscripcion (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    estudiante_id INT NOT NULL,
-    tutoria_id INT NOT NULL,
-    horario_id INT NOT NULL,
-    fecha_inscripcion DATETIME NOT NULL,  -- Cambié a DATETIME
-    FOREIGN KEY (estudiante_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (tutoria_id) REFERENCES tutoria(id) ON DELETE CASCADE,
-    FOREIGN KEY (horario_id) REFERENCES horarios_tutoria(id) ON DELETE CASCADE  -- Cambié el nombre de la tabla
+    estudiante_id INT NOT NULL, -- Relación con el estudiante
+    tutoria_id INT NOT NULL, -- Relación con la tutoría
+    horario_id INT NOT NULL, -- Relación con el horario de la tutoría
+    fecha_inscripcion DATETIME NOT NULL, -- Fecha y hora de la inscripción
+    FOREIGN KEY (estudiante_id) REFERENCES user(id) ON DELETE CASCADE, -- Eliminar en cascada
+    FOREIGN KEY (tutoria_id) REFERENCES tutoria(id) ON DELETE CASCADE, -- Eliminar en cascada
+    FOREIGN KEY (horario_id) REFERENCES horarios_tutoria(id) ON DELETE CASCADE -- Eliminar en cascada
 );
 
+-- Tabla de formato de tutoría
 CREATE TABLE formato_tutoria (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    docente_id INT NOT NULL,
-    estudiante_id INT NOT NULL,
-    tutoria_id INT NOT NULL,
-    espacio_academico VARCHAR(100) NOT NULL,
-    temas_tratados TEXT NOT NULL,
-    fecha DATE NOT NULL,
-    FOREIGN KEY (docente_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (estudiante_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (tutoria_id) REFERENCES tutoria(id) ON DELETE CASCADE
+    docente_id INT NOT NULL, -- Relación con el docente
+    estudiante_id INT NOT NULL, -- Relación con el estudiante
+    tutoria_id INT NOT NULL, -- Relación con la tutoría
+    espacio_academico VARCHAR(100) NOT NULL, -- Nombre del espacio académico
+    temas_tratados TEXT, -- Temas tratados en la tutoría
+    fecha DATE NOT NULL, -- Fecha de la tutoría
+    FOREIGN KEY (docente_id) REFERENCES user(id) ON DELETE CASCADE, -- Eliminar en cascada
+    FOREIGN KEY (estudiante_id) REFERENCES user(id) ON DELETE CASCADE, -- Eliminar en cascada
+    FOREIGN KEY (tutoria_id) REFERENCES tutoria(id) ON DELETE CASCADE -- Eliminar en cascada
 );
 
+-- Tabla de compromisos
 CREATE TABLE compromiso (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    descripcion TEXT NOT NULL -- Descripción del compromiso predefinido
+    descripcion TEXT NOT NULL -- Descripción del compromiso
 );
 
+-- Tabla de relación entre formato de tutoría y compromisos
 CREATE TABLE formato_tutoria_compromiso (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    formato_tutoria_id INT NOT NULL,
-    compromiso_id INT NOT NULL,
-    FOREIGN KEY (formato_tutoria_id) REFERENCES formato_tutoria(id) ON DELETE CASCADE,
-    FOREIGN KEY (compromiso_id) REFERENCES compromiso(id) ON DELETE CASCADE
+    formato_tutoria_id INT NOT NULL, -- Relación con el formato de tutoría
+    compromiso_id INT NOT NULL, -- Relación con el compromiso
+    FOREIGN KEY (formato_tutoria_id) REFERENCES formato_tutoria(id) ON DELETE CASCADE, -- Eliminar en cascada
+    FOREIGN KEY (compromiso_id) REFERENCES compromiso(id) ON DELETE CASCADE -- Eliminar en cascada
 );
 
 pip install Flask
