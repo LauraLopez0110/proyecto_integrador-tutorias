@@ -544,7 +544,7 @@ def asignar_horarios_tutorias(tutoria_id):
         # Validar que se haya seleccionado un bloque horario
         if not bloque_horario_id:
             flash('Debe seleccionar un bloque horario', 'error')
-            return render_template('asignar_horario.html', tutoria=tutoria, bloques_horarios=bloques_horarios)
+            return render_template('asignar_horario.html', tutoria=tutoria)
         
     
         
