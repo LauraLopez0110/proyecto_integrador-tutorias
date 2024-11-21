@@ -5,52 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <title>Dashboard</title>
-    
 </head>
 <body>
-
     <div class="container">
-                <!-- Bloque para mostrar los mensajes flash -->
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <div>
-                        {% for category, message in messages %}
-                            <div class="flash {{ category }}">{{ message }}</div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+        <div id="flash-messages">
+            <!-- Bloque para mostrar los mensajes flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
             {% endwith %}
+        </div>
         
-            <h1>Bienvenido, {{ username }}!</h1>
+        <h1>Bienvenido, {{ username }}!</h1>
         <div class="footer">
-        <p>Tu rol es: <strong>{{ role }}</strong></p>
-        <p>Tu identificación es: <strong>{{ user.identificacion }}</strong></p>
+            <p>Tu rol es: <strong>{{ role }}</strong></p>
+            <p>Tu identificación es: <strong>{{ user.identificacion }}</strong></p>
         </div>
 
         <div class="button-container">
             {% if role == 'admin' %}
-            <a href="{{ url_for('edit_profile') }}" class="button">Editar Perfil</a>
-            <a href="{{ url_for('manage_users') }}" class="button">Administrar Usuarios</a>
-            <a href="{{ url_for('manage_tutorias') }}" class="button">Admin tutorías</a>
-            <a href="{{ url_for('register') }}" class="button">Crear Nuevo Usuario</a>
-
+                <a href="{{ url_for('edit_profile') }}" class="button">Editar Perfil</a>
+                <a href="{{ url_for('manage_users') }}" class="button">Administrar Usuarios</a>
+                <a href="{{ url_for('manage_tutorias') }}" class="button">Admin tutorías</a>
+                <a href="{{ url_for('register') }}" class="button">Crear Nuevo Usuario</a>
             {% elif role in ['student', 'teacher'] %}
-            <a href="{{ url_for('edit_profile') }}" class="button">Editar Perfil</a>
+                <a href="{{ url_for('edit_profile') }}" class="button">Editar Perfil</a>
             {% endif %}
 
-        {%if role == 'student'%}
-        <a href="{{ url_for('tutorias_disponibles') }}">Ver tutorías disponibles</a>
-        <a href="{{ url_for('student_profile') }}">Detalle perfil</a>
-        <a href="{{ url_for('listar_tutorias_inscritas') }}">Tutorias inscritas</a>
-        {% endif%}
+            {% if role == 'student' %}
+                <a href="{{ url_for('tutorias_disponibles') }}" class="button">Ver tutorías disponibles</a>
+                <a href="{{ url_for('student_profile') }}" class="button">Detalle perfil</a>
+            {% endif %}
 
-        {%if role == 'teacher'%}
-        <a href="{{ url_for('teacher_profile') }}">Detalle perfil</a>
-        <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}">Tutorias Asignadas</a>
-        <a href="{{ url_for('listar_tutorias_apartadas', docente_id=docente.id) }}">Tutorias Apartadas</a>
-        {% endif%}
+            {% if role == 'teacher' %}
+                <a href="{{ url_for('teacher_profile') }}" class="button">Detalle perfil</a>
+                <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}" class="button">Tutorías Asignadas</a>
+                <a href="{{ url_for('listar_tutorias_apartadas', docente_id=docente.id) }}" class="button">Tutorías Apartadas</a>
+            {% endif %}
 
-        <a href="{{ url_for('logout') }}" class="logout-button">Cerrar Sesión</a>
+            <a href="{{ url_for('logout') }}" class="logout-button">Cerrar Sesión</a>
+        </div>
     </div>
 </body>
 </html>
