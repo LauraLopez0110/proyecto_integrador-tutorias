@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formato de Tutoría</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+</head>
+<body>
+    <h1>Formato de Tutoría</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('formato_tutoria') }}" method="POST">
+       
+        <label for="docente">Docente:</label>
+        
+        <select id="docente" name="docente" required>
+            <option value="">Seleccionar Docente</option>
+            {% for docente in docentes %}
+                <option value="{{ docente.id }}">{{ docente.username }}</option>
+            {% endfor %}
+        </select>
+
+        
+        <label for="periodo_academico">Período Académico:</label>
+        <input type="text" id="periodo_academico" name="periodo_academico" placeholder="Ejemplo: 2024-2" required>
+
+      
+        <label for="codigo_estudiante">Código del Estudiante:</label>
+        <input type="text" id="codigo_estudiante" name="codigo_estudiante" placeholder="Código del Estudiante" required>
+
+        <label for="semestre_estudiante">Semestre del Estudiante:</label>
+        <input type="text" id="semestre_estudiante" name="semestre_estudiante" placeholder="Ejemplo: Sexto Semestre" required>
+
+        
+        <label for="asignatura">Asignatura:</label>
+        <input type="text" id="asignatura" name="asignatura" placeholder="Nombre de la Asignatura" required>
+
+     
+        <label for="temas_tratados">Temas Tratados:</label>
+        <textarea id="temas_tratados" name="temas_tratados" rows="5" placeholder="Descripción de los temas tratados"></textarea>
+
+        
+        <label for="fecha">Fecha:</label>
+        <input type="date" id="fecha" name="fecha" required>
+
+        
+        <button type="submit">Guardar Formato</button>
+        <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+    </form>
+</body>
+</html>

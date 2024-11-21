@@ -37,16 +37,23 @@
 
         <form method="post">
             <label for="codigo">Código de la Tutoría</label>
-            <input type="text" id="codigo" name="codigo" value="{{ tutoria.codigo }}" placeholder="Código de la Tutoría" required>
-
+            <input type="text" id="codigo" name="codigo" 
+                   value="{{ tutoria.codigo }}" 
+                   placeholder="Código de la Tutoría" readonly required>
+        
+         
             <label for="espacio_academico">Espacio Académico</label>
-            <input type="text" id="espacio_academico" name="espacio_academico" value="{{ tutoria.espacio_academico }}" placeholder="Espacio Académico" required>
-
+            <input type="text" id="espacio_academico" name="espacio_academico" 
+                   value="{{ tutoria.espacio_academico }}" 
+                   placeholder="Espacio Académico" required>
+        
             <label for="docente">Docente</label>
             <select id="docente" name="docente" required>
                 <option value="">Seleccionar Docente</option>
                 {% for docente in docentes %}
-                    <option value="{{ docente.id }}" {% if docente.id == tutoria.docente_id %}selected{% endif %}>{{ docente.username }}</option>
+                    <option value="{{ docente.id }}" {% if docente.id == tutoria.docente_id %}selected{% endif %}>
+                        {{ docente.username }}
+                    </option>
                 {% endfor %}
             </select>
 
