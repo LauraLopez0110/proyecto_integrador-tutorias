@@ -24,6 +24,13 @@ class Compromiso(db.Model):
     __tablename__ = 'compromiso'
     id = db.Column(db.Integer, primary_key=True)
     descripcion = db.Column(db.Text, nullable=False)
+
+# Define el modelo BloqueHorario
+class BloqueHorario(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    hora_inicio = db.Column(db.Time, nullable=False)
+    hora_fin = db.Column(db.Time, nullable=False) 
+    
     
 # Crear la base de datos y las tablas
 with app.app_context():
@@ -74,7 +81,33 @@ def insertar_compromisos():
 
     db.session.commit()
     print("Compromisos insertados correctamente.")
+    
+
+# Función para insertar bloques de horarios
+def insertar_horarios():
+    horarios = [
+        {'hora_inicio': '08:00:00', 'hora_fin': '09:00:00'},
+        {'hora_inicio': '09:00:00', 'hora_fin': '10:00:00'},
+        {'hora_inicio': '10:00:00', 'hora_fin': '11:00:00'},
+        {'hora_inicio': '11:00:00', 'hora_fin': '12:00:00'},
+        {'hora_inicio': '12:00:00', 'hora_fin': '13:00:00'},
+        {'hora_inicio': '13:00:00', 'hora_fin': '14:00:00'},
+        {'hora_inicio': '14:00:00', 'hora_fin': '15:00:00'},
+        {'hora_inicio': '15:00:00', 'hora_fin': '16:00:00'},
+        {'hora_inicio': '16:00:00', 'hora_fin': '17:00:00'},
+        {'hora_inicio': '17:00:00', 'hora_fin': '18:00:00'},
+    ]
+
+    # Insertar horarios en la base de datos
+    for horario in horarios:
+        bloque = BloqueHorario(hora_inicio=horario['hora_inicio'], hora_fin=horario['hora_fin'])
+        db.session.add(bloque)
+
+    db.session.commit()
+    print("Horarios insertados correctamente.")
+    
 # Llama a la función para crear el usuario
 with app.app_context():
     create_admin_user()
-    insertar_compromisos()  # Insertar compromisos después de crear el usuario
+    insertar_compromisos()   # Insertar compromisos
+    insertar_horarios()      # Insertar horarios
