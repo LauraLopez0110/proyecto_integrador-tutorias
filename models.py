@@ -42,7 +42,7 @@ class Docente(db.Model):
 class HorariosTutoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tutoria_id = db.Column(db.Integer, db.ForeignKey('tutoria.id'))
-    dia = db.Column(db.Enum('lunes', 'martes', 'miercoles', 'jueves', 'viernes'), nullable=False)
+    dia = db.Column(db.Enum('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'), nullable=False)
     hora = db.Column(db.Enum(
     '08:00 AM - 09:00 AM','09:00 AM - 10:00 AM','10:00 AM - 11:00 AM','11:00 AM - 12:00 PM','12:00 PM - 01:00 PM',
     '01:00 PM - 02:00 PM','02:00 PM - 03:00 PM','03:00 PM - 04:00 PM','04:00 PM - 05:00 PM','05:00 PM - 06:00 PM'), nullable=False)
