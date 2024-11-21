@@ -9,28 +9,37 @@ CREATE TABLE tutoria (
 CREATE TABLE estudiante (
     id INT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(20) NOT NULL UNIQUE, -- Código único por estudiante
-    nombre_completo_estudiante VARCHAR(100),
     semestre VARCHAR(20),
     programa_academico VARCHAR(100),
     estudiante_id INT, -- Referencia a la tabla user
+    estado ENUM('Activo', 'Inactivo', 'Graduado') DEFAULT 'Activo', -- Campo de estado
     FOREIGN KEY (estudiante_id) REFERENCES user(id) ON DELETE CASCADE -- Relación con la tabla user, con eliminación en cascada
 );
 
 CREATE TABLE docente (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_completo_docente VARCHAR(100),
     departamento VARCHAR(100),
+    correo_institucional VARCHAR(100) NOT NULL UNIQUE, -- Correo institucional
+    fecha_ingreso DATE, -- Fecha de ingreso a la universidad
     docente_id INT,
     FOREIGN KEY (docente_id) REFERENCES user(id) ON DELETE CASCADE -- Relación con la tabla user, con eliminación en cascada
 );
 
+CREATE TABLE bloque_horario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    hora_inicio TIME NOT NULL, -- Hora de inicio del bloque
+    hora_fin TIME NOT NULL, -- Hora de fin del bloque
+    UNIQUE(hora_inicio, hora_fin) -- Evita duplicados
+);
+
 CREATE TABLE horarios_tutoria (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    tutoria_id INT NOT NULL,
+    tutoria_id INT NOT NULL, -- Relación con la tutoría
+    bloque_horario_id INT NOT NULL, -- Relación con el bloque de horario
     dia ENUM('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes') NOT NULL,
-    hora ENUM('8:00-9:00', '9:00-10:00', '10:00-11:00', '11:00-12:00', '12:00-13:00', '13:00-14:00', '14:00-15:00', '15:00-16:00', '16:00-17:00', '17:00-18:00') NOT NULL,
     estado ENUM('Disponible', 'No disponible') NOT NULL,
-    FOREIGN KEY (tutoria_id) REFERENCES tutoria(id) ON DELETE CASCADE
+    FOREIGN KEY (tutoria_id) REFERENCES tutoria(id) ON DELETE CASCADE,
+    FOREIGN KEY (bloque_horario_id) REFERENCES bloque_horario(id) ON DELETE CASCADE
 );
 
 CREATE TABLE inscripcion (

@@ -7,8 +7,9 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
-    role = db.Column(db.Enum('admin', 'student', 'teacher'), nullable=False)
+    role = db.Column(db.Enum('student', 'teacher', 'admin'), nullable=False)
     identificacion = db.Column(db.String(50), unique=True, nullable=False)  
+    nombre_completo = db.Column(db.String(200), nullable=False)
 
 class Tutoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,29 +22,38 @@ class Tutoria(db.Model):
 class Estudiante(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     codigo = db.Column(db.String(20), unique=True, nullable=False)
-    nombre_completo_estudiante = db.Column(db.String(100))
     semestre = db.Column(db.String(20))
     programa_academico = db.Column(db.String(100))
+    estado = db.Column(db.Enum('Activo', 'Inactivo', 'Graduado'))
     estudiante_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
 
     estudiante = db.relationship('User', backref='estudiantes')  # Relación inversa
     
 class Docente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nombre_completo_docente = db.Column(db.String(100))
     departamento = db.Column(db.String(100))
+    correo_institucional = db.Column(db.String(100), unique=True, nullable=False)
+    fecha_ingreso = db.Column(db.Date, nullable=False)
     docente_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
 
     docente = db.relationship('User', backref='docentes')  # Relación inversa
     
+class BloqueHorario(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    hora_inicio = db.Column(db.Time, nullable=False)
+    hora_fin = db.Column(db.Time, nullable=False)
+
+    def __repr__(self):
+
+        return f"{self.hora_inicio.strftime('%H:%M')} - {self.hora_fin.strftime('%H:%M')}"
+
 class HorariosTutoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tutoria_id = db.Column(db.Integer, db.ForeignKey('tutoria.id'))
-    dia = db.Column(db.Enum('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'), nullable=False)
-    hora = db.Column(db.Enum('8:00-9:00', '9:00-10:00', '10:00-11:00', '11:00-12:00', 
-                             '12:00-13:00', '13:00-14:00', '14:00-15:00', '15:00-16:00',
-                             '16:00-17:00', '17:00-18:00'), nullable=False)
+    bloque_horario_id = db.Column(db.Integer, db.ForeignKey('bloque_horario.id'))
+    estado = db.Column(db.Enum('Disponible', 'No disponible'), nullable=False)
     
+    bloque_horario = db.relationship('BloqueHorario', backref='horarios_tutoria')
     tutoria = db.relationship('Tutoria', backref='horarios')
     
 class Inscripcion(db.Model):

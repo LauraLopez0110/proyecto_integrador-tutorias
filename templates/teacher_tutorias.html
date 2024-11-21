@@ -4,48 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabla de Tutorías</title>
-    <link rel="stylesheet"
-            href="{{ url_for('static', filename='tabla-tutorias.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='manage.css') }}">
 </head>
 <body>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <div>
-            {% for category, message in messages %}
-                <div class="flash {{ category }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
-{% endwith %}
-<h1> Lista de tutorias de {{ user.username }}</h1>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
 
-<table class="table">
-    <thead class="table-header">
-        <tr>
-            <th class="table-head w-100">Código</th>
-            <th class="table-head">Nombre</th>
-            <th class="table-head text-right">Acción</th>
-        </tr>
-    </thead>
-    <tbody class="table-body">
-        {% for tutoria in tutorias %}
-        <tr>
-            <td class="table-cell font-medium">{{ tutoria.codigo }}</td>
-            <td class="table-cell">{{ tutoria.espacio_academico }}</td>
-            <td class="table-cell text-right">
-                <a href="{{ url_for('asignar_horarios_tutorias', tutoria_id=tutoria.id) }}">
-                    Asignar horario
-                </a>
-            </td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="3" class="table-cell">No hay tutorías asignadas.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
- <!-- Botón para volver al Dashboard -->
- <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+        <div class="title-container">
+            <h1>Lista de tutorías de {{ user.username }}</h1>
+        </div>
+
+        <table class="table">
+            <thead class="table-header">
+                <tr>
+                    <th class="table-head">Código</th>
+                    <th class="table-head">Nombre</th>
+                    <th class="table-head text-right">Acción</th>
+                </tr>
+            </thead>
+            <tbody class="table-body">
+                {% for tutoria in tutorias %}
+                <tr>
+                    <td class="table-cell font-medium">{{ tutoria.codigo }}</td>
+                    <td class="table-cell">{{ tutoria.espacio_academico }}</td>
+                    <td class="table-cell text-right">
+                        <a href="{{ url_for('asignar_horarios_tutorias', tutoria_id=tutoria.id) }}" class="button">
+                            Asignar horario
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="table-cell">No hay tutorías asignadas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="button-container">
+            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+        </div>
+    </div>
 </body>
 </html>

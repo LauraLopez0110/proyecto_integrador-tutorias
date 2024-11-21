@@ -3,95 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <title>Registro</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e6f3ff;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-        }
-        .title-container {
-            margin-bottom: 1rem;
-        }
-        h1 {
-            color: #1a5f7a;
-            margin-bottom: 1.5rem;
-            padding-top: 1rem;
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        input, select {
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1rem;
-            width: 100%;
-            max-width: 300px;
-        }
-        label {
-            margin-bottom: 0.5rem;
-            color: #1a5f7a;
-            font-weight: bold;
-        }
-        .button, button, a {
-            display: inline-block;
-            background-color: #1a5f7a;
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-            text-decoration: none;
-            margin-top: 1rem;
-        }
-        .button:hover, button:hover, a:hover {
-            background-color: #14475c;
-            text-decoration: none;
-        }
-        .flash {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .flash.success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .flash.danger {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
+
 </head>
 <body>
     <div class="container">
@@ -113,6 +27,7 @@
             <input type="text" name="username" placeholder="Usuario" required>
             <input type="password" name="password" placeholder="Contraseña" required>
             <input type="text" name="identificacion" placeholder="Identificación" required>
+            <input type="text" name="nombre_completo" placeholder="Nombre Completo" required> <!-- Nuevo campo -->
             
             <label for="role">Selecciona el tipo de usuario:</label>
             <select name="role" id="role" required onchange="toggleFields()">
@@ -124,19 +39,30 @@
             
             <div id="student-fields" class="hidden">
                 <input type="text" name="codigo" placeholder="Código de Estudiante">
-                <input type="text" name="nombre_completo_estudiante" placeholder="Nombre Completo">
                 <input type="text" name="semestre" placeholder="Semestre">
                 <input type="text" name="programa_academico" placeholder="Programa Académico">
-            </div>
+
+                <label for="estado">Estado del Estudiante:</label>
+                <select name="estado" id="estado" required>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                    <option value="graduado">Graduado</option>
+                </select>
+            </div>  
 
             <div id="teacher-fields" class="hidden">
-                <input type="text" name="nombre_completo_docente" placeholder="Nombre Completo">
                 <input type="text" name="departamento" placeholder="Departamento">
+                <input type="date" name="fecha_ingreso" placeholder="Fecha de Ingreso">
+                <input type="email" name="correo_institucional" placeholder="Correo Institucional">
             </div>
 
             <button type="submit">Registrar</button>
+            <div class="button-container">
+                <a href="{{ url_for('dashboard') }}">Volver al dashboard</a>
+                </div>
+                
         </form>
-        <a href="{{ url_for('dashboard') }}" class="button">Regresar al dashboard</a>
+        <a href="{{ url_for('login') }}" class="button">Iniciar Sesión</a>
     </div>
 
     <script>
@@ -148,12 +74,33 @@
             if (role === 'student') {
                 studentFields.classList.remove('hidden');
                 teacherFields.classList.add('hidden');
+                // Asegura que los campos de estudiante sean requeridos
+                document.querySelectorAll('#student-fields input').forEach(input => {
+                    input.setAttribute('required', 'true');
+                });
+                document.querySelectorAll('#teacher-fields input').forEach(input => {
+                    input.removeAttribute('required');
+                });
             } else if (role === 'teacher') {
                 teacherFields.classList.remove('hidden');
                 studentFields.classList.add('hidden');
+                // Asegura que los campos de profesor sean requeridos
+                document.querySelectorAll('#teacher-fields input').forEach(input => {
+                    input.setAttribute('required', 'true');
+                });
+                document.querySelectorAll('#student-fields input').forEach(input => {
+                    input.removeAttribute('required');
+                });
             } else {
                 studentFields.classList.add('hidden');
                 teacherFields.classList.add('hidden');
+                // Elimina los requisitos si no se selecciona ningún rol
+                document.querySelectorAll('#student-fields input').forEach(input => {
+                    input.removeAttribute('required');
+                });
+                document.querySelectorAll('#teacher-fields input').forEach(input => {
+                    input.removeAttribute('required');
+                });
             }
         }
     </script>

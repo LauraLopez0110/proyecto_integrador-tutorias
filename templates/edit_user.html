@@ -3,117 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <title>Editar Usuario</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e6f3ff;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
-        }
-        .title-container {
-            margin-bottom: 1rem;
-        }
-        h1 {
-            color: #1a5f7a;
-            text-align: center;
-            margin-bottom: 1.5rem;
-            padding-top: 1rem;
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            margin-bottom: 0.5rem;
-            color: #1a5f7a;
-            font-weight: bold;
-        }
-        input, select {
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-        button {
-            background-color: #1a5f7a;
-            color: white;
-            padding: 0.5rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #14475c;
-        }
-        .flash {
-            padding: 10px;
-            margin-bottom: 1rem;
-            border-radius: 4px;
-            color: #fff;
-            font-weight: bold;
-            text-align: center;
-        }
-        .success {
-            background-color: #28a745;
-        }
-        .danger {
-            background-color: #dc3545;
-        }
-        .warning {
-            background-color: #ffc107;
-            color: #333;
-        }
-        .hidden {
-            display: none;
-        }
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 1rem;
-        }
-        a {
-            display: inline-block;
-            background-color: #1a5f7a;
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-            text-decoration: none;
-        }
-        a:hover {
-            background-color: #14475c;
-            text-decoration: none;
-        }
-        .logout-button {
-            background-color: #dc3545;
-        }
-        .logout-button:hover {
-            background-color: #c82333;
-        }
-    </style>
 </head>
 <body onload="toggleFields()">
     <div class="container">
@@ -136,41 +27,56 @@
             <input type="text" name="username" id="username" value="{{ user.username }}" required>
             
             <label for="identificacion">Identificación:</label>
-            <input type="text" name="identificacion" value="{{ user.identificacion }}" required>
+            <input type="text" name="identificacion" id="identificacion" value="{{ user.identificacion }}" required>
 
             <label for="role">Selecciona el tipo de usuario:</label>
-            <select name="role" id="role" onchange="toggleFields()" required>
+            <select name="role" id="role" required>
                 <option value="student" {% if user.role == 'student' %}selected{% endif %}>Estudiante</option>
                 <option value="teacher" {% if user.role == 'teacher' %}selected{% endif %}>Profesor</option>
                 <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Administrador</option>
             </select>
+
+            <label for="nombre_completo">Nombre Completo:</label>
+            <input type="text" name="nombre_completo" id="nombre_completo" value="{{ user.nombre_completo }}" required>
+
             
             <label for="password">Nueva Contraseña (opcional):</label>
-            <input type="password" name="password" placeholder="Dejar en blanco para no cambiar">
+            <input type="password" name="password" id= "password" placeholder="Dejar en blanco para no cambiar">
             
             <div id="student-fields" class="{{ 'hidden' if user.role != 'student' }}">
+                
                 <label for="codigo">Código</label>
                 <input type="text" id="codigo" name="codigo" placeholder="Código" value="{{ est.codigo if est else '' }}">
-
-                <label for="nombre_completo_estudiante">Nombre Completo:</label>
-                <input type="text" id="nombre_completo_estudiante" name="nombre_completo_estudiante" placeholder="Nombre Completo" value="{{ est.nombre_completo_estudiante if est else '' }}">
 
                 <label for="semestre">Semestre:</label>
                 <input type="text" id="semestre" name="semestre" placeholder="Semestre" value="{{ est.semestre if est else '' }}">
 
                 <label for="programa_academico">Programa Académico:</label>
                 <input type="text" id="programa_academico" name="programa_academico" placeholder="Programa Académico" value="{{ est.programa_academico if est else '' }}">
+                
+                <label for="estado">Estado del Estudiante:</label>
+                <select name="estado" id="estado">
+                    <option value="activo" {% if est.estado == 'activo' %}selected{% endif %}>Activo</option>
+                    <option value="inactivo" {% if est.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                    <option value="graduado"{% if est.estado == 'graduado' %}selected{% endif %}>Graduado</option>
+                </select>
             </div>
 
             <div id="teacher-fields" class="{{ 'hidden' if user.role != 'teacher' }}">
-                <label for="nombre_completo_docente">Nombre Completo:</label>
-                <input type="text" id="nombre_completo_docente" name="nombre_completo_docente" placeholder="Nombre Completo" value="{{ doc.nombre_completo_docente if doc else '' }}">
 
                 <label for="departamento">Departamento:</label>
                 <input type="text" id="departamento" name="departamento" placeholder="Departamento" value="{{ doc.departamento if doc else '' }}">
+                
+                <label for="fecha_ingreso">Fecha de Ingreso:</label>
+                <input type="date" id="fecha_ingreso" name="fecha_ingreso" value="{{ doc.fecha_ingreso if doc else '' }}" >
+
+                <label for="correo_institucional">Correo Institucional:</label>
+                <input type="email" id="correo_institucional" name="correo_institucional" value="{{ doc.correo_institucional if doc else '' }}" >
+            
             </div>
 
             <button type="submit">Actualizar</button>
+            
         </form>
         <div class="button-container">
             <a href="{{ url_for('manage_users') }}">Volver a la administración de usuarios</a>

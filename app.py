@@ -1,10 +1,10 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request
 from flask_bcrypt import Bcrypt
 from config import Config
-from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria, Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaCompromiso
+from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria,BloqueHorario
+from models import Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaCompromiso
 # Importa db y User, Tutoria
 from datetime import datetime
-from sqlalchemy.orm import joinedload
 
 
 app = Flask(__name__)
@@ -40,28 +40,30 @@ def generar_codigo_tutoria(espacio_academico):
 
 def crear_estudiante(form, new_user):
     codigo = form.get('codigo')
-    nombre_completo_estudiante = form.get('nombre_completo_estudiante')
     semestre = form.get('semestre')
     programa_academico = form.get('programa_academico')
+    estado = form.get('estado', 'Activo')  # Estado predeterminado: 'Activo'
 
     # Crear el estudiante y asociarlo al usuario recién creado
-    estudiante = Estudiante(codigo=codigo, nombre_completo_estudiante=nombre_completo_estudiante, 
-                            semestre=semestre, programa_academico=programa_academico, 
-                            estudiante_id= new_user.id)
+    estudiante = Estudiante(codigo=codigo, semestre=semestre, programa_academico=programa_academico, 
+                            estado=estado, estudiante_id=new_user.id)
 
     db.session.add(estudiante)  # Agregar el estudiante a la sesión
     db.session.commit()  # Guardar el estudiante en la base de datos
 
+
 def crear_docente(form, new_user):
-    nombre_completo_docente = form.get('nombre_completo_docente')
     departamento = form.get('departamento')
+    correo_institucional = form.get('correo_institucional')
+    fecha_ingreso = form.get('fecha_ingreso')
 
     # Crear el docente y asociarlo al usuario recién creado
-    docente = Docente(nombre_completo_docente=nombre_completo_docente, departamento=departamento,
-                      docente_id=new_user.id)
+    docente = Docente(departamento=departamento, correo_institucional=correo_institucional, 
+                      fecha_ingreso=fecha_ingreso, docente_id=new_user.id)
 
     db.session.add(docente)  # Agregar el docente a la sesión
     db.session.commit()  # Guardar el docente en la base de datos
+
 
 
 @app.route('/')
@@ -127,6 +129,7 @@ def register():
         password = request.form['password']
         role = request.form['role']  # Obtiene el rol del formulario
         identificacion = request.form['identificacion']  # Obtiene la identificación
+        nombre_completo = request.form['nombre_completo']  # Obtiene el nombre completo
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')  # Hash de la contraseña
         
         # Verifica si el nombre de usuario o la identificación ya existen
@@ -144,7 +147,8 @@ def register():
             return redirect(url_for('register'))  # Redirige si ya existe el usuario
 
         # Si el nombre de usuario y la identificación son únicos, crea el nuevo usuario
-        new_user = User(username=username, password=hashed_password, role=role, identificacion=identificacion)
+        new_user = User(username=username, password=hashed_password, role=role, identificacion=identificacion,
+                        nombre_completo=nombre_completo)
         db.session.add(new_user)  # Agrega el nuevo usuario a la sesión
         db.session.commit()  # Guarda los cambios en la base de datos
         
@@ -217,6 +221,7 @@ def manage_users():
 def student_profile():
     # Obtener el ID del usuario logueado
     current_user_id = session.get('user_id')
+    
 
     # Verificar si el usuario está en sesión
     if not current_user_id:
@@ -258,7 +263,7 @@ def teacher_profile():
 @app.route('/admin/users/edit/<int:user_id>', methods=['GET', 'POST'])
 def edit_user(user_id):
     
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
     est = Estudiante.query.filter_by(estudiante_id=user_id).first() if user.role == 'student' else None
     doc = Docente.query.filter_by(docente_id=user_id).first() if user.role == 'teacher' else None
     
@@ -272,6 +277,8 @@ def edit_user(user_id):
         username = request.form['username']
         identificacion = request.form['identificacion']
         role = request.form['role']
+        nombre_completo = request.form['nombre_completo']
+
         new_password = request.form['password']  # Nueva contraseña desde el formulario
 
         if user_id == current_user_id:
@@ -293,52 +300,54 @@ def edit_user(user_id):
 
         user.username = username
         user.identificacion = identificacion
+        user.nombre_completo = nombre_completo    
         if user_id != current_user_id:
             user.role = role
-
+        
+        
         # Actualiza la contraseña solo si se proporciona una nueva
         if new_password:
             hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
-            user.password = hashed_password
-            
-         # Si el rol es 'student', actualizamos o creamos los datos del estudiante
+            user.password = hashed_password   
+        # Si el rol es 'student', actualizamos o creamos los datos del estudiante
         if role == 'student':
             if est:
                 est.codigo = request.form['codigo']
-                est.nombre_completo_estudiante = request.form['nombre_completo_estudiante']
                 est.semestre = request.form['semestre']
                 est.programa_academico = request.form['programa_academico']
+                est.estado = request.form['estado']
             else:
                 # Si no existe, crea una nueva entrada para estudiante
                 new_student = Estudiante(
                     estudiante_id=user_id,
                     codigo=request.form['codigo'],
-                    nombre_completo_estudiante=request.form['nombre_completo_estudiante'],
                     semestre=request.form['semestre'],
-                    programa_academico=request.form['programa_academico']
+                    programa_academico=request.form['programa_academico'],
+                    estado=request.form['estado']
                 )
-                db.session.add(new_student)
+                db.session.add(new_student) 
 
         # Si el rol es 'teacher', actualizamos o creamos los datos del docente
         elif role == 'teacher':
             if doc:
-                doc.nombre_completo_docente = request.form['nombre_completo_docente']
                 doc.departamento = request.form['departamento']
+                doc.correo_institucional = request.form['correo_institucional']
+                doc.fecha_ingreso = request.form['fecha_ingreso']
             else:
                 # Si no existe, crea una nueva entrada para docente
                 new_teacher = Docente(
                     docente_id=user_id,
-                    nombre_completo_docente=request.form['nombre_completo_docente'],
-                    departamento=request.form['departamento']
+                    departamento=request.form['departamento'],
+                    correo_institucional=request.form['correo_institucional'],
+                    fecha_ingreso=request.form['fecha_ingreso']
                 )
-                db.session.add(new_teacher)
-                
+                db.session.add(new_teacher)  # Aquí se debe agregar la sesión para el docente
+
         db.session.commit()
         flash('Usuario actualizado exitosamente.', 'success')
         return redirect(url_for('manage_users'))
 
     return render_template('edit_user.html', user=user, est=est, doc=doc)
-
 
 @app.route('/admin/users/detalle_user/<int:user_id>', methods=['GET'])
 def detalle_user(user_id):
@@ -433,49 +442,69 @@ def edit_tutoria(tutoria_id):
 
 @app.route('/profile/edit', methods=['GET', 'POST']) 
 def edit_profile():
-    
     if 'user_id' not in session:
         flash('Debes iniciar sesión primero', 'danger')
         return redirect(url_for('login'))
 
     user = db.session.get(User, session['user_id'])
+    est = Estudiante.query.filter_by(estudiante_id=user.id).first() if user.role == 'student' else None
+    doc = Docente.query.filter_by(docente_id=user.id).first() if user.role == 'teacher' else None
+    
     if not user:
         flash('Usuario no encontrado.', 'danger')
         return redirect(url_for('dashboard'))
 
     if request.method == 'POST':
-        username = request.form['username'].strip()  # Eliminamos espacios innecesarios
-        identificacion = request.form['identificacion'].strip()  # Eliminamos espacios innecesarios
+        username = request.form['username'].strip()
+        identificacion = request.form['identificacion'].strip()
+        nombre_completo = request.form['nombre_completo'].strip()
         new_password = request.form['password']
-        
 
         # Verifica si el nuevo username o identificacion ya existen en otros usuarios
         existing_user = User.query.filter(
-            ((User.username.ilike(username)) | (User.identificacion == identificacion)) &  # Usamos ilike para comparación insensible a mayúsculas
+            ((User.username.ilike(username)) | (User.identificacion == identificacion)) &
             (User.id != user.id)
         ).first()
 
         if existing_user:
-            if existing_user.username.lower() == username.lower():  # Comparar en minúsculas
+            if existing_user.username.lower() == username.lower():
                 flash('El nombre de usuario ya está en uso. Elige otro.', 'danger')
             if existing_user.identificacion == identificacion:
                 flash('La identificación ya está registrada. Elige otra.', 'danger')
-            return redirect(url_for('edit_profile'))  # Evita guardar si hay conflicto
+            return redirect(url_for('edit_profile'))
 
-        # Actualiza el perfil del usuario con los datos proporcionados
+        # Actualiza los campos básicos
         user.username = username
         user.identificacion = identificacion
+        user.nombre_completo = nombre_completo
 
         # Actualiza la contraseña solo si se proporciona una nueva
         if new_password:
             hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
             user.password = hashed_password
 
+
+        # Actualiza los datos según el rol
+        if user.role == 'student':
+            if est:
+                est.codigo = request.form['codigo']
+                est.semestre = request.form['semestre']
+                est.programa_academico = request.form['programa_academico']
+                est.estado = request.form['estado']
+
+        elif user.role == 'teacher':
+            if doc:
+                doc.departamento = request.form['departamento']
+                doc.correo_institucional = request.form['correo_institucional']
+                doc.fecha_ingreso = request.form['fecha_ingreso']
+
         db.session.commit()
         flash('Perfil actualizado exitosamente.', 'success')
-        return redirect(url_for('edit_profile'))
+        return redirect(url_for('dashboard'))
 
-    return render_template('edit_profile.html', user=user)
+    return render_template('edit_profile.html', user=user, doc=doc, est=est)
+
+
 
 @app.route('/teacher/<int:docente_id>/tutorias', methods=['GET'])
 def listar_tutorias_por_docente(docente_id):
@@ -508,25 +537,38 @@ def asignar_horarios_tutorias(tutoria_id):
         flash('Tutoría no encontrada', 'error')
         return redirect(url_for('dashboard'))  # Redirige al dashboard si la tutoría no existe
 
-    # Manejo del formulario POST para asignar horario
+    # Recuperar todos los bloques de horarios disponibles
+    bloques_horarios = BloqueHorario.query.all()
+
     if request.method == 'POST':
-        dia = request.form.get('dia')
-        hora = request.form.get('hora')
+        bloque_horario_id = request.form.get('bloque_horario')  # ID del bloque horario seleccionado
+
+        # Validar que se haya seleccionado un bloque horario
+        if not bloque_horario_id:
+            flash('Debe seleccionar un bloque horario', 'error')
+            return render_template('asignar_horario.html', tutoria=tutoria, bloques_horarios=bloques_horarios)
         
-        if not dia or not hora:
-            flash('Debe seleccionar un día y una hora', 'error')
-            return render_template('asignar_horario.html', tutoria=tutoria)  # Muestra el formulario con el mensaje de error
+        # Verificar que el bloque horario seleccionado exista
+        bloque_horario = BloqueHorario.query.get(bloque_horario_id)
+        if not bloque_horario:
+            flash('El bloque horario seleccionado no es válido', 'error')
+            return render_template('asignar_horario.html', tutoria=tutoria, bloques_horarios=bloques_horarios)
         
         # Crear el nuevo horario
-        new_horario = HorariosTutoria(dia=dia, hora=hora, tutoria_id=tutoria_id)
+        new_horario = HorariosTutoria(
+            tutoria_id=tutoria_id,
+            bloque_horario_id=bloque_horario.id,
+            estado='Disponible'
+        )
         db.session.add(new_horario)
         db.session.commit()
 
         flash('Horario asignado correctamente', 'success')
-        return redirect(url_for('listar_tutorias_por_docente', docente_id=user.id))  # Redirige al dashboard del docente o página correspondiente
+        return redirect(url_for('listar_tutorias_por_docente', docente_id=user.id))  # Redirige al dashboard del docente
 
     # Si la solicitud es GET, se muestra el formulario para asignar horario
-    return render_template('asignar_horario.html', tutoria=tutoria)
+    return render_template('asignar_horario.html', tutoria=tutoria, bloques_horarios=bloques_horarios)
+
 @app.route('/student/inscribirse/<int:tutoria_id>', methods=['GET', 'POST'])
 def inscribirse_tutoria(tutoria_id):
     user = db.session.get(User, session['user_id'])
@@ -579,8 +621,10 @@ def inscribirse_tutoria(tutoria_id):
 def tutorias_disponibles():
     # Consulta todas las tutorías
     tutorias = Tutoria.query.all()
+    
+    horarios = HorariosTutoria.query.filter_by(estado='Disponible').all()
 
-    return render_template('tutoria_disponible.html', tutorias=tutorias)
+    return render_template('tutoria_disponible.html', tutorias=tutorias, horarios=horarios)
 
 @app.route('/teacher/tutorias-apartadas/<int:docente_id>', methods=['GET'])
 def listar_tutorias_apartadas(docente_id):

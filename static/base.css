@@ -1,0 +1,183 @@
+/* Base styles */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e6e6fa;
+    background-image: 
+        linear-gradient(30deg, #b0e0e6 12%, transparent 12.5%, transparent 87%, #b0e0e6 87.5%, #b0e0e6),
+        linear-gradient(150deg, #b0e0e6 12%, transparent 12.5%, transparent 87%, #b0e0e6 87.5%, #b0e0e6),
+        linear-gradient(30deg, #b0e0e6 12%, transparent 12.5%, transparent 87%, #b0e0e6 87.5%, #b0e0e6),
+        linear-gradient(150deg, #b0e0e6 12%, transparent 12.5%, transparent 87%, #b0e0e6 87.5%, #b0e0e6),
+        linear-gradient(60deg, #add8e6 25%, transparent 25.5%, transparent 75%, #add8e6 75%, #add8e6),
+        linear-gradient(60deg, #add8e6 25%, transparent 25.5%, transparent 75%, #add8e6 75%, #add8e6);
+    background-size: 80px 140px;
+    background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+}
+.container {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 3rem;
+    width: 320px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d8bfd8; /* Lila claro */
+}
+
+h1 {
+    color: #4b0082; /* Índigo (lila oscuro) */
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Form container */
+.form-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 3rem;
+    width: 320px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d8bfd8;
+}
+
+/* Form title */
+.form-title {
+    color: #4b0082;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Form layout */
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    width: 100%;
+    background-color: #4b0082; /* Índigo (lila oscuro) */
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+button:hover {
+    background-color: #6a5acd; /* Azul pizarra */
+}
+
+.footer {
+    text-align: center;
+    margin-top: 1rem;
+    color: #4b0082; /* Índigo (lila oscuro) */
+    font-size: 0.875rem;
+}
+.footer a {
+    color: #1e90ff; /* Azul dodger */
+    text-decoration: none;
+}
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* Input groups */
+.input-group {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.input-group input {
+    width: calc(100% - 40px);
+    padding: 10px 10px 10px 30px;
+    border: 1px solid #add8e6;
+    background-color: #fff;
+    color: #333;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.input-group input::placeholder {
+    color: #888;
+}
+
+.input-group::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+/* You can add more input group icons as needed */
+.input-group.username::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234b0082'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.input-group.password::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234b0082'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* Form button */
+.form-button {
+    width: 100%;
+    background-color: #4b0082;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-button:hover {
+    background-color: #6a5acd;
+}
+
+/* Flash messages */
+.flash {
+    padding: 10px;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    color: #fff;
+    text-align: center;
+}
+
+.flash.success {
+    background-color: #4caf50;
+}
+
+.flash.danger {
+    background-color: #f44336;
+}
+
+/* Form footer */
+.form-footer {
+    text-align: center;
+    margin-top: 1rem;
+    color: #4b0082;
+    font-size: 0.875rem;
+}
+
+.form-footer a {
+    color: #1e90ff;
+    text-decoration: none;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
