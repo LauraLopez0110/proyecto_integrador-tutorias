@@ -612,12 +612,12 @@ def inscribirse_tutoria(tutoria_id):
 
 @app.route('/tutorias/disponibles', methods=['GET'])
 def tutorias_disponibles():
+    
     # Consulta todas las tutorías
     tutorias = Tutoria.query.all()
     
-    horarios = HorariosTutoria.query.filter_by(estado='Disponible').all()
 
-    return render_template('tutoria_disponible.html', tutorias=tutorias, horarios=horarios)
+    return render_template('tutoria_disponible.html', tutorias=tutorias)
 
 @app.route('/teacher/tutorias-apartadas/<int:docente_id>', methods=['GET'])
 def listar_tutorias_apartadas(docente_id):

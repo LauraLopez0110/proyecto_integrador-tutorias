@@ -74,7 +74,6 @@
 </head>
 <body>
     <h1>Lista de Tutorías Disponibles</h1>
-
     {% if tutorias %}
         <table>
             <thead>
@@ -92,7 +91,7 @@
                         <tr>
                             <td>{{ tutoria.codigo }}</td>
                             <td>{{ tutoria.espacio_academico }}</td>
-                            <td>{{ horarios.bloque_horario_id }}</td>
+                            <td>{{ horario.dia }}</td>
                             <td>{{ horario.hora }}</td>
                             <td>
                                 <form action="{{ url_for('inscribirse_tutoria', tutoria_id=tutoria.id, horario_id=horario.id) }}" method="POST">
@@ -107,7 +106,6 @@
     {% else %}
         <p>No hay tutorías disponibles.</p>
     {% endif %}
-
     <p><a href="{{ url_for('dashboard') }}">Volver al Dashboard</a></p>
 </body>
 </html>
