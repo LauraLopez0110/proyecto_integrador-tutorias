@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <title>Tutorías Inscritas</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Tutorías en las que te has inscrito</h1>
+
+        {% if inscripciones %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tutoría</th>
+                        <th>Día</th>
+                        <th>Hora</th>
+                        <th>Docente</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inscripcion in inscripciones %}
+                        <tr>
+                            <td>{{ inscripcion.tutoria.espacio_academico }}</td>
+                            <td>{{ inscripcion.horario.dia }}</td>
+                            <td>{{ inscripcion.horario.hora }}</td>
+                            <td>{{ inscripcion.tutoria.docente.nombre_completo }}</td>
+                            <td>
+                                <a href="" class="btn">Editar Inscripción</a> | 
+                                <a href="{{ url_for('eliminar_inscripcion', inscripcion_id=inscripcion.id) }}" class="btn">Eliminar Inscripción</a>
+                            </th>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No te has inscrito en ninguna tutoría.</p>
+        {% endif %}
+        <div class="button-container">
+            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+        </div>
+    </div>
+
+</body>
+</html>

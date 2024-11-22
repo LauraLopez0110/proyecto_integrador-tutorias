@@ -11,6 +11,7 @@ class User(db.Model):
     identificacion = db.Column(db.String(50), unique=True, nullable=False)  
     nombre_completo = db.Column(db.String(200), nullable=False)
 
+
 class Tutoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     codigo = db.Column(db.String(20), unique=True, nullable=False)

@@ -580,41 +580,45 @@ def inscribirse_tutoria(tutoria_id):
     if not tutoria:
         flash("Tutoría no encontrada.", "danger")
         return redirect(url_for('dashboard'))
+
+    # Obtener el docente relacionado con esta tutoría
+    docente = tutoria.docente  # Asegúrate que la tutoría tiene una relación con el docente (User)
+    if docente:
+        docente_detalles = Docente.query.filter_by(docente_id=docente.id).first()
     
-    # Filtrar horarios sin inscripciones (disponibles)
-    horarios_tutorias = HorariosTutoria.query.filter(
-        HorariosTutoria.tutoria_id == tutoria_id, 
-        ~HorariosTutoria.inscripciones.any()  # Esto filtra los horarios sin inscripciones
-    ).all()
+    # Obtener el horario ya asignado para esta tutoría
+    horario_asignado = HorariosTutoria.query.filter(
+        HorariosTutoria.tutoria_id == tutoria_id,
+        HorariosTutoria.estado == 'Disponible',  # Solo horarios disponibles
+        ~HorariosTutoria.inscripciones.any()  # Horarios sin inscripciones
+    ).first()
+
+    if not horario_asignado:
+        flash("No hay horarios disponibles para esta tutoría.", "danger")
+        return redirect(url_for('dashboard'))
 
     if request.method == 'POST':
-        horario_id = request.form.get('horario')
-        
-        if not horario_id:
-            flash("Debe seleccionar un horario.", "danger")
-            return render_template('inscripcion.html', tutoria=tutoria, horarios=horarios_tutorias)
-        
-        horario = HorariosTutoria.query.get(horario_id)
-        if not horario or horario.inscripciones:
-            flash("El horario seleccionado ya no está disponible.", "danger")
-            return redirect(url_for('inscribirse_tutoria', tutoria_id=tutoria_id))
-        
         # Verificar si el estudiante ya está inscrito en esta tutoría
         inscripcion_existente = Inscripcion.query.filter_by(estudiante_id=user.id, tutoria_id=tutoria_id).first()
         if inscripcion_existente:
             flash("Ya estás inscrito en esta tutoría.", "warning")
             return redirect(url_for('dashboard'))
 
-        # Crear inscripción
-        nueva_inscripcion = Inscripcion(estudiante_id=user.id, tutoria_id=tutoria_id, horario_id=horario_id)
-
+        # Crear inscripción en el horario asignado
+        nueva_inscripcion = Inscripcion(estudiante_id=user.id, tutoria_id=tutoria_id, horario_id=horario_asignado.id)
         db.session.add(nueva_inscripcion)
+
+        # Cambiar el estado del horario a 'No disponible'
+        horario_asignado.estado = 'No disponible'
         db.session.commit()
 
         flash("Inscripción realizada con éxito.", "success")
         return redirect(url_for('dashboard'))
-    
-    return render_template('inscripcion.html', tutoria=tutoria, horarios=horarios_tutorias)
+
+    # Renderizar la página con la información de la tutoría y el horario asignado
+    return render_template('inscripcion.html', tutoria=tutoria, docente=docente, horario=horario_asignado, docente_detalles=docente_detalles)
+
+
 
 @app.route('/tutorias/disponibles', methods=['GET'])
 def tutorias_disponibles():
@@ -628,7 +632,6 @@ def tutorias_disponibles():
 @app.route('/teacher/tutorias-apartadas/<int:docente_id>', methods=['GET'])
 def listar_tutorias_apartadas(docente_id):
     # Consultar tutorías del docente que tengan inscripciones
-    
     
     tutorias_inscritas = (
         Tutoria.query
@@ -689,6 +692,53 @@ def formato_tutoria():
         tutorias=tutorias
     )
 
+@app.route('/student/tutorias-inscritas', methods=['GET'])
+def listar_tutorias_inscritas():
+    
+    user = db.session.get(User, session['user_id'])
+    
+    if not user or user.role != 'student':
+        flash("Acceso denegado. Solo los estudiantes pueden acceder a esta sección.", "danger")
+        return redirect(url_for('dashboard'))
+
+
+    # Consultar tutorías del estudiante que tengan inscripciones
+    inscripciones = Inscripcion.query.filter_by(estudiante_id=user.id).all()
+    
+    return render_template('tutorias_inscritas.html', inscripciones=inscripciones)
+
+@app.route('/student/tutorias-inscritas/eliminar/<int:inscripcion_id>', methods=['GET'])
+def eliminar_inscripcion(inscripcion_id):
+    try:
+        # Obtener el usuario actual
+        user = db.session.get(User, session.get('user_id'))
+        
+        if not user or user.role != 'student':
+            flash("Acceso denegado. Solo los estudiantes pueden acceder a esta sección.", "danger")
+            return redirect(url_for('dashboard'))
+        
+        # Buscar la inscripción por inscripcion_id
+        inscripcion = Inscripcion.query.filter_by(id=inscripcion_id, estudiante_id=user.id).first()
+        
+        if inscripcion:
+            # Eliminar la inscripción
+            db.session.delete(inscripcion)
+            db.session.commit()
+
+            # Cambiar el estado del horario a 'Disponible'
+            horario = HorariosTutoria.query.get(inscripcion.horario_id)
+            if horario:
+                horario.estado = 'Disponible'
+                db.session.commit()
+            
+            flash('Inscripción eliminada exitosamente.', 'success')
+        else:
+            flash('Inscripción no encontrada.', 'danger')
+    except Exception as e:
+        db.session.rollback()  # Si ocurre un error, deshacer los cambios
+        flash(f'Error al eliminar la inscripción: {str(e)}', 'danger')
+    
+    return redirect(url_for('listar_tutorias_inscritas'))
 
 
 if __name__ == '__main__':

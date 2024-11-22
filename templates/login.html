@@ -12,7 +12,16 @@
     <div class="container">
         <h1>Iniciar Sesión</h1>
         <div id="flash-messages">
-            <!-- Los mensajes flash se insertarán aquí dinámicamente -->
+                           <!-- Bloque para mostrar los mensajes flash -->
+                           {% with messages = get_flashed_messages(with_categories=true) %}
+                           {% if messages %}
+                               <div>
+                                   {% for category, message in messages %}
+                                       <div class="flash {{ category }}">{{ message }}</div>
+                                   {% endfor %}
+                               </div>
+                           {% endif %}
+                       {% endwith %}
         </div>
         <form method="post">
             <div class="input-group username">

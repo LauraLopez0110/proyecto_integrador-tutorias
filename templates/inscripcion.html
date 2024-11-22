@@ -22,18 +22,28 @@
             {% endif %}
         {% endwith %}
 
+        <div class="info-container">
+            <h2>Información del Docente</h2>
+            <p><strong>Nombre:</strong> {{ docente.nombre_completo }}</p>
+            <p><strong>Departamento:</strong> {{ docente_detalles.departamento }}</p>
+            <p><strong>Correo:</strong> {{ docente_detalles.correo_institucional }}</p>
+        </div>
+
+        <div class="info-container">
+            <h2>Horario Asignado</h2>
+            <p><strong>Día:</strong> {{ horario.dia }}</p>
+            <p><strong>Hora:</strong> {{ horario.hora }}</p>
+        </div>
+
         <form action="{{ url_for('inscribirse_tutoria', tutoria_id=tutoria.id) }}" method="POST" class="form">
-            <div class="form-group">
-                <label for="horario" class="form-label">Horario:</label>
-                <span class="profile-value">{{ profesor.docente.identificacion }}</span>
-            </div>
             <div class="button-container">
-                <button type="submit" class="button">Inscribirse</button>
+                <button type="submit" class="button">Confirmar Inscripción</button>
             </div>
         </form>
 
         <div class="button-container">
             <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+            <a href="{{ url_for('tutorias_disponibles') }}" class="button">Volver a tutorias disponibles</a>
         </div>
     </div>
 </body>
