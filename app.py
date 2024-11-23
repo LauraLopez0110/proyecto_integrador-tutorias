@@ -646,52 +646,6 @@ def listar_tutorias_apartadas(docente_id):
 
     return render_template('tutorias_apartadas.html', tutorias=tutorias_inscritas)
 
-
-@app.route('/formato_tutoria', methods=['GET', 'POST'])
-
-def formato_tutoria():
-    if request.method == 'POST':
-        # Capturar datos del formulario
-        docente_id = request.form.get('docente')
-        estudiante_id = request.form.get('estudiante')
-        tutoria_id = request.form.get('tutoria')
-        espacio_academico = request.form.get('espacio_academico')
-        temas_tratados = request.form.get('temas_tratados')
-        fecha = request.form.get('fecha')
-
-        # Validar datos obligatorios
-        if not all([docente_id, estudiante_id, tutoria_id, espacio_academico, temas_tratados, fecha]):
-            flash('Todos los campos son obligatorios.', 'danger')
-            return redirect(url_for('formato_tutoria'))
-
-        # Crear una nueva instancia del formato de tutoría
-        nuevo_formato = FormatoTutoria(
-            docente_id=docente_id,
-            estudiante_id=estudiante_id,
-            tutoria_id=tutoria_id,
-            espacio_academico=espacio_academico,
-            temas_tratados=temas_tratados,
-            fecha=fecha
-        )
-
-        # Guardar en la base de datos
-        db.session.add(nuevo_formato)
-        db.session.commit()
-        flash('Formato de tutoría guardado exitosamente.', 'success')
-        return redirect(url_for('dashboard'))
-
-    # Datos para poblar el formulario
-    docentes = User.query.filter_by(role='teacher').all()
-    estudiantes = User.query.filter_by(role='student').all()
-    tutorias = Tutoria.query.all()
-
-    return render_template(
-        'formato_tutoria.html',
-        docentes=docentes,
-        estudiantes=estudiantes,
-        tutorias=tutorias
-    )
-
 @app.route('/student/tutorias-inscritas', methods=['GET'])
 def listar_tutorias_inscritas():
     
