@@ -6,75 +6,33 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <title>Lista de Tutorías Disponibles</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #4CAF50;
-        }
-
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-        }
-
-        thead {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            font-size: 16px;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        a {
-            display: block;
-            width: fit-content;
-            margin: 20px auto;
-            padding: 10px 20px;
-            text-decoration: none;
-            color: white;
-            background-color: #4CAF50;
-            border-radius: 5px;
-            text-align: center;
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 3rem;
+            width: auto;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        a:hover {
-            background-color: #45a049;
-        }
-
-        p {
-            text-align: center;
-            margin-top: 20px;
+            border: 1px solid #d8bfd8; /* Lila claro */
         }
     </style>
 </head>
 <body>
+    <div class='container'>
+
     <h1>Lista de Tutorías Disponibles</h1>
+
+    <div id="flash-messages">
+        <!-- Bloque para mostrar los mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
     {% if tutorias %}
         <table>
             <thead>
@@ -98,8 +56,10 @@
                             <td>
                                 {% if horario.estado == 'Disponible' %}
                                     <span style="color: green;">Disponible</span>
+                                {% elif horario.estado == 'Ocupado' %}
+                                    <span style="color: red;">Ocupado</span>
                                 {% else %}
-                                    <span style="color: red;">No disponible</span>
+                                    <span style="color: gray;">No disponible</span>
                                 {% endif %}
                             </td>
                             <td>
@@ -120,5 +80,6 @@
         <p>No hay tutorías disponibles.</p>
     {% endif %}
     <p><a href="{{ url_for('dashboard') }}">Volver al Dashboard</a></p>
+    </div>
 </body>
 </html>

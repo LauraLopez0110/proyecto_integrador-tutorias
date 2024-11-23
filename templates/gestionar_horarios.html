@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='tablas.css') }}">
+    <title>Gestión de Horarios</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestión de Horarios de Tutorías</h1>
+        
+        <!-- Mostrar mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        <h2 class="form-title">Crear Nuevo Horario</h2>
+        <form class="form" method="POST" action="{{ url_for('gestionar_horarios') }}">
+            <!-- Selección de Tutoría -->
+            <div class="input-group">
+                <label for="tutoria_id">Tutoría:</label>
+                <select name="tutoria_id" required>
+                    <option value="" disabled selected>Seleccione una Tutoría</option>
+                    {% for tutoria in tutorias %}
+                        <option value="{{ tutoria.id }}">{{ tutoria.espacio_academico }} ({{ tutoria.codigo }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Selección de Día -->
+            <div class="input-group">
+                <label for="dia">Día:</label>
+                <select name="dia" required>
+                    <option value="" disabled selected>Seleccione un Día</option>
+                    <option value="Lunes">Lunes</option>
+                    <option value="Martes">Martes</option>
+                    <option value="Miércoles">Miércoles</option>
+                    <option value="Jueves">Jueves</option>
+                    <option value="Viernes">Viernes</option>
+                </select>
+            </div>
+
+            <!-- Selección de Hora -->
+            <div class="input-group">
+                <label for="hora">Hora:</label>
+                <select id="hora" name="hora" required>
+                    <option value="" disabled selected>Seleccione una hora</option>
+                    <option value="08:00 AM - 09:00 AM">08:00 AM - 09:00 AM</option>
+                    <option value="09:00 AM - 10:00 AM">09:00 AM - 10:00 AM</option>
+                    <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                    <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+                    <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+                    <option value="01:00 PM - 02:00 PM">01:00 PM - 02:00 PM</option>
+                    <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
+                    <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+                    <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
+                    <option value="05:00 PM - 06:00 PM">05:00 PM - 06:00 PM</option>
+                </select>
+            </div>
+
+            <!-- Selección de Estado -->
+            <div class="input-group">
+                <label for="estado">Estado:</label>
+                <select name="estado" required>
+                    <option value="Disponible">Disponible</option>
+                    <option value="No disponible">No disponible</option>
+                    <option value="Ocupado">Ocupado</option>
+                </select>
+            </div>
+
+            <button type="submit" name="crear" class="form-button">Crear Horario</button>
+        </form>
+
+        <h2 class="form-title">Horarios Existentes</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tutoría</th>
+                    <th>Día</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for horario in horarios %}
+                <tr>
+                    <td>{{ horario.tutoria.espacio_academico }}</td>
+                    <td>{{ horario.dia }}</td>
+                    <td>{{ horario.hora }}</td>
+                    <td>{{ horario.estado }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('gestionar_horarios') }}">
+                            <input type="hidden" name="horario_id" value="{{ horario.id }}">
+                            <select name="estado">
+                                <option value="Disponible" {% if horario.estado == 'Disponible' %}selected{% endif %}>Disponible</option>
+                                <option value="No disponible" {% if horario.estado == 'No disponible' %}selected{% endif %}>No disponible</option>
+                                <option value="Ocupado" {% if horario.estado == 'Ocupado' %}selected{% endif %}>Ocupado</option>
+                            </select>
+                            
+                            <button type="submit" name="cambiar_estado" class="form-button">Cambiar Estado</button>
+                        </form>
+                        
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="button">
+            <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

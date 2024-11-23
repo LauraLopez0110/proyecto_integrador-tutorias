@@ -1,0 +1,40 @@
+<form method="POST">
+    <h3>Editar Inscripción</h3>
+    <div id="flash-messages">
+        <!-- Bloque para mostrar los mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <!-- Mostrar el horario actual inscrito -->
+    <div>
+        <label>Horario Actual:</label>
+        <p>{{ horario_actual.dia }} - {{ horario_actual.hora }}</p>
+    </div>
+    
+    <!-- Mostrar la materia (espacio académico) -->
+    <div>
+        <label>Materia:</label>
+        <p>{{ materia }}</p>
+    </div>
+    
+    <!-- Campo para seleccionar un nuevo horario -->
+    <div>
+        <label for="nuevo_horario">Nuevo Horario</label>
+        <select name="nuevo_horario" id="nuevo_horario">
+            <option value="">Seleccione un horario</option>
+            {% for horario in horarios_disponibles %}
+                <option value="{{ horario.id }}">
+                    {{ horario.dia }} - {{ horario.hora }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <button type="submit">Actualizar Inscripción</button>
+</form>

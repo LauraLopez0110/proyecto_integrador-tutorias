@@ -160,6 +160,9 @@
                             <button type="submit" class="button delete-button">Eliminar</button>
                         </form>
                         <a href="{{ url_for('edit_tutoria', tutoria_id=tutoria.id) }}" class="button">Editar</a>
+                        <a href="{{ url_for('gestionar_horarios') }}" class="button">
+                            Horarios
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}

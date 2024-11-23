@@ -47,7 +47,7 @@ class HorariosTutoria(db.Model):
     hora = db.Column(db.Enum(
     '08:00 AM - 09:00 AM','09:00 AM - 10:00 AM','10:00 AM - 11:00 AM','11:00 AM - 12:00 PM','12:00 PM - 01:00 PM',
     '01:00 PM - 02:00 PM','02:00 PM - 03:00 PM','03:00 PM - 04:00 PM','04:00 PM - 05:00 PM','05:00 PM - 06:00 PM'), nullable=False)
-    estado = db.Column(db.Enum('Disponible', 'No disponible'), nullable=False)
+    estado = db.Column(db.Enum('Disponible', 'No disponible', 'Ocupado'), nullable=False)
     
     tutoria = db.relationship('Tutoria', backref='horarios')
     
@@ -71,9 +71,9 @@ class FormatoTutoria(db.Model):
     estudiante_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
     codigo_estudiante = db.Column(db.String(20), nullable=False)
     semestre_estudiante = db.Column(db.String(20), nullable=False)
-    asignatura = db.Column(db.String(100), nullable=False)  # Equivalente a espacio académico
+    espacio_academico = db.Column(db.String(100), nullable=False)  # Equivalente a espacio académico
     temas_tratados = db.Column(db.Text, nullable=True)
-    fecha_realizacion = db.Column(db.Date, nullable=False)
+    fecha = db.Column(db.Date, nullable=False)
 
     docente = db.relationship('User', foreign_keys=[docente_id], backref='formatos_docente')
     estudiante = db.relationship('User', foreign_keys=[estudiante_id], backref='formatos_estudiante')
