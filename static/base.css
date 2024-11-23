@@ -1,6 +1,7 @@
 /* Base styles */
 body, html {
     height: 100%;
+    margin: 0;
     font-family: Arial, sans-serif;
 }
 
@@ -19,9 +20,8 @@ body {
     background-size: 80px 140px;
     background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
 }
-
 .container {
-    background-color: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
+    background-color: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
     border-radius: 8px;
     padding: 3rem;
@@ -34,7 +34,6 @@ h1 {
     color: #4b0082; /* Índigo (lila oscuro) */
     text-align: center;
     margin-bottom: 1.5rem;
-    margin-top: 20px;
 }
 
 /* Form container */
