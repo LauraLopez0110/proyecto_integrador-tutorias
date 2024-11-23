@@ -106,7 +106,8 @@
                     <td>{{ horario.tutoria.espacio_academico }}</td>
                     <td>{{ horario.dia }}</td>
                     <td>{{ horario.hora }}</td>
-                    <td>{{ horario.estado }}</td>
+                    <td class="estado {{ horario.estado | lower | replace(' ', '-') }}">{{ horario.estado }}</td>
+
                     <td>
                         <form method="POST" action="{{ url_for('gestionar_horarios') }}">
                             <input type="hidden" name="horario_id" value="{{ horario.id }}">

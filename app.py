@@ -512,7 +512,7 @@ def edit_profile():
 
 
 
-@app.route('/teacher/<int:docente_id>/tutorias', methods=['GET'])
+@app.route('/teacher//<int:docente_id>/tutorias', methods=['GET'])
 def listar_tutorias_por_docente(docente_id):
     
     user = db.session.get(User, session['user_id'])  # Obtiene el usuario de la sesión
@@ -718,17 +718,16 @@ def listar_tutorias_apartadas(docente_id):
     # Consultar tutorías del docente que tengan inscripciones
     
     tutorias_inscritas = (
-        Tutoria.query
-        .filter(
-            Tutoria.docente_id == docente_id,  # Filtrar por docente
-        )
-        .join(Inscripcion)  # Solo tutorías con inscripciones
-        .distinct()
-        .all()
-             
+        Inscripcion.query
+        .join(Tutoria)  # Unir con la tabla de tutorías
+        .join(HorariosTutoria)  # Unir con la tabla de horarios
+        .filter(Tutoria.docente_id == docente_id)  # Filtrar por el docente
+        .filter(HorariosTutoria.estado != 'Disponible' and HorariosTutoria.estado != 'No disponible')  # Solo mostrar horarios ocupados
+        .distinct()  # Evitar duplicados
+        .all()  # Obtener todos los resultados
     )
 
-    return render_template('tutorias_apartadas.html', tutorias=tutorias_inscritas)
+    return render_template('tutorias_programadas.html', tutorias=tutorias_inscritas)
 
 
 @app.route('/formato_tutoria', methods=['GET', 'POST'])

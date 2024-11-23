@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='tablas.css') }}">
     <title>Tutorías Inscritas</title>
 </head>
 <body>
@@ -21,9 +21,18 @@
                 </div>
             {% endif %}
         {% endwith %}
-    </div>
+        </div>
+        <!-- Barra de búsqueda -->
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Buscar por espacio academico, día, hora o docente..." 
+                onkeyup="filterInscripciones()" 
+                class="search-box">
+        </div>
         {% if inscripciones %}
-            <table>
+            <table id="inscripcionTable">
                 <thead>
                     <tr>
                         <th>Tutoría</th>
@@ -41,7 +50,7 @@
                             <td>{{ inscripcion.horario.hora }}</td>
                             <td>{{ inscripcion.tutoria.docente.nombre_completo }}</td>
                             <td>
-                                <a href="{{ url_for('editar_inscripcion', inscripcion_id= inscripcion.id)}}" class="btn">Editar Inscripción</a> | 
+                                <a href="{{ url_for('editar_inscripcion', inscripcion_id= inscripcion.id)}}" class="btn">Editar Inscripción</a>  
                                 <a href="{{ url_for('eliminar_inscripcion', inscripcion_id=inscripcion.id) }}" class="btn">Eliminar Inscripción</a>
                             </th>
                         </tr>
@@ -51,10 +60,32 @@
         {% else %}
             <p>No te has inscrito en ninguna tutoría.</p>
         {% endif %}
-        <div class="button-container">
+        <div class="button">
             <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
         </div>
     </div>
 
 </body>
+
+<script>
+    function filterInscripciones() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#inscripcionTable tbody tr');
+
+        rows.forEach(row => {
+            const espacioAcademico = row.cells[0].textContent.toLowerCase(); // Columna Espacio Académico
+            const dia = row.cells[1].textContent.toLowerCase(); // Columna Día
+            const hora = row.cells[2].textContent.toLowerCase(); // Columna Hora
+            const docente = row.cells[3].textContent.toLowerCase(); // Columna Docente
+
+            // Verifica si el valor de búsqueda coincide con esoacio academico, día, hora y docente
+            if (espacioAcademico.includes(searchInput) || dia.includes(searchInput) || hora.includes(searchInput)
+            || docente.includes(searchInput)) {
+                row.style.display = ''; // Mostrar la fila
+            } else {
+                row.style.display = 'none'; // Ocultar la fila
+            }
+        });
+    }
+</script>
 </html>

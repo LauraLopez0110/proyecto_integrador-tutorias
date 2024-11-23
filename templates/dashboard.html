@@ -106,29 +106,24 @@
         <div class="button-container">
             {% if role == 'admin' %}
                 <a href="{{ url_for('edit_profile') }}">Editar Perfil</a>
-                <a href="{{ url_for('manage_users') }}">Administrar Usuarios</a>
-                <a href="{{ url_for('manage_tutorias') }}">Admin tutorías</a>
-                <a href="{{ url_for('register') }}">Crear Nuevo Usuario</a>
-            {% elif role in ['student', 'teacher'] %}
+                <a href="{{ url_for('manage_users') }}">Gestionar Usuarios</a>
+                <a href="{{ url_for('manage_tutorias') }}">Gestionar Tutorías</a>
+                <a href="{{ url_for('register') }}">Registrar Nuevo Usuario</a>
+            {% elif role == 'student' %}
                 <a href="{{ url_for('edit_profile') }}">Editar Perfil</a>
+                <a href="{{ url_for('tutorias_disponibles') }}">Ver Tutorías Disponibles</a>
+                <a href="{{ url_for('student_profile') }}">Mi Perfil</a>
+                <a href="{{ url_for('listar_tutorias_inscritas') }}">Mis Tutorías</a>
+            {% elif role == 'teacher' %}
+                <a href="{{ url_for('edit_profile') }}">Editar Perfil</a>
+                <a href="{{ url_for('formato_tutoria') }}">Historial de tutorias</a>
+                <a href="{{ url_for('teacher_profile') }}">Mi Perfil</a>
+                <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}">Mis Tutorías</a>
+                <a href="{{ url_for('listar_tutorias_apartadas', docente_id=docente.id) }}">Tutorías Programadas</a>
             {% endif %}
-
-            {% if role == 'student' %}
-                <a href="{{ url_for('tutorias_disponibles') }}">Ver tutorías disponibles</a>
-                <a href="{{ url_for('student_profile') }}">Detalle perfil</a>
-                <a href="{{ url_for('listar_tutorias_inscritas') }}">Gestión tutorias/Estudiante</a>
-            {% endif %}
-
-        {%if role == 'teacher'%}
-        
-        <a href="{{ url_for('formato_tutoria') }}">shdsh</a>
-        <a href="{{ url_for('teacher_profile') }}">Detalle perfil</a>
-        <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}">Tutorias Asignadas</a>
-        <a href="{{ url_for('listar_tutorias_apartadas', docente_id=docente.id) }}">Gestión tutorias/Docente</a>
-        {% endif%}
-
             <a href="{{ url_for('logout') }}" class="logout-button">Cerrar Sesión</a>
         </div>
+        
     </div>
 </body>
 </html>

@@ -22,7 +22,16 @@
             <h1>Lista de tutorías de {{ user.username }}</h1>
         </div>
 
-        <table class="table">
+        <!-- Barra de búsqueda -->
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Buscar por tutoria o codigo..." 
+                    onkeyup="filterTutoriasDocentes()" 
+                    class="search-box">
+            </div>
+        <table id="tutoriasDocenteTable" class="table">
             <thead class="table-header">
                 <tr>
                     <th class="table-head">Código</th>
@@ -54,4 +63,23 @@
         </div>
     </div>
 </body>
+
+<script>
+    function filterTutoriasDocentes() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#tutoriasDocenteTable tbody tr');
+
+        rows.forEach(row => {
+            const codigo = row.cells[0].textContent.toLowerCase(); // Columna nombre codigo
+            const tutoria = row.cells[1].textContent.toLowerCase(); // Columna nombre tutoria
+
+            // Verifica si el valor de búsqueda coincide con Tutoría o Estado
+            if (codigo.includes(searchInput) || tutoria.includes(searchInput)) {
+                row.style.display = ''; // Mostrar la fila
+            } else {
+                row.style.display = 'none'; // Ocultar la fila
+            }
+        });
+    }
+</script>
 </html>

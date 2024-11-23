@@ -228,6 +228,7 @@ td select {
     border-radius: 5px; /* Bordes redondeados */
     font-size: 1rem; /* Tamaño de la fuente */
     transition: background-color 0.3s; /* Transición suave para el cambio de color */
+    margin-top: 4px; /* Espaciado superior */
 }
 
 /* Estilo cuando el mouse pasa sobre el enlace (hover) */
@@ -263,4 +264,50 @@ button:hover {
     border-radius: 4px;
     font-size: 1rem;
     color: #333;
+}
+
+/* Clases para los colores de estado */
+/* Estado Disponible */
+.estado.disponible {
+    text-align: center;
+    background-color: #d4edda; /* Verde claro */
+    color: #155724; /* Verde oscuro */
+    font-weight: bold;
+}
+
+/* Estado No disponible */
+.estado.no-disponible {
+    text-align: center;
+    background-color: #f8d7da; /* Rojo claro */
+    color: #721c24; /* Rojo oscuro */
+    font-weight: bold;
+}
+
+/* Estado Ocupado */
+.estado.ocupado {
+    text-align: center;
+    background-color: #fff3cd; /* Amarillo claro */
+    color: #856404; /* Amarillo oscuro */
+    font-weight: bold;
+}
+
+.btn {
+    display: inline-block; /* Para comportamiento similar a un enlace */
+    width: auto; /* Ajustar al contenido */
+    background-color: #4b0082; /* Índigo (lila oscuro) */
+    color: #fff;
+    padding: 8px 16px; /* Espaciado interno más amplio para que se vea mejor */
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    white-space: nowrap; /* Evitar quiebres de texto */
+    text-align: center; /* Asegura que el texto esté centrado */
+    margin-bottom: 5px; /* Espacio entre botones */
+}
+
+.btn:hover {
+    background-color: #6a5acd; /* Azul pizarra */
 }
