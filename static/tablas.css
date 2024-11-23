@@ -249,3 +249,18 @@ button {
 button:hover {
     background-color: #6a5acd; /* Azul pizarra */
 }
+
+.search-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.search-box {
+    width: 80%;
+    max-width: 500px;
+    padding: 10px;
+    border: 1px solid #add8e6;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #333;
+}

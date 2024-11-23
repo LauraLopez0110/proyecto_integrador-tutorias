@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='tablas.css') }}">
     <title>Administrar Usuarios</title>
 </head>
 <body>
@@ -11,6 +11,16 @@
         <div class="title-container">
             <h1>Administrar Usuarios</h1>
         </div>
+
+            <!-- Barra de búsqueda -->
+    <div class="search-container">
+        <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Buscar por usuario o rol..." 
+            onkeyup="filterUsers()" 
+            class="search-box">
+    </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -22,7 +32,7 @@
             {% endif %}
         {% endwith %}
 
-        <table>
+        <table id="userTable">
             <tr>
                 <th>ID</th>
                 <th>Usuario</th>
@@ -53,4 +63,25 @@
         </div>
     </div>
 </body>
+
+<script>
+    function filterUsers() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#userTable tr');
+    
+        rows.forEach((row, index) => {
+            if (index === 0) return; // Saltar la cabecera de la tabla
+    
+            const username = row.cells[1].textContent.toLowerCase();
+            const role = row.cells[2].textContent.toLowerCase();
+    
+            if (username.includes(searchInput) || role.includes(searchInput)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+    </script>
+    
 </html>

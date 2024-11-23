@@ -9,7 +9,8 @@
 <body>
     <div class="container">
         <h1>Gestión de Horarios de Tutorías</h1>
-        
+    
+
         <!-- Mostrar mensajes flash -->
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -79,7 +80,17 @@
         </form>
 
         <h2 class="form-title">Horarios Existentes</h2>
-        <table>
+
+                <!-- Barra de búsqueda -->
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Buscar por tutoría o estado..." 
+                        onkeyup="filterHorarios()" 
+                        class="search-box">
+                </div>
+        <table id ="horariosTable">
             <thead>
                 <tr>
                     <th>Tutoría</th>
@@ -119,4 +130,24 @@
         </div>
     </div>
 </body>
+
+<script>
+    function filterHorarios() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#horariosTable tbody tr');
+
+        rows.forEach(row => {
+            const tutoria = row.cells[0].textContent.toLowerCase(); // Columna Tutoría
+            const estado = row.cells[3].textContent.toLowerCase(); // Columna Estado
+
+            // Verifica si el valor de búsqueda coincide con Tutoría o Estado
+            if (tutoria.includes(searchInput) || estado.includes(searchInput)) {
+                row.style.display = ''; // Mostrar la fila
+            } else {
+                row.style.display = 'none'; // Ocultar la fila
+            }
+        });
+    }
+</script>
+
 </html>
