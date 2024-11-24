@@ -96,6 +96,7 @@ pip install Flask-Bcrypt
 pip install Flask-SQLAlchemy
 pip install Flask-Session
 pip install reportlab
+pip install apscheduler
 
 # Integrantes proyecto:
 
