@@ -60,20 +60,17 @@ CREATE TABLE inscripcion (
 );
 
 -- Tabla de formato de tutoría
-    CREATE TABLE formato_tutoria (
+CREATE TABLE formato_tutoria (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    tutoria_id INT NOT NULL,  -- Relación con la tutoría
-    docente_id INT NOT NULL,  -- Relación con el docente
-    estudiante_id INT NOT NULL,  -- Relación con el estudiante
-    periodo_academico VARCHAR(50) NOT NULL,  -- Periodo académico
-    codigo VARCHAR(20) NOT NULL,  -- Código del estudiante
-    semestre VARCHAR(20) NOT NULL,  -- Semestre del estudiante
-    espacio_academico VARCHAR(100) NOT NULL,  -- Espacio académico
-    temas_tratados TEXT,  -- Temas tratados
-    fecha_realizacion DATE NOT NULL,  -- Fecha de realización
-    FOREIGN KEY (tutoria_id) REFERENCES tutoria(id) ON DELETE CASCADE,
-    FOREIGN KEY (docente_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (estudiante_id) REFERENCES user(id) ON DELETE CASCADE
+    docente_id INT NOT NULL, -- Relación con el docente
+    estudiante_id INT NOT NULL, -- Relación con el estudiante
+    tutoria_id INT NOT NULL, -- Relación con la tutoría
+    espacio_academico VARCHAR(100) NOT NULL, -- Nombre del espacio académico
+    temas_tratados TEXT, -- Temas tratados en la tutoría
+    fecha DATE NOT NULL, -- Fecha de la tutoría
+    FOREIGN KEY (docente_id) REFERENCES user(id) ON DELETE CASCADE, -- Eliminar en cascada
+    FOREIGN KEY (estudiante_id) REFERENCES user(id) ON DELETE CASCADE, -- Eliminar en cascada
+    FOREIGN KEY (tutoria_id) REFERENCES tutoria(id) ON DELETE CASCADE -- Eliminar en cascada
 );
 
 -- Tabla de compromisos

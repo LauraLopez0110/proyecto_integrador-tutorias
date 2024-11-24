@@ -1,6 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request, send_file
 from flask_bcrypt import Bcrypt
-from flask_login import current_user, login_required
 from config import Config
 from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria
 from models import Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaCompromiso
