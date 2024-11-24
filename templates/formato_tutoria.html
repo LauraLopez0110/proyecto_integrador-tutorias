@@ -4,58 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formato de Tutoría</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Formato de Tutoría</h1>
+    <div class="container">
+        <h1>Formato de Tutoría</h1>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
+        <!-- Mostrar mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="messages">
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Formulario -->
+        <form action="{{ url_for('formato_tutoria') }}" method="POST">
+            <!-- Campo para seleccionar el docente -->
             <div>
-                {% for category, message in messages %}
-                    <div class="{{ category }}">{{ message }}</div>
-                {% endfor %}
+                <label for="docente_id">Docente:</label>
+                <select id="docente_id" name="docente_id" required>
+                    <option value="">Seleccionar Docente</option>
+                    {% for docente in docentes %}
+                        <option value="{{ docente.id }}">{{ docente.username }}</option>
+                    {% endfor %}
+                </select>
             </div>
-        {% endif %}
-    {% endwith %}
 
-    <form action="{{ url_for('formato_tutoria') }}" method="POST">
-       
-        <label for="docente">Docente:</label>
-        
-        <select id="docente" name="docente" required>
-            <option value="">Seleccionar Docente</option>
-            {% for docente in docentes %}
-                <option value="{{ docente.id }}">{{ docente.username }}</option>
-            {% endfor %}
-        </select>
+            <!-- Campo para el estudiante (solo lectura) -->
+            <div>
+                <label for="estudiante">Estudiante:</label>
+                <input type="text" id="estudiante" value="{{ current_user.username }}" readonly>
+                <input type="hidden" name="estudiante_id" value="{{ current_user.id }}">
+            </div>
 
-        
-        <label for="periodo_academico">Período Académico:</label>
-        <input type="text" id="periodo_academico" name="periodo_academico" placeholder="Ejemplo: 2024-2" required>
+            <!-- Campo para seleccionar la tutoría -->
+            <div>
+                <label for="tutoria_id">Tutoría:</label>
+                <select id="tutoria_id" name="tutoria_id" required>
+                    <option value="">Seleccionar Tutoría</option>
+                    {% for tutoria in tutorias %}
+                        <option value="{{ tutoria.id }}">{{ tutoria.codigo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-      
-        <label for="codigo_estudiante">Código del Estudiante:</label>
-        <input type="text" id="codigo_estudiante" name="codigo_estudiante" placeholder="Código del Estudiante" required>
+            <!-- Campo para el período académico -->
+            <div>
+                <label for="periodo_academico">Período Académico:</label>
+                <input type="text" id="periodo_academico" name="periodo_academico" required>
+            </div>
 
-        <label for="semestre_estudiante">Semestre del Estudiante:</label>
-        <input type="text" id="semestre_estudiante" name="semestre_estudiante" placeholder="Ejemplo: Sexto Semestre" required>
+            <!-- Campo para el código -->
+            <div>
+                <label for="codigo">Código:</label>
+                <input type="text" id="codigo" name="codigo" required>
+            </div>
 
-        
-        <label for="asignatura">Asignatura:</label>
-        <input type="text" id="asignatura" name="asignatura" placeholder="Nombre de la Asignatura" required>
+            <!-- Campo para el semestre -->
+            <div>
+                <label for="semestre">Semestre:</label>
+                <input type="text" id="semestre" name="semestre" required>
+            </div>
 
-     
-        <label for="temas_tratados">Temas Tratados:</label>
-        <textarea id="temas_tratados" name="temas_tratados" rows="5" placeholder="Descripción de los temas tratados"></textarea>
+            <!-- Campo para el espacio académico -->
+            <div>
+                <label for="espacio_academico">Espacio Académico:</label>
+                <input type="text" id="espacio_academico" name="espacio_academico" required>
+            </div>
 
-        
-        <label for="fecha">Fecha:</label>
-        <input type="date" id="fecha" name="fecha" required>
+            <!-- Campo para los temas tratados -->
+            <div>
+                <label for="temas_tratados">Temas Tratados:</label>
+                <textarea id="temas_tratados" name="temas_tratados"></textarea>
+            </div>
 
-        
-        <button type="submit">Guardar Formato</button>
-        <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
-    </form>
+            <!-- Campo para la fecha de realización -->
+            <div>
+                <label for="fecha_realizacion">Fecha de Realización:</label>
+                <input type="date" id="fecha_realizacion" name="fecha_realizacion" required>
+            </div>
+
+            <!-- Botones -->
+            <div>
+                <button type="submit">Guardar Formato</button>
+                <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

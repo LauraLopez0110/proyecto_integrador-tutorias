@@ -64,20 +64,21 @@ class Inscripcion(db.Model):
 
 
 class FormatoTutoria(db.Model):
+    
     id = db.Column(db.Integer, primary_key=True)
-    tutoria_id = db.Column(db.Integer, db.ForeignKey('tutoria.id', ondelete='CASCADE'))  # Asociación directa
-    docente_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    docente_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    estudiante_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    tutoria_id = db.Column(db.Integer, db.ForeignKey('tutoria.id', ondelete='CASCADE'), nullable=False)
     periodo_academico = db.Column(db.String(50), nullable=False)
-    estudiante_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
-    codigo_estudiante = db.Column(db.String(20), nullable=False)
-    semestre_estudiante = db.Column(db.String(20), nullable=False)
-    asignatura = db.Column(db.String(100), nullable=False)  # Equivalente a espacio académico
-    temas_tratados = db.Column(db.Text, nullable=True)
-    fecha_realizacion = db.Column(db.Date, nullable=False)
+    codigo = db.Column(db.String(20),nullable=False)
+    semestre = db.Column(db.String(20),nullable=False)
+    espacio_academico = db.Column(db.String(100), nullable=False)
+    temas_tratados = db.Column(db.Text, nullable=True)  # Opcional
+    fecha_realizacion = db.Column(db.Date, nullable=False)  # Fecha obligatoria
 
     docente = db.relationship('User', foreign_keys=[docente_id], backref='formatos_docente')
     estudiante = db.relationship('User', foreign_keys=[estudiante_id], backref='formatos_estudiante')
-    tutoria = db.relationship('Tutoria', backref='formatos_tutoria')  # Relación inversa
+    tutoria = db.relationship('Tutoria', backref='formatos_tutoria')
 
 
 class Compromiso(db.Model):

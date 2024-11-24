@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request
 from flask_bcrypt import Bcrypt
+from flask_login import current_user, login_required
 from config import Config
 from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria
 from models import Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaCompromiso
@@ -693,6 +694,57 @@ def eliminar_inscripcion(inscripcion_id):
         flash(f'Error al eliminar la inscripción: {str(e)}', 'danger')
     
     return redirect(url_for('listar_tutorias_inscritas'))
+
+@app.route('/formato_tutoria', methods=['GET', 'POST'])
+@login_required
+def formato_tutoria():
+    if request.method == 'POST':
+        # Capturar datos del formulario
+        docente_id = request.form.get('docente')
+        tutoria_id = request.form.get('tutoria')
+        periodo_academico = request.form.get('periodo_academico')
+        codigo = request.form.get('codigo')
+        semestre = request.form.get('semestre')
+        espacio_academico = request.form.get('espacio_academico')
+        temas_tratados = request.form.get('temas_tratados') or None  # Opcional
+        fecha_realizacion = request.form.get('fecha_realizacion')
+
+        # Validar campos obligatorios
+        if not all([docente_id,tutoria_id,periodo_academico,codigo,semestre,espacio_academico, temas_tratados,fecha_realizacion]):
+            flash('Todos los campos obligatorios deben completarse.', 'danger')
+            return redirect(url_for('formato_tutoria'))
+
+        # Crear y guardar el nuevo formato
+        nuevo_formato = FormatoTutoria(
+            docente_id=int(docente_id),
+             estudiante_id=current_user.id,
+            tutoria_id=int(tutoria_id),
+            periodo_academico=periodo_academico,
+            codigo=codigo,
+            semestre= semestre,
+            espacio_academico=espacio_academico,
+            temas_tratados=temas_tratados,
+            fecha_realizacion=fecha_realizacion
+        )
+        db.session.add(nuevo_formato)
+        db.session.commit()
+
+        flash('Formato de tutoría guardado exitosamente.', 'success')
+        return redirect(url_for('dashboard'))
+
+    # Consultar datos para el formulario
+    docentes = User.query.filter_by(role='teacher').all()
+    estudiantes = User.query.filter_by(role='student').all()
+    tutorias = Tutoria.query.all()
+
+    return render_template('formato_tutoria.html', docentes=docentes, estudiantes=estudiantes, tutorias=tutorias)
+
+@app.route('/listar_formato', methods=['GET'])
+def listar_formato():
+    # Obtener todos los formatos de tutoría
+    formatos = FormatoTutoria.query.all()
+
+    return render_template('listar_formato.html', formatos=formatos)
 
 
 if __name__ == '__main__':
