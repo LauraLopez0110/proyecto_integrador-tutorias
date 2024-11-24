@@ -848,6 +848,58 @@ def eliminar_inscripcion(inscripcion_id):
     
     return redirect(url_for('listar_tutorias_inscritas'))
 
+@app.route('/student/tutorias-inscritas/editar/<int:inscripcion_id>', methods=['GET', 'POST'])
+def editar_inscripcion(inscripcion_id):
+    # Obtener la inscripción actual
+    inscripcion = Inscripcion.query.get(inscripcion_id)
+    if not inscripcion:
+        flash("La inscripción no existe.", "error")
+        return redirect(url_for('ver_inscripciones'))
+
+    # Obtener información actual: horario y materia
+    horario_actual = inscripcion.horario
+    materia = inscripcion.tutoria.espacio_academico
+
+    if request.method == 'POST':
+        # Obtener el nuevo horario desde el formulario
+        nuevo_horario_id = request.form.get('nuevo_horario')
+
+        # Si no seleccionó un nuevo horario, no hacer cambios
+        if not nuevo_horario_id:
+            flash("No se realizaron cambios a la inscripción.", "info")
+            return redirect(url_for('listar_tutorias_inscritas'))
+
+        # Obtener el horario seleccionado y validar
+        nuevo_horario = HorariosTutoria.query.get(nuevo_horario_id)
+        if not nuevo_horario or nuevo_horario.estado != 'Disponible':
+            flash("El horario seleccionado no es válido o no está disponible.", "error")
+            return redirect(url_for('editar_inscripcion', inscripcion_id=inscripcion_id))
+
+        # Actualizar la inscripción
+        inscripcion.horario_id = nuevo_horario.id
+        db.session.commit()
+
+        # Cambiar estado del horario
+        nuevo_horario.estado = 'No disponible'
+        horario_actual.estado = 'Disponible'  # Liberar el horario anterior
+        db.session.commit()
+
+        flash("Inscripción actualizada correctamente.", "success")
+        return redirect(url_for('listar_tutorias_inscritas'))
+
+    # Obtener horarios disponibles para la misma tutoría
+    horarios_disponibles = HorariosTutoria.query.filter_by(
+        tutoria_id=inscripcion.tutoria_id, estado='Disponible'
+    ).all()
+
+    return render_template(
+        'edit_inscripcion.html',
+        inscripcion=inscripcion,
+        horario_actual=horario_actual,
+        materia=materia,
+        horarios_disponibles=horarios_disponibles
+    )
+    
 @app.route('/formato_tutoria', methods=['GET', 'POST'])
 @login_required
 def formato_tutoria():
