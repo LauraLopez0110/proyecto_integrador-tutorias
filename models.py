@@ -90,5 +90,5 @@ class FormatoTutoriaCompromiso(db.Model):
     formato_tutoria_id = db.Column(db.Integer, db.ForeignKey('formato_tutoria.id', ondelete='CASCADE'))
     compromiso_id = db.Column(db.Integer, db.ForeignKey('compromiso.id', ondelete='CASCADE'))
     
-    tutoria = db.relationship('FormatoTutoria', backref='compromiso_relaciones')  # Relación inversa mejor definida
+    tutoria = db.relationship('FormatoTutoria', backref='compromiso_relaciones') 
     compromiso = db.relationship('Compromiso', backref='tutoria_relaciones')
