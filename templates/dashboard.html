@@ -121,22 +121,6 @@
                 <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}">Mis Tutorías</a>
                 <a href="{{ url_for('listar_tutorias_apartadas', docente_id=docente.id) }}">Tutorías Programadas</a>
             {% endif %}
-
-            {% if role == 'student' %}
-                <a href="{{ url_for('tutorias_disponibles') }}">Ver tutorías disponibles</a>
-                <a href="{{ url_for('student_profile') }}">Detalle perfil</a>
-                <a href="{{ url_for('listar_tutorias_inscritas') }}">Gestión tutoria estudiante</a>
-            {% endif %}
-
-        {%if role == 'teacher'%}
-        
-        
-        <a href="{{ url_for('teacher_profile') }}">Detalle perfil</a>
-        <a href="{{ url_for('listar_formato') }}">Ver formato</a>
-        <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}">Tutorias Asignadas</a>
-        <a href="{{ url_for('listar_tutorias_apartadas', docente_id=docente.id) }}">Tutorias Apartadas</a>
-        {% endif%}
-
             <a href="{{ url_for('logout') }}" class="logout-button">Cerrar Sesión</a>
         </div>
         
