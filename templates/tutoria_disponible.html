@@ -3,86 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='tablas.css') }}">
     <title>Lista de Tutorías Disponibles</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #4CAF50;
-        }
-
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-        }
-
-        thead {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            font-size: 16px;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        a {
-            display: block;
-            width: fit-content;
-            margin: 20px auto;
-            padding: 10px 20px;
-            text-decoration: none;
-            color: white;
-            background-color: #4CAF50;
-            border-radius: 5px;
-            text-align: center;
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 3rem;
+            width: auto;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        a:hover {
-            background-color: #45a049;
-        }
-
-        p {
-            text-align: center;
-            margin-top: 20px;
+            border: 1px solid #d8bfd8; /* Lila claro */
         }
     </style>
 </head>
 <body>
+    <div class='container'>
+
     <h1>Lista de Tutorías Disponibles</h1>
 
+    <div id="flash-messages">
+        <!-- Bloque para mostrar los mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+            <!-- Barra de búsqueda -->
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Buscar por tutoria, día, hora o estado..." 
+                onkeyup="filterTutoriasDisponibles()" 
+                class="search-box">
+        </div>
     {% if tutorias %}
-        <table>
+        <table id="tutoriasDisponiblesTable">
             <thead>
                 <tr>
                     <th>Código</th>
                     <th>Nombre de la Tutoría</th>
                     <th>Día</th>
                     <th>Hora</th>
+                    <th>Estado</th>
                     <th>Acción</th>
                 </tr>
             </thead>
@@ -92,12 +61,17 @@
                         <tr>
                             <td>{{ tutoria.codigo }}</td>
                             <td>{{ tutoria.espacio_academico }}</td>
-                            <td>{{ horarios.bloque_horario_id }}</td>
+                            <td>{{ horario.dia }}</td>
                             <td>{{ horario.hora }}</td>
+                            <td class="estado {{ horario.estado | lower | replace(' ', '-') }}">{{ horario.estado }}</td>
                             <td>
-                                <form action="{{ url_for('inscribirse_tutoria', tutoria_id=tutoria.id, horario_id=horario.id) }}" method="POST">
-                                    <button type="submit" class="btn-inscribirse">Inscribirse</button>
-                                </form>
+                                {% if horario.estado == 'Disponible' %}
+                                    <form action="{{ url_for('inscribirse_tutoria', tutoria_id=tutoria.id, horario_id=horario.id) }}" method="GET">
+                                        <button type="submit" class="btn-inscribirse">Inscribirse</button>
+                                    </form>
+                                {% else %}
+                                    <button type="button" class="btn-inscribirse" disabled>No disponible</button>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
@@ -107,7 +81,31 @@
     {% else %}
         <p>No hay tutorías disponibles.</p>
     {% endif %}
-
-    <p><a href="{{ url_for('dashboard') }}">Volver al Dashboard</a></p>
+    <div class="button">
+        <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+    </div>
+    </div>
 </body>
+
+<script>
+    function filterTutoriasDisponibles() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#tutoriasDisponiblesTable tbody tr');
+
+        rows.forEach(row => {
+            const tutoria = row.cells[1].textContent.toLowerCase(); // Columna nombre tutoria
+            const dia = row.cells[2].textContent.toLowerCase(); // Columna Día
+            const hora = row.cells[3].textContent.toLowerCase(); // Columna Hora
+            const estado = row.cells[4].textContent.toLowerCase(); // Columna Estado
+
+            // Verifica si el valor de búsqueda coincide con Tutoría o Estado
+            if (tutoria.includes(searchInput) || dia.includes(searchInput) || hora.includes(searchInput)
+            || estado.includes(searchInput)) {
+                row.style.display = ''; // Mostrar la fila
+            } else {
+                row.style.display = 'none'; // Ocultar la fila
+            }
+        });
+    }
+</script>
 </html>
