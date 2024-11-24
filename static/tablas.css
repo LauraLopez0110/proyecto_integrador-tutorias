@@ -1,0 +1,327 @@
+/* Base styles */
+body, html {
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Cambié 'center' por 'flex-start' */
+    background-color: #e6e6fa;
+    background-image: 
+        linear-gradient(30deg, #b0e0e6 12%, transparent 12.5%, transparent 87%, #b0e0e6 87.5%, #b0e0e6),
+        linear-gradient(150deg, #b0e0e6 12%, transparent 12.5%, transparent 87%, #b0e0e6 87.5%, #b0e0e6),
+        linear-gradient(30deg, #b0e0e6 12%, transparent 12.5%, transparent 87%, #b0e0e6 87.5%, #b0e0e6),
+        linear-gradient(150deg, #b0e0e6 12%, transparent 12.5%, transparent 87%, #b0e0e6 87.5%, #b0e0e6),
+        linear-gradient(60deg, #add8e6 25%, transparent 25.5%, transparent 75%, #add8e6 75%, #add8e6),
+        linear-gradient(60deg, #add8e6 25%, transparent 25.5%, transparent 75%, #add8e6 75%, #add8e6);
+    background-size: 80px 140px;
+    background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+    margin: 0;
+    padding: 0;
+}
+
+
+.container {    
+    margin-top: 30px;
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 3rem;
+    width: 100%;  /* Para que el contenedor ocupe todo el espacio disponible */
+    max-width: 600px; /* Establece un máximo para el ancho */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d8bfd8; /* Lila claro */
+}
+
+h1 {
+    color: #4b0082; /* Índigo (lila oscuro) */
+    text-align: center;
+    margin-bottom: 1.5rem;
+    margin-top: 20px;
+}
+
+/* Form container */
+.form-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 3rem;
+    width: 100%;
+    max-width: 600px; /* Ajusta el tamaño máximo del contenedor */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d8bfd8;
+}
+
+/* Form layout */
+.form {
+    display: flex;
+    flex-direction: column;
+}
+/* Estilos para los selects dentro de formularios */
+.form select {
+    width: 100%;  /* Hace que el select ocupe todo el ancho del contenedor */
+    padding: 10px;  /* Añade espacio dentro del select */
+    border: 1px solid #add8e6;  /* Borde similar a los inputs */
+    background-color: #fff;  /* Fondo blanco */
+    color: #333;  /* Color del texto */
+    border-radius: 4px;  /* Bordes redondeados */
+    font-size: 1rem;  /* Tamaño de la fuente */
+    margin-bottom: 1rem;  /* Espacio debajo del select */
+}
+
+/* Estilo para el select cuando está deshabilitado */
+.form select:disabled {
+    background-color: #f0f0f0;  /* Fondo gris claro */
+    cursor: not-allowed;  /* Cambia el cursor para indicar que está deshabilitado */
+}
+
+/* Estilo de las opciones dentro del select */
+.form select option {
+    padding: 10px;
+}
+
+/* Input groups */
+.input-group {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.input-group input {
+    width: 100%; /* Permite que el input se ajuste a su contenedor */
+    padding: 10px;
+    border: 1px solid #add8e6;
+    background-color: #fff;
+    color: #333;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.input-group input::placeholder {
+    color: #888;
+}
+/* Estilos para los select */
+.input-group select {
+    width: 100%; /* Permite que el select se ajuste a su contenedor */
+    padding: 10px;
+    border: 1px solid #add8e6; /* Bordes en azul claro */
+    background-color: #fff;
+    color: #333;
+    border-radius: 4px;
+    font-size: 1rem;
+    appearance: none; /* Elimina el estilo predeterminado del navegador */
+    -webkit-appearance: none; /* Para Safari */
+    -moz-appearance: none; /* Para Firefox */
+}
+
+/* Estilos para el icono de la flecha del select */
+.input-group select::-ms-expand {
+    display: none; /* Oculta la flecha en IE */
+}
+
+/* Opciones del select */
+.input-group select option {
+    padding: 10px;
+    background-color: #fff;
+    color: #333;
+    border: none;
+}
+
+/* Estilo de la flecha personalizada */
+.input-group select {
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"%3E%3Cpath fill="none" stroke="%23333" stroke-width="1.5" d="M3 4l3 3 3-3" /%3E%3C/svg%3E');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+}
+
+/* Form button */
+.form-button {
+    width: 100%;
+    background-color: #4b0082;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-button:hover {
+    background-color: #6a5acd;
+}
+
+/* Flash messages */
+.flash {
+    padding: 10px;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    color: #fff;
+    text-align: center;
+}
+
+.flash.success {
+    background-color: #4caf50;
+}
+
+.flash.danger {
+    background-color: #f44336;
+}
+
+.flash.info {
+    background-color: #2196f3;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Tabla básica */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+}
+
+/* Estilo de las celdas de la tabla */
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #d8bfd8;
+}
+
+/* Estilo para los encabezados */
+th {
+    background-color: #4b0082;
+    color: white;
+}
+
+/* Estilo de filas alternas */
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+td select {
+    width: 100%;
+    padding: 4px;
+    border: 1px solid #add8e6;
+    background-color: #fff;
+    color: #333;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+/* Estilo del enlace que simula un botón */
+.button a {
+    display: inline-block; /* Hace que el enlace se comporte como un bloque en línea */
+    padding: 10px 20px; /* Añade un espaciado interno */
+    background-color: #4CAF50; /* Color de fondo */
+    color: white; /* Color del texto */
+    text-align: center; /* Centra el texto */
+    text-decoration: none; /* Elimina el subrayado */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 1rem; /* Tamaño de la fuente */
+    transition: background-color 0.3s; /* Transición suave para el cambio de color */
+    margin-top: 4px; /* Espaciado superior */
+}
+
+/* Estilo cuando el mouse pasa sobre el enlace (hover) */
+.button a:hover {
+    background-color: #45a049; /* Cambia el color de fondo al pasar el mouse */
+}
+
+button {
+    width: auto;
+    background-color: #4b0082; /* Índigo (lila oscuro) */
+    color: #fff;
+    padding: 8px 16px; /* Espaciado interno más amplio para que se vea mejor */
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 5px; /* Espacio entre botones */
+}
+button:hover {
+    background-color: #6a5acd; /* Azul pizarra */
+}
+
+.search-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.search-box {
+    width: 80%;
+    max-width: 500px;
+    padding: 10px;
+    border: 1px solid #add8e6;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Clases para los colores de estado */
+/* Estado Disponible */
+.estado.disponible {
+    text-align: center;
+    background-color: #d4edda; /* Verde claro */
+    color: #155724; /* Verde oscuro */
+    font-weight: bold;
+}
+
+/* Estado No disponible */
+.estado.no-disponible {
+    text-align: center;
+    background-color: #f8d7da; /* Rojo claro */
+    color: #721c24; /* Rojo oscuro */
+    font-weight: bold;
+}
+
+/* Estado Ocupado */
+.estado.ocupado {
+    text-align: center;
+    background-color: #fff3cd; /* Amarillo claro */
+    color: #856404; /* Amarillo oscuro */
+    font-weight: bold;
+}
+
+.btn {
+    display: inline-block; /* Para comportamiento similar a un enlace */
+    width: auto; /* Ajustar al contenido */
+    background-color: #4b0082; /* Índigo (lila oscuro) */
+    color: #fff;
+    padding: 8px 16px; /* Espaciado interno más amplio para que se vea mejor */
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    white-space: nowrap; /* Evitar quiebres de texto */
+    text-align: center; /* Asegura que el texto esté centrado */
+    margin-bottom: 5px; /* Espacio entre botones */
+}
+
+.btn:hover {
+    background-color: #6a5acd; /* Azul pizarra */
+}
+
+.eliminar-button {
+    background-color: #ff4d4d; /* Rojo */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    
+}
+
+.eliminar-button:hover {
+    background-color: #ff1a1a;
+}

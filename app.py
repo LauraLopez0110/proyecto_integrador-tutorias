@@ -1,11 +1,16 @@
-from flask import Flask, render_template, redirect, url_for, flash, session, request
+from flask import Flask, render_template, redirect, url_for, flash, session, request, send_file
 from flask_bcrypt import Bcrypt
 from flask_login import current_user, login_required
 from config import Config
 from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria
 from models import Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaCompromiso
 # Importa db y User, Tutoria
-from datetime import datetime
+from datetime import datetime, timezone
+import io
+import csv
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 app = Flask(__name__)
@@ -13,6 +18,40 @@ app.config.from_object(Config)  # Carga la configuración desde el objeto Config
 db.init_app(app)  # Inicializa la base de datos con la app
 bcrypt = Bcrypt(app)  # Inicializa Flask-Bcrypt para manejar el hash de contraseñas
 
+# Función para liberar las tutorías programadas
+
+def liberar_tutorias():
+    inscripciones = Inscripcion.query.all()
+    for inscripcion in inscripciones:
+        horario = HorariosTutoria.query.get(inscripcion.horario_id)
+        
+        try:
+            # Separar la hora en dos partes (inicio y fin)
+            horas = horario.hora.split(' - ')
+            hora_inicio = datetime.strptime(horas[0].strip(), '%I:%M %p')  # Convertir hora de inicio
+            hora_fin = datetime.strptime(horas[1].strip(), '%I:%M %p')  # Convertir hora de fin
+
+            # Si la tutoría ya pasó, liberar el horario
+            if hora_inicio < datetime.now():
+                horario.estado = 'Disponible'  # Liberar el horario
+                db.session.delete(inscripcion)  # Eliminar inscripción
+
+        except ValueError as e:
+            print(f"Error al convertir la hora: {horario.hora} - {e}")
+    
+    db.session.commit()
+    print(f"Tutorías liberadas automáticamente el {datetime.utcnow()}.")
+
+# Iniciar el cron job
+scheduler = BackgroundScheduler()
+scheduler.add_job(liberar_tutorias, 'cron', day_of_week='fri', hour=23, minute=59)  # Cada viernes a las 11:59 PM
+scheduler.start()
+
+@app.route('/liberar')
+def liberar():
+    liberar_tutorias()  # Llamada manual
+    return "Tutorías liberadas correctamente."
+    
 # Define la función para verificar si el código de tutoría existe
 def codigo_tutoria_existe(codigo, tutoria_id=None):
     query = Tutoria.query.filter_by(codigo=codigo)
@@ -513,21 +552,36 @@ def edit_profile():
 
 
 
-@app.route('/teacher/<int:docente_id>/tutorias', methods=['GET'])
+@app.route('/teacher/<int:docente_id>/tutorias', methods=['GET', 'POST'])
 def listar_tutorias_por_docente(docente_id):
-    
     user = db.session.get(User, session['user_id'])  # Obtiene el usuario de la sesión
-    # Verificar si el docente existe y si tiene el rol 'teacher'
-    docente = User.query.filter_by(id=docente_id, role='teacher').first()  # Asegúrate que el usuario tenga el rol 'teacher'
+    docente = User.query.filter_by(id=docente_id, role='teacher').first()
+    
     if not docente:
         flash("Docente no encontrado", "danger")
-        return redirect(url_for('dashboard'))  # Redirigir si no se encuentra el docente
+        return redirect(url_for('dashboard'))
+
+    # Manejo de acciones POST
+    if request.method == 'POST':
+        if 'eliminar_horario' in request.form:
+            horario_id = request.form.get('horario_id')
+            horario = HorariosTutoria.query.get(horario_id)
+
+            if horario:
+                db.session.delete(horario)
+                db.session.commit()
+                flash("Horario eliminado con éxito.", "success")
+            else:
+                flash("Horario no encontrado.", "danger")
+
+
+        return redirect(url_for('listar_tutorias_por_docente', docente_id=docente_id))
 
     # Obtener las tutorías del docente
     tutorias = Tutoria.query.filter_by(docente_id=docente_id).all()
 
-    # Renderizar la plantilla con la lista de tutorías
     return render_template('teacher_tutorias.html', docente=docente, tutorias=tutorias, user=user)
+
 
 @app.route('/teacher/asignar_horarios/<int:tutoria_id>', methods=['GET', 'POST'])
 def asignar_horarios_tutorias(tutoria_id):
@@ -550,9 +604,16 @@ def asignar_horarios_tutorias(tutoria_id):
 
         # Validar que se haya seleccionado un día y una hora
         if not dia or not hora:
-            flash('Debe seleccionar tanto el día como la hora', 'error')
+            flash('Debe seleccionar tanto el día como la hora', 'danger')
             return render_template('asignar_horario.html', tutoria=tutoria)
         
+        # Validar que no haya otro horario asignado para esa tutoría y docente
+        existing_horario = HorariosTutoria.query.filter_by(tutoria_id=tutoria_id, dia=dia, hora=hora).first()
+        
+        if existing_horario:
+            flash('Ya existe un horario asignado para esta tutoría en esa hora y día', 'danger')
+            return render_template('asignar_horario.html', tutoria=tutoria)
+
         # Crear el nuevo horario
         new_horario = HorariosTutoria(
             tutoria_id=tutoria_id,
@@ -569,8 +630,10 @@ def asignar_horarios_tutorias(tutoria_id):
     # Si la solicitud es GET, se muestra el formulario para asignar horario
     return render_template('asignar_horario.html', tutoria=tutoria)
 
+
 @app.route('/student/inscribirse/<int:tutoria_id>', methods=['GET', 'POST'])
 def inscribirse_tutoria(tutoria_id):
+    
     user = db.session.get(User, session['user_id'])
     
     if not user or user.role != 'student':
@@ -597,6 +660,10 @@ def inscribirse_tutoria(tutoria_id):
     if not horario_asignado:
         flash("No hay horarios disponibles para esta tutoría.", "danger")
         return redirect(url_for('dashboard'))
+    
+    # Mostrar mensaje sobre días festivos
+    flash("Recuerda que no hay tutorías los días festivos.", "info")
+
 
     if request.method == 'POST':
         # Verificar si el estudiante ya está inscrito en esta tutoría
@@ -609,8 +676,8 @@ def inscribirse_tutoria(tutoria_id):
         nueva_inscripcion = Inscripcion(estudiante_id=user.id, tutoria_id=tutoria_id, horario_id=horario_asignado.id)
         db.session.add(nueva_inscripcion)
 
-        # Cambiar el estado del horario a 'No disponible'
-        horario_asignado.estado = 'No disponible'
+        # Cambiar el estado del horario a 'Ocupado'
+        horario_asignado.estado = 'Ocupado'
         db.session.commit()
 
         flash("Inscripción realizada con éxito.", "success")
@@ -619,7 +686,88 @@ def inscribirse_tutoria(tutoria_id):
     # Renderizar la página con la información de la tutoría y el horario asignado
     return render_template('inscripcion.html', tutoria=tutoria, docente=docente, horario=horario_asignado, docente_detalles=docente_detalles)
 
+@app.route('/admin/gestionar_horarios', methods=['GET', 'POST'])
+def gestionar_horarios():
+    user = db.session.get(User, session['user_id'])  # Obtiene el usuario de la sesión
+    
+    # Verificar si el usuario es un administrador
+    if not user or user.role != 'admin':
+        flash("Acceso denegado. Solo los administradores pueden acceder a esta sección.", "danger")
+        return redirect(url_for('dashboard'))
+    
+    if 'eliminar_horario' in request.form:
+        horario_id = request.form['horario_id']
+        horario = HorariosTutoria.query.get(horario_id)
+        
+        if horario:
+            # Verificar si el horario tiene inscripciones asociadas
+            inscripciones = Inscripcion.query.filter_by(horario_id=horario_id).all()
+            if inscripciones:
+                flash('No se puede eliminar un horario con inscripciones activas.', 'error')
+            else:
+                db.session.delete(horario)
+                db.session.commit()
+                flash('Horario eliminado correctamente.', 'success')
+        else:
+            flash('El horario no existe.', 'error')
+            
+    # Obtener todos los horarios con sus respectivas tutorías
+    horarios = HorariosTutoria.query.all()
+    
+    # Obtener todas las tutorías creadas
+    tutorias = Tutoria.query.all()  # Asegúrate de que esta consulta obtenga todas las tutorías disponibles
 
+    if request.method == 'POST':
+        # Verificar si la solicitud es para crear un nuevo horario
+        if 'crear' in request.form:
+            tutoria_id = request.form.get('tutoria_id')  # Tutoría seleccionada
+            dia = request.form.get('dia')  # Día seleccionado
+            hora = request.form.get('hora')  # Hora seleccionada
+            estado = request.form.get('estado')  # Estado seleccionado
+            
+            # Validar que se haya seleccionado todos los campos
+            if not tutoria_id or not dia or not hora or not estado:
+                flash('Todos los campos son requeridos', 'danger')
+                return render_template('gestionar_horarios.html', horarios=horarios, tutorias=tutorias)
+            
+            # Verificar si ya existe un horario para esa tutoría y día/hora
+            existing_horario = HorariosTutoria.query.filter_by(tutoria_id=tutoria_id, dia=dia, hora=hora).first()
+            if existing_horario:
+                flash('Ya existe un horario asignado para esa tutoría en ese día y hora', 'danger')
+                return render_template('gestionar_horarios.html', horarios=horarios, tutorias=tutorias)
+            
+            # Crear el nuevo horario
+            nuevo_horario = HorariosTutoria(
+                tutoria_id=tutoria_id,
+                dia=dia,
+                hora=hora,
+                estado=estado
+            )
+            db.session.add(nuevo_horario)
+            db.session.commit()
+            
+            flash('Nuevo horario creado con éxito', 'success')
+
+        # Verificar si la solicitud es para cambiar el estado de un horario existente
+        elif 'cambiar_estado' in request.form:
+            horario_id = request.form.get('horario_id')  # ID del horario
+            nuevo_estado = request.form.get('estado')  # Nuevo estado seleccionado
+            
+            # Buscar el horario en la base de datos
+            horario = HorariosTutoria.query.get(horario_id)
+            
+            if not horario:
+                flash('Horario no encontrado', 'danger')
+            else:
+                # Cambiar el estado del horario
+                horario.estado = nuevo_estado
+                db.session.commit()
+                flash('Estado del horario actualizado con éxito', 'success')
+    
+        return redirect(url_for('gestionar_horarios'))  # Redirigir para refrescar la página con el nuevo estado o horario
+
+    # Mostrar la vista con todos los horarios y formularios para crear nuevos
+    return render_template('gestionar_horarios.html', horarios=horarios, tutorias=tutorias)
 
 @app.route('/tutorias/disponibles', methods=['GET'])
 def tutorias_disponibles():
@@ -627,6 +775,9 @@ def tutorias_disponibles():
     # Consulta todas las tutorías
     tutorias = Tutoria.query.all()
     
+    # Mostrar mensaje sobre días festivos
+    flash("Recuerda que no hay tutorías los días festivos.", "info")
+
 
     return render_template('tutoria_disponible.html', tutorias=tutorias)
 
@@ -635,17 +786,19 @@ def listar_tutorias_apartadas(docente_id):
     # Consultar tutorías del docente que tengan inscripciones
     
     tutorias_inscritas = (
-        Tutoria.query
+        Inscripcion.query
+        .join(Tutoria)  # Unir con la tabla de tutorías
+        .join(HorariosTutoria)  # Unir con la tabla de horarios
+        .filter(Tutoria.docente_id == docente_id)  # Filtrar por el docente
         .filter(
-            Tutoria.docente_id == docente_id,  # Filtrar por docente
-        )
-        .join(Inscripcion)  # Solo tutorías con inscripciones
-        .distinct()
-        .all()
-             
+            (HorariosTutoria.estado != 'Disponible') & 
+            (HorariosTutoria.estado != 'No disponible')
+        )  # Solo mostrar horarios ocupados
+        .distinct()  # Evitar duplicados
+        .all()  # Obtener todos los resultados
     )
 
-    return render_template('tutorias_apartadas.html', tutorias=tutorias_inscritas)
+    return render_template('tutorias_programadas.html', tutorias=tutorias_inscritas, docente_id=docente_id)
 
 @app.route('/student/tutorias-inscritas', methods=['GET'])
 def listar_tutorias_inscritas():

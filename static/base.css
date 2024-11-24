@@ -164,6 +164,10 @@ button:hover {
     background-color: #f44336;
 }
 
+.flash.info {
+    background-color: #2196f3;
+}
+
 /* Form footer */
 .form-footer {
     text-align: center;
@@ -209,3 +213,44 @@ tbody tr:nth-child(even) {
 tbody tr:hover {
     background-color: #f0f0f0;
 }
+
+.search-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.search-box {
+    width: 80%;
+    max-width: 500px;
+    padding: 10px;
+    border: 1px solid #add8e6;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Clases para los colores de estado */
+/* Estado Disponible */
+.estado.disponible {
+    text-align: center;
+    background-color: #d4edda; /* Verde claro */
+    color: #155724; /* Verde oscuro */
+    font-weight: bold;
+}
+
+/* Estado No disponible */
+.estado.no-disponible {
+    text-align: center;
+    background-color: #f8d7da; /* Rojo claro */
+    color: #721c24; /* Rojo oscuro */
+    font-weight: bold;
+}
+
+/* Estado Ocupado */
+.estado.ocupado {
+    text-align: center;
+    background-color: #fff3cd; /* Amarillo claro */
+    color: #856404; /* Amarillo oscuro */
+    font-weight: bold;
+}
+

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabla de Tutorías</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='tablas.css') }}">
 </head>
 <body>
     <div class="container">
@@ -22,11 +22,21 @@
             <h1>Lista de tutorías de {{ user.username }}</h1>
         </div>
 
-        <table class="table">
+        <!-- Barra de búsqueda -->
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Buscar por tutoria o codigo..." 
+                    onkeyup="filterTutoriasDocentes()" 
+                    class="search-box">
+            </div>
+        <table id="tutoriasDocenteTable" class="table">
             <thead class="table-header">
                 <tr>
                     <th class="table-head">Código</th>
                     <th class="table-head">Nombre</th>
+                    <th class="table-head">Horarios Asignados</th>
                     <th class="table-head text-right">Acción</th>
                 </tr>
             </thead>
@@ -35,15 +45,32 @@
                 <tr>
                     <td class="table-cell font-medium">{{ tutoria.codigo }}</td>
                     <td class="table-cell">{{ tutoria.espacio_academico }}</td>
+                    <td class="table-cell">
+                        {% if tutoria.horarios %}
+                            <ul>
+                                {% for horario in tutoria.horarios %}
+                                    <li>
+                                        {{ horario.dia }} - {{ horario.hora }} ({{ horario.estado }})
+                                        <!-- Formulario para eliminar horario -->
+                                        <form method="POST" action="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}" style="display: inline;">
+                                            <input type="hidden" name="horario_id" value="{{ horario.id }}">
+                                            <button type="submit" name="eliminar_horario" class="inline-button">Eliminar</button>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            Sin horarios asignados.
+                        {% endif %}
+                    </td>
                     <td class="table-cell text-right">
-                        <a href="{{ url_for('asignar_horarios_tutorias', tutoria_id=tutoria.id) }}" class="button">
-                            Asignar horario
-                        </a>
+                        <!-- Botón de asignar horario -->
+                        <a href="{{ url_for('asignar_horarios_tutorias', tutoria_id=tutoria.id) }}" class="button">Asignar Horario</a>
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="3" class="table-cell">No hay tutorías asignadas.</td>
+                    <td colspan="4" class="table-cell">No hay tutorías asignadas.</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -54,4 +81,23 @@
         </div>
     </div>
 </body>
+
+<script>
+    function filterTutoriasDocentes() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#tutoriasDocenteTable tbody tr');
+
+        rows.forEach(row => {
+            const codigo = row.cells[0].textContent.toLowerCase(); // Columna nombre codigo
+            const tutoria = row.cells[1].textContent.toLowerCase(); // Columna nombre tutoria
+
+            // Verifica si el valor de búsqueda coincide con Tutoría o Estado
+            if (codigo.includes(searchInput) || tutoria.includes(searchInput)) {
+                row.style.display = ''; // Mostrar la fila
+            } else {
+                row.style.display = 'none'; // Ocultar la fila
+            }
+        });
+    }
+</script>
 </html>

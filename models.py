@@ -47,7 +47,7 @@ class HorariosTutoria(db.Model):
     hora = db.Column(db.Enum(
     '08:00 AM - 09:00 AM','09:00 AM - 10:00 AM','10:00 AM - 11:00 AM','11:00 AM - 12:00 PM','12:00 PM - 01:00 PM',
     '01:00 PM - 02:00 PM','02:00 PM - 03:00 PM','03:00 PM - 04:00 PM','04:00 PM - 05:00 PM','05:00 PM - 06:00 PM'), nullable=False)
-    estado = db.Column(db.Enum('Disponible', 'No disponible'), nullable=False)
+    estado = db.Column(db.Enum('Disponible', 'No disponible', 'Ocupado'), nullable=False)
     
     tutoria = db.relationship('Tutoria', backref='horarios')
     
