@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formato de Tutoría</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 </head>
 <body>
     <div class="container">
@@ -38,11 +38,13 @@
             </div>
             <div>
                 <label>Código</label>
-                <input type="text" name="codigo" value="{{ inscripcion.estudiante.estudiantes.codigo }}" required>
+                <input type="text" name="codigo" value="{{ inscripcion.estudiante.estudiantes[0].codigo }}" required>
+
+
             </div>
             <div>
                 <label>Semestre</label>
-                <input type="text" name="semestre" required>
+                <input type="text" name="semestre" value="{{inscripcion.estudiante.estudiantes[0].semestre}}" required>
             </div>
             <div>
                 <label>Espacio Académico</label>
@@ -59,6 +61,8 @@
                         <option value="{{ compromiso.id }}">{{ compromiso.descripcion }}</option>
                     {% endfor %}
                 </select>
+                <label>Nuevo Compromiso</label>
+                <input type="text" name="nuevo_compromiso" placeholder="Escribe un compromiso nuevo">
             </div>
             <div>
                 <label>Fecha de Realización</label>

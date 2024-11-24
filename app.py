@@ -936,6 +936,7 @@ def formato_tutoria(inscripcion_id):
         espacio_academico = request.form.get('espacio_academico')
         temas_tratados = request.form.get('temas_tratados') or None  # Opcional
         compromisos_adquiridos = request.form.getlist('compromisos')  # Lista de compromisos
+        nuevo_compromiso = request.form.get('nuevo_compromiso')  # Compromiso nuevo
         fecha_realizacion = request.form.get('fecha_realizacion')
 
         # Validar campos obligatorios
@@ -958,16 +959,62 @@ def formato_tutoria(inscripcion_id):
         db.session.add(nuevo_formato)
         db.session.commit()
 
-        # Agregar compromisos
+        # Agregar compromisos seleccionados
         for compromiso_id in compromisos_adquiridos:
-            compromiso = Compromiso.query.get(compromiso_id)
+            compromiso = db.session.get(Compromiso, compromiso_id)
             nuevo_formato_compromiso = FormatoTutoriaCompromiso(formato_tutoria_id=nuevo_formato.id, compromiso_id=compromiso.id)
+            db.session.add(nuevo_formato_compromiso)
+
+        # Si hay un compromiso nuevo, crear uno y agregarlo
+        if nuevo_compromiso:
+            # Crear el nuevo compromiso y guardarlo en la base de datos
+            compromiso_nuevo = Compromiso(descripcion=nuevo_compromiso)
+            db.session.add(compromiso_nuevo)
+            db.session.commit()
+
+            # Agregar el nuevo compromiso al formato de tutoría
+            nuevo_formato_compromiso = FormatoTutoriaCompromiso(formato_tutoria_id=nuevo_formato.id, compromiso_id=compromiso_nuevo.id)
             db.session.add(nuevo_formato_compromiso)
 
         db.session.commit()
 
+        # Agregar compromisos seleccionados
+        for compromiso_id in compromisos_adquiridos:
+            compromiso = db.session.get(Compromiso, compromiso_id)
+            nuevo_formato_compromiso = FormatoTutoriaCompromiso(formato_tutoria_id=nuevo_formato.id, compromiso_id=compromiso.id)
+            db.session.add(nuevo_formato_compromiso)
+
+        # Si hay un compromiso nuevo, crear uno y agregarlo
+        if nuevo_compromiso:
+            compromiso_nuevo = Compromiso(descripcion=nuevo_compromiso)
+            db.session.add(compromiso_nuevo)
+            db.session.commit()
+
+            nuevo_formato_compromiso = FormatoTutoriaCompromiso(formato_tutoria_id=nuevo_formato.id, compromiso_id=compromiso_nuevo.id)
+            db.session.add(nuevo_formato_compromiso)
+
+        db.session.commit()
+
+        # **Marcar inscripción como completada y liberar el horario**
+        inscripcion.estado = 'completada'  # Asumiendo que hay un campo 'estado' en Inscripcion
+        db.session.commit()
+
+        # Liberar el horario asociado a la inscripción (suponiendo que tienes un campo horario_id en la inscripción)
+        horario = inscripcion.horario  # Obtén el horario de la inscripción
+        horario.estado = 'disponible'  # Cambiar el estado a disponible
+        db.session.commit()
+
+        # Obtener la relación 'estudiante' antes de eliminar la inscripción
+        estudiante = inscripcion.estudiante  # Accede a la relación antes de eliminar
+
+        # Eliminar la inscripción
+        db.session.delete(inscripcion)
+        db.session.commit()
+
+# Ahora puedes usar 'estudiante' sin problemas
+
+        # Confirmación de éxito
         flash('Formato de tutoría guardado exitosamente.', 'success')
-        return redirect(url_for('dashboard'))
 
     # Consultar datos para el formulario
     docentes = User.query.filter_by(role='teacher').all()
