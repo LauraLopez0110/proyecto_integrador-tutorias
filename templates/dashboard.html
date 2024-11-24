@@ -116,7 +116,7 @@
                 <a href="{{ url_for('listar_tutorias_inscritas') }}">Mis Tutorías</a>
             {% elif role == 'teacher' %}
                 <a href="{{ url_for('edit_profile') }}">Editar Perfil</a>
-                <a href="{{ url_for('formato_tutoria') }}">Historial de tutorias</a>
+                <a href="{{ url_for('listar_formato') }}">Historial de tutorias</a>
                 <a href="{{ url_for('teacher_profile') }}">Mi Perfil</a>
                 <a href="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}">Mis Tutorías</a>
                 <a href="{{ url_for('listar_tutorias_apartadas', docente_id=docente.id) }}">Tutorías Programadas</a>

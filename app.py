@@ -899,6 +899,128 @@ def listar_formato():
 
     return render_template('listar_formato.html', formatos=formatos)
 
+@app.route('/exportar_csv/<int:docente_id>', methods=['GET'])
+def exportar_csv(docente_id):
+    # Consultar tutorías del docente que tengan inscripciones
+    tutorias_inscritas = (
+        Inscripcion.query
+        .join(Tutoria)  # Unir con la tabla de tutorías
+        .join(HorariosTutoria)  # Unir con la tabla de horarios
+        .filter(Tutoria.docente_id == docente_id)  # Filtrar por el docente
+        .filter(
+            (HorariosTutoria.estado != 'Disponible') & 
+            (HorariosTutoria.estado != 'No disponible')
+        )  # Solo mostrar horarios ocupados
+        .distinct()  # Evitar duplicados
+        .all()  # Obtener todos los resultados
+    )
+    
+    # Verificar si la consulta devuelve datos
+    if not tutorias_inscritas:
+        print(f"No se encontraron tutorías para el docente con ID {docente_id}.")
+        return "No hay tutorías inscritas para este docente."
+
+    print(f"Se encontraron {len(tutorias_inscritas)} inscripciones.")
+    for inscripcion in tutorias_inscritas:
+        print(f"Estudiante: {inscripcion.estudiante.nombre_completo}, "
+              f"Tutoria: {inscripcion.tutoria.codigo}, "
+              f"Horario: {inscripcion.horario.dia} {inscripcion.horario.hora}, "
+              f"Fecha Inscripción: {inscripcion.fecha_inscripcion}")
+
+    # Crear el archivo CSV en memoria con StringIO
+    output = io.StringIO()
+    writer = csv.writer(output, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+    # Escribir los encabezados de la tabla
+    writer.writerow(['Estudiante', 'Tutoria', 'Horario', 'Fecha de Inscripción'])
+
+    # Escribir los datos
+    for inscripcion in tutorias_inscritas:
+        estudiante_nombre = inscripcion.estudiante.nombre_completo
+        tutoria_codigo = inscripcion.tutoria.codigo
+        horario_info = f"{inscripcion.horario.dia} {inscripcion.horario.hora}"
+        fecha_inscripcion = inscripcion.fecha_inscripcion.strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Asegurarse de que estamos escribiendo en el archivo
+        print(f"Escribiendo fila: {estudiante_nombre}, {tutoria_codigo}, {horario_info}, {fecha_inscripcion}")
+        writer.writerow([estudiante_nombre, tutoria_codigo, horario_info, fecha_inscripcion])
+
+    # Mover el cursor de la cadena al inicio antes de enviarlo
+    output.seek(0)
+
+    # Devolver el archivo CSV como respuesta
+    return send_file(io.BytesIO(output.getvalue().encode('utf-8')), 
+                     mimetype='text/csv', 
+                     as_attachment=True, 
+                     download_name='tutorias_programadas.csv')
+
+@app.route('/exportar_pdf/<int:docente_id>', methods=['GET'])
+def exportar_pdf(docente_id):
+    # Consultar tutorías del docente que tengan inscripciones
+    tutorias_inscritas = (
+        Inscripcion.query
+        .join(Tutoria)  # Unir con la tabla de tutorías
+        .join(HorariosTutoria)  # Unir con la tabla de horarios
+        .filter(Tutoria.docente_id == docente_id)  # Filtrar por el docente
+        .filter(
+            (HorariosTutoria.estado != 'Disponible') & 
+            (HorariosTutoria.estado != 'No disponible')
+        )  # Solo mostrar horarios ocupados
+        .distinct()  # Evitar duplicados
+        .all()  # Obtener todos los resultados
+    )
+
+    # Verificar si la consulta devuelve datos
+    if not tutorias_inscritas:
+        print(f"No se encontraron tutorías para el docente con ID {docente_id}.")
+        return "No hay tutorías inscritas para este docente."
+
+    print(f"Se encontraron {len(tutorias_inscritas)} inscripciones.")
+    for inscripcion in tutorias_inscritas:
+        print(f"Estudiante: {inscripcion.estudiante.nombre_completo}, "
+              f"Tutoria: {inscripcion.tutoria.codigo}, "
+              f"Horario: {inscripcion.horario.dia} {inscripcion.horario.hora}, "
+              f"Fecha Inscripción: {inscripcion.fecha_inscripcion}")
+
+    # Crear el archivo PDF en memoria
+    output = io.BytesIO()
+    c = canvas.Canvas(output, pagesize=letter)
+    width, height = letter
+
+    # Título del documento
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(100, height - 40, "Inscripciones a Tutorías")
+
+    # Configurar el contenido en el PDF
+    y_position = height - 80
+    c.setFont("Helvetica", 12)
+
+    # Agregar los datos de las inscripciones
+    for inscripcion in tutorias_inscritas:
+        estudiante_nombre = inscripcion.estudiante.nombre_completo
+        tutoria_codigo = inscripcion.tutoria.codigo
+        horario_info = f"{inscripcion.horario.dia} {inscripcion.horario.hora}"
+        fecha_inscripcion = inscripcion.fecha_inscripcion.strftime('%Y-%m-%d %H:%M:%S')
+
+        # Escribir la fila
+        c.drawString(100, y_position, f"Estudiante: {estudiante_nombre},")
+        c.drawString(100, y_position - 20, f"Tutoria: {tutoria_codigo},")
+        c.drawString(100, y_position - 40, f"Horario: {horario_info},")
+        c.drawString(100, y_position - 60, f"Fecha Inscripción: {fecha_inscripcion}")
+        y_position -= 80
+
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 40
+
+    # Finalizar y guardar el PDF
+    c.save()
+
+    # Mover el puntero al principio del archivo para enviarlo
+    output.seek(0)
+
+    # Devolver el archivo PDF como respuesta
+    return send_file(output, mimetype='application/pdf', as_attachment=True, download_name='tutorias_programadas.pdf')
 
 if __name__ == '__main__':
     app.run(debug=True)  # Inicia la aplicación en modo debug
