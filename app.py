@@ -10,6 +10,7 @@ import csv
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from apscheduler.schedulers.background import BackgroundScheduler
+from flask_login import current_user
 
 
 app = Flask(__name__)
@@ -917,6 +918,7 @@ def obtener_periodo_academico():
  
 @app.route('/formato_tutoria/<int:inscripcion_id>', methods=['GET', 'POST'])
 def formato_tutoria(inscripcion_id):
+    
     user = current_user
 
     # Obtener la inscripción desde la base de datos

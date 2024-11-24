@@ -69,9 +69,9 @@ class FormatoTutoria(db.Model):
     docente_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
     periodo_academico = db.Column(db.String(50), nullable=False)
     estudiante_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
-    codigo_estudiante = db.Column(db.String(20), nullable=False)
-    semestre_estudiante = db.Column(db.String(20), nullable=False)
-    asignatura = db.Column(db.String(100), nullable=False)  # Equivalente a espacio académico
+    codigo = db.Column(db.String(20), nullable=False)
+    semestre = db.Column(db.String(20), nullable=False)
+    espacio_academico = db.Column(db.String(100), nullable=False)  # Equivalente a espacio académico
     temas_tratados = db.Column(db.Text, nullable=True)
     fecha_realizacion = db.Column(db.Date, nullable=False)
 
