@@ -95,6 +95,7 @@ pip install Flask
 pip install Flask-Bcrypt
 pip install Flask-SQLAlchemy
 pip install Flask-Session
+pip install reportlab
 
 # Integrantes proyecto:
 

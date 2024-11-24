@@ -15,7 +15,7 @@
                 <input 
                     type="text" 
                     id="searchInput" 
-                    placeholder="Buscar por tutoria, día, hora o estado..." 
+                    placeholder="Buscar por tutoria, horario o estudiante..." 
                     onkeyup="filterTutoriasProgramadas()" 
                     class="search-box">
             </div>
@@ -59,6 +59,11 @@
 
         <div class="button">
             <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+            <a href="{{ url_for('exportar_csv', docente_id=docente_id) }}" class="btn">Exportar CSV</a>
+            <a href="{{ url_for('exportar_pdf', docente_id=docente_id) }}" class="btn">Exportar PDF</a>
+        </div>
+        <div class="button">
+            
         </div>
     </div>
 </body>
@@ -69,14 +74,12 @@
         const rows = document.querySelectorAll('#tutoriasProgramadasTable tbody tr');
 
         rows.forEach(row => {
-            const tutoria = row.cells[1].textContent.toLowerCase(); // Columna nombre tutoria
-            const dia = row.cells[2].textContent.toLowerCase(); // Columna Día
-            const hora = row.cells[3].textContent.toLowerCase(); // Columna Hora
-            const estado = row.cells[4].textContent.toLowerCase(); // Columna Estado
+            const tutoria = row.cells[1].textContent.toLowerCase(); // Columna Espacio Académico
+            const dia = row.cells[2].textContent.toLowerCase(); // Columna Día y Hora
+            const estudiante = row.cells[3].textContent.toLowerCase(); // Columna Estudiantes Inscritos
 
-            // Verifica si el valor de búsqueda coincide con Tutoría o Estado
-            if (tutoria.includes(searchInput) || dia.includes(searchInput) || hora.includes(searchInput)
-            || estado.includes(searchInput)) {
+            // Verifica si el valor de búsqueda coincide con Tutoria, Día, Hora o Estudiante
+            if (tutoria.includes(searchInput) || dia.includes(searchInput) || estudiante.includes(searchInput)) {
                 row.style.display = ''; // Mostrar la fila
             } else {
                 row.style.display = 'none'; // Ocultar la fila
