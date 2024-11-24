@@ -22,77 +22,50 @@
         {% endwith %}
 
         <!-- Formulario -->
-        <form action="{{ url_for('formato_tutoria') }}" method="POST">
-            <!-- Campo para seleccionar el docente -->
+        <form method="POST">
             <div>
-                <label for="docente_id">Docente:</label>
-                <select id="docente_id" name="docente_id" required>
-                    <option value="">Seleccionar Docente</option>
-                    {% for docente in docentes %}
-                        <option value="{{ docente.id }}">{{ docente.username }}</option>
+                <label>Docente</label>
+                <input type="text" name="docente" value="{{ inscripcion.tutoria.docente.nombre_completo }}" disabled>
+            </div>
+            <div>
+                <label>Estudiante</label>
+                <input type="text" name="estudiante" value="{{ inscripcion.estudiante.nombre_completo }}" disabled>
+            </div>
+            <div>
+                <label>Periodo Académico</label>
+                <input type="text" name="periodo_academico" value ="{{ periodo_academico }}" required>
+
+            </div>
+            <div>
+                <label>Código</label>
+                <input type="text" name="codigo" value="{{ inscripcion.estudiante.estudiantes.codigo }}" required>
+            </div>
+            <div>
+                <label>Semestre</label>
+                <input type="text" name="semestre" required>
+            </div>
+            <div>
+                <label>Espacio Académico</label>
+                <input type="text" name="espacio_academico" value="{{inscripcion.tutoria.espacio_academico}}" required>
+            </div>
+            <div>
+                <label>Temas Tratados</label>
+                <textarea name="temas_tratados" required></textarea>
+            </div>
+            <div>
+                <label>Compromisos Adquiridos</label>
+                <select name="compromisos" multiple>
+                    {% for compromiso in compromisos %}
+                        <option value="{{ compromiso.id }}">{{ compromiso.descripcion }}</option>
                     {% endfor %}
                 </select>
             </div>
-
-            <!-- Campo para el estudiante (solo lectura) -->
             <div>
-                <label for="estudiante">Estudiante:</label>
-                <input type="text" id="estudiante" value="{{ current_user.username }}" readonly>
-                <input type="hidden" name="estudiante_id" value="{{ current_user.id }}">
+                <label>Fecha de Realización</label>
+                <input type="date" name="fecha_realizacion" required>
             </div>
-
-            <!-- Campo para seleccionar la tutoría -->
-            <div>
-                <label for="tutoria_id">Tutoría:</label>
-                <select id="tutoria_id" name="tutoria_id" required>
-                    <option value="">Seleccionar Tutoría</option>
-                    {% for tutoria in tutorias %}
-                        <option value="{{ tutoria.id }}">{{ tutoria.codigo }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <!-- Campo para el período académico -->
-            <div>
-                <label for="periodo_academico">Período Académico:</label>
-                <input type="text" id="periodo_academico" name="periodo_academico" required>
-            </div>
-
-            <!-- Campo para el código -->
-            <div>
-                <label for="codigo">Código:</label>
-                <input type="text" id="codigo" name="codigo" required>
-            </div>
-
-            <!-- Campo para el semestre -->
-            <div>
-                <label for="semestre">Semestre:</label>
-                <input type="text" id="semestre" name="semestre" required>
-            </div>
-
-            <!-- Campo para el espacio académico -->
-            <div>
-                <label for="espacio_academico">Espacio Académico:</label>
-                <input type="text" id="espacio_academico" name="espacio_academico" required>
-            </div>
-
-            <!-- Campo para los temas tratados -->
-            <div>
-                <label for="temas_tratados">Temas Tratados:</label>
-                <textarea id="temas_tratados" name="temas_tratados"></textarea>
-            </div>
-
-            <!-- Campo para la fecha de realización -->
-            <div>
-                <label for="fecha_realizacion">Fecha de Realización:</label>
-                <input type="date" id="fecha_realizacion" name="fecha_realizacion" required>
-            </div>
-
-            <!-- Botones -->
-            <div>
-                <button type="submit">Guardar Formato</button>
-                <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
-            </div>
+        
+            <button type="submit">Guardar Formato</button>
         </form>
     </div>
 </body>

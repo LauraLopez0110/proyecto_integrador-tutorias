@@ -899,34 +899,58 @@ def editar_inscripcion(inscripcion_id):
         materia=materia,
         horarios_disponibles=horarios_disponibles
     )
+   
+def obtener_periodo_academico():
+    # Obtener el año actual
+    anio_actual = datetime.now().year
     
-@app.route('/formato_tutoria', methods=['GET', 'POST'])
-@login_required
-def formato_tutoria():
+    # Obtener el mes actual
+    mes_actual = datetime.now().month
+    
+    # Determinar el semestre basado en el mes
+    if 1 <= mes_actual <= 6:
+        semestre = 1  # Primer semestre
+    else:
+        semestre = 2  # Segundo semestre
+
+    # Formato YYYY-S, donde YYYY es el año y S es el semestre
+    return f"{anio_actual}-{semestre}"
+ 
+@app.route('/formato_tutoria/<int:inscripcion_id>', methods=['GET', 'POST'])
+def formato_tutoria(inscripcion_id):
+    user = current_user
+
+    # Obtener la inscripción desde la base de datos
+    inscripcion = Inscripcion.query.get_or_404(inscripcion_id)
+    
+    # Obtener el periodo académico antes del formulario
+    periodo_academico = obtener_periodo_academico()
+    
     if request.method == 'POST':
         # Capturar datos del formulario
-        docente_id = request.form.get('docente')
-        tutoria_id = request.form.get('tutoria')
-        periodo_academico = request.form.get('periodo_academico')
+        docente_id = inscripcion.tutoria.docente_id
+        estudiante_id = inscripcion.estudiante_id
+        tutoria_id = inscripcion.tutoria_id
         codigo = request.form.get('codigo')
         semestre = request.form.get('semestre')
         espacio_academico = request.form.get('espacio_academico')
         temas_tratados = request.form.get('temas_tratados') or None  # Opcional
+        compromisos_adquiridos = request.form.getlist('compromisos')  # Lista de compromisos
         fecha_realizacion = request.form.get('fecha_realizacion')
 
         # Validar campos obligatorios
-        if not all([docente_id,tutoria_id,periodo_academico,codigo,semestre,espacio_academico, temas_tratados,fecha_realizacion]):
+        if not all([periodo_academico, codigo, semestre, espacio_academico, temas_tratados, fecha_realizacion]):
             flash('Todos los campos obligatorios deben completarse.', 'danger')
-            return redirect(url_for('formato_tutoria'))
+            return redirect(url_for('formato_tutoria', inscripcion_id=inscripcion_id))
 
         # Crear y guardar el nuevo formato
         nuevo_formato = FormatoTutoria(
-            docente_id=int(docente_id),
-             estudiante_id=current_user.id,
-            tutoria_id=int(tutoria_id),
+            docente_id=docente_id,
+            estudiante_id=estudiante_id,
+            tutoria_id=tutoria_id,
             periodo_academico=periodo_academico,
             codigo=codigo,
-            semestre= semestre,
+            semestre=semestre,
             espacio_academico=espacio_academico,
             temas_tratados=temas_tratados,
             fecha_realizacion=fecha_realizacion
@@ -934,15 +958,31 @@ def formato_tutoria():
         db.session.add(nuevo_formato)
         db.session.commit()
 
+        # Agregar compromisos
+        for compromiso_id in compromisos_adquiridos:
+            compromiso = Compromiso.query.get(compromiso_id)
+            nuevo_formato_compromiso = FormatoTutoriaCompromiso(formato_tutoria_id=nuevo_formato.id, compromiso_id=compromiso.id)
+            db.session.add(nuevo_formato_compromiso)
+
+        db.session.commit()
+
         flash('Formato de tutoría guardado exitosamente.', 'success')
         return redirect(url_for('dashboard'))
 
     # Consultar datos para el formulario
     docentes = User.query.filter_by(role='teacher').all()
-    estudiantes = User.query.filter_by(role='student').all()
     tutorias = Tutoria.query.all()
+    compromisos = Compromiso.query.all()
 
-    return render_template('formato_tutoria.html', docentes=docentes, estudiantes=estudiantes, tutorias=tutorias)
+    return render_template('formato_tutoria.html',
+                           docentes=docentes,
+                           tutorias=tutorias,
+                           compromisos=compromisos,
+                           user=user,
+                           inscripcion=inscripcion,
+                           periodo_academico=periodo_academico)  # Aquí pasamos el periodo académico
+
+
 
 @app.route('/listar_formato', methods=['GET'])
 def listar_formato():

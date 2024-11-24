@@ -47,7 +47,7 @@
                             <p>{{ inscripcion.estudiante.nombre_completo }}</p>
                         </td>
                             <td>
-                                <a href="" class="btn">Llenar Formulario</a> <!-- Acción para llenar formulario -->
+                                <a href="{{ url_for('formato_tutoria', inscripcion_id=inscripcion.id) }}">Llenar formato</a> <!-- Acción para llenar formulario -->
                             </td>
                         </tr>
                     {% endfor %}
