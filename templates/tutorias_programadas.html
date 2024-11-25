@@ -21,7 +21,7 @@
             <input 
                 type="text" 
                 id="searchInput" 
-                placeholder="Buscar por tutoria, horario o estudiante..." 
+                placeholder="Buscar por tutoría, horario o estudiante..." 
                 onkeyup="filterTutoriasProgramadas()" 
                 class="search-box">
         </div>
@@ -33,8 +33,8 @@
                     <tr>
                         <th>Código</th>
                         <th>Espacio Académico</th>
-                        <th>Horarios</th>
-                        <th>Estudiantes Inscritos</th>
+                        <th>Horario</th>
+                        <th>Estudiante Inscrito</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -59,13 +59,10 @@
         <p class="message">No hay tutorías programadas para este docente.</p>
         {% endif %}
 
-        <div class="button">
-            <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
-            <a href="{{ url_for('exportar_csv', docente_id=docente_id) }}" class="btn">Exportar CSV</a>
-            <a href="{{ url_for('exportar_pdf', docente_id=docente_id) }}" class="btn">Exportar PDF</a>
-        </div>
-        <div class="button">
-            
+        <div class="button-container">
+            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+            <a href="{{ url_for('exportar_csv_tutorias_programadas', docente_id=docente_id) }}" class="button">Exportar CSV</a>
+            <a href="{{ url_for('exportar_pdf_tutorias_programadas', docente_id=docente_id) }}" class="button">Exportar PDF</a>
         </div>
     </div>
 
@@ -82,9 +79,9 @@
             rows.forEach(row => {
                 const tutoria = row.cells[1].textContent.toLowerCase(); // Columna Espacio Académico
                 const dia = row.cells[2].textContent.toLowerCase(); // Columna Día y Hora
-                const estudiante = row.cells[3].textContent.toLowerCase(); // Columna Estudiantes Inscritos
+                const estudiante = row.cells[3].textContent.toLowerCase(); // Columna Estudiante Inscrito
 
-                // Verifica si el valor de búsqueda coincide con Tutoria, Día, Hora o Estudiante
+                // Verifica si el valor de búsqueda coincide con Tutoría, Día, Hora o Estudiante
                 if (tutoria.includes(searchInput) || dia.includes(searchInput) || estudiante.includes(searchInput)) {
                     row.style.display = ''; // Mostrar la fila
                 } else {
