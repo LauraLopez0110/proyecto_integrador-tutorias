@@ -11,6 +11,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask_login import current_user
+from sqlalchemy.orm import joinedload
 
 
 app = Flask(__name__)
@@ -916,13 +917,22 @@ def obtener_periodo_academico():
     # Formato YYYY-S, donde YYYY es el año y S es el semestre
     return f"{anio_actual}-{semestre}"
  
+ 
 @app.route('/formato_tutoria/<int:inscripcion_id>', methods=['GET', 'POST'])
 def formato_tutoria(inscripcion_id):
     
     user = current_user
 
-    # Obtener la inscripción desde la base de datos
-    inscripcion = Inscripcion.query.get_or_404(inscripcion_id)
+    # Consultar datos para el formulario
+    docentes = User.query.filter_by(role='teacher').all()
+    tutorias = Tutoria.query.all()
+    compromisos = Compromiso.query.all()
+    
+    # Obtener la inscripción con las relaciones 'estudiante' y 'tutoria' cargadas
+    inscripcion = Inscripcion.query.options(
+        joinedload(Inscripcion.estudiante),  # Cargar la relación 'estudiante'
+        joinedload(Inscripcion.tutoria)  # Cargar la relación 'tutoria'
+    ).get_or_404(inscripcion_id)
     
     # Obtener el periodo académico antes del formulario
     periodo_academico = obtener_periodo_academico()
@@ -968,25 +978,6 @@ def formato_tutoria(inscripcion_id):
 
         # Si hay un compromiso nuevo, crear uno y agregarlo
         if nuevo_compromiso:
-            # Crear el nuevo compromiso y guardarlo en la base de datos
-            compromiso_nuevo = Compromiso(descripcion=nuevo_compromiso)
-            db.session.add(compromiso_nuevo)
-            db.session.commit()
-
-            # Agregar el nuevo compromiso al formato de tutoría
-            nuevo_formato_compromiso = FormatoTutoriaCompromiso(formato_tutoria_id=nuevo_formato.id, compromiso_id=compromiso_nuevo.id)
-            db.session.add(nuevo_formato_compromiso)
-
-        db.session.commit()
-
-        # Agregar compromisos seleccionados
-        for compromiso_id in compromisos_adquiridos:
-            compromiso = db.session.get(Compromiso, compromiso_id)
-            nuevo_formato_compromiso = FormatoTutoriaCompromiso(formato_tutoria_id=nuevo_formato.id, compromiso_id=compromiso.id)
-            db.session.add(nuevo_formato_compromiso)
-
-        # Si hay un compromiso nuevo, crear uno y agregarlo
-        if nuevo_compromiso:
             compromiso_nuevo = Compromiso(descripcion=nuevo_compromiso)
             db.session.add(compromiso_nuevo)
             db.session.commit()
@@ -996,31 +987,21 @@ def formato_tutoria(inscripcion_id):
 
         db.session.commit()
 
-        # **Marcar inscripción como completada y liberar el horario**
-        inscripcion.estado = 'completada'  # Asumiendo que hay un campo 'estado' en Inscripcion
-        db.session.commit()
+        # **Liberar el horario asociado a la inscripción**
+        horario = inscripcion.horario
+        if horario:
+            horario.estado = 'disponible'
+            db.session.commit()
 
-        # Liberar el horario asociado a la inscripción (suponiendo que tienes un campo horario_id en la inscripción)
-        horario = inscripcion.horario  # Obtén el horario de la inscripción
-        horario.estado = 'disponible'  # Cambiar el estado a disponible
-        db.session.commit()
-
-        # Obtener la relación 'estudiante' antes de eliminar la inscripción
-        estudiante = inscripcion.estudiante  # Accede a la relación antes de eliminar
-
-        # Eliminar la inscripción
+        # **Eliminar la inscripción después de todo el proceso**
         db.session.delete(inscripcion)
         db.session.commit()
 
-# Ahora puedes usar 'estudiante' sin problemas
+        flash('Formato de tutoría guardado y inscripción eliminada exitosamente.', 'success')
+        
+        # **Redirigir después de la eliminación** para evitar recargar la misma página
+        return redirect(url_for('dashboard'))  # Redirigir a la página deseada (por ejemplo, la página principal)
 
-        # Confirmación de éxito
-        flash('Formato de tutoría guardado exitosamente.', 'success')
-
-    # Consultar datos para el formulario
-    docentes = User.query.filter_by(role='teacher').all()
-    tutorias = Tutoria.query.all()
-    compromisos = Compromiso.query.all()
 
     return render_template('formato_tutoria.html',
                            docentes=docentes,
@@ -1028,16 +1009,77 @@ def formato_tutoria(inscripcion_id):
                            compromisos=compromisos,
                            user=user,
                            inscripcion=inscripcion,
-                           periodo_academico=periodo_academico)  # Aquí pasamos el periodo académico
+                           periodo_academico=periodo_academico)
 
 
 
 @app.route('/listar_formato', methods=['GET'])
 def listar_formato():
-    # Obtener todos los formatos de tutoría
-    formatos = FormatoTutoria.query.all()
+    # Obtener el ID del usuario desde la sesión
+    user_id = session.get('user_id')
 
-    return render_template('listar_formato.html', formatos=formatos)
+    if not user_id:
+        # Si no hay usuario en la sesión, redirigir o mostrar un error
+        flash('No estás autenticado.', 'danger')
+        return redirect(url_for('login'))
+
+    # Obtener el usuario completo
+    user = User.query.get(user_id)
+
+    if not user:
+        flash('Usuario no encontrado.', 'danger')
+        return redirect(url_for('login'))
+
+    # Filtrar los formatos de tutoría solo para el docente que ha iniciado sesión
+    formatos = FormatoTutoria.query.filter_by(docente_id=user.id).all()
+
+    # Obtener los compromisos relacionados a cada formato de tutoría
+    for formato in formatos:
+        # Accede a los compromisos a través de la relación compromiso_relaciones
+        formato.compromisos_adquiridos = [rel.compromiso.descripcion for rel in formato.compromiso_relaciones]
+
+    return render_template('listar_formato.html', formatos=formatos, user=user)
+
+
+
+
+@app.route('/editar_formato/<int:id>', methods=['GET', 'POST'])
+def editar_formato(id):
+    formato = FormatoTutoria.query.get_or_404(id)
+
+    if request.method == 'POST':
+        # Actualizar los temas tratados
+        formato.temas_tratados = request.form.get('temas_tratados') or None
+
+        # Actualizar los compromisos adquiridos
+        compromisos_ids = request.form.getlist('compromisos')  # Lista de IDs de compromisos seleccionados
+        # Limpiar los compromisos actuales del formato
+        FormatoTutoriaCompromiso.query.filter_by(formato_tutoria_id=id).delete()
+
+        # Agregar los nuevos compromisos
+        for compromiso_id in compromisos_ids:
+            nuevo_compromiso = FormatoTutoriaCompromiso(
+                formato_tutoria_id=id,
+                compromiso_id=compromiso_id
+            )
+            db.session.add(nuevo_compromiso)
+
+        # Guardar los cambios
+        db.session.commit()
+        flash('Formato de tutoría actualizado correctamente.', 'success')
+        return redirect(url_for('listar_formato'))
+
+    # Obtener todos los compromisos disponibles para mostrarlos en el formulario
+    compromisos_disponibles = Compromiso.query.all()
+    compromisos_asignados = [relacion.compromiso_id for relacion in formato.compromiso_relaciones]
+
+    return render_template(
+        'edit_formato.html',
+        formato=formato,
+        compromisos_disponibles=compromisos_disponibles,
+        compromisos_asignados=compromisos_asignados
+    )
+
 
 @app.route('/exportar_csv/<int:docente_id>', methods=['GET'])
 def exportar_csv(docente_id):

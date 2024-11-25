@@ -4,11 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de Tutorías</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='tablas.css') }}">
 </head>
 <body>
     <div class="container">
         <h1>Listado de Formatos de Tutoría</h1>
+
+            <!-- Barra de búsqueda -->
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Buscar por tutoria, horario o estudiante..." 
+                    onkeyup="filterHistorialTutorias()" 
+                    class="search-box">
+            </div>
+
         <!-- Mostrar mensajes flash -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -20,28 +31,40 @@
             {% endif %}
         {% endwith %}
         <!-- Tabla de formatos -->
-        <table border="1">
+        <table id="historialTutoriasTable">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Docente</th>
                     <th>Estudiante</th>
-                    <th>Tutoría</th>
+                    <th>Código Tutoría</th>
                     <th>Espacio Académico</th>
                     <th>Temas Tratados</th>
+                    <th>Compromisos Adquiridos</th>
                     <th>Fecha</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for formato in formatos %}
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td>{{ formato.docente.username }}</td>
-                    <td>{{ formato.estudiante.username }}</td>
+                    <td>{{ formato.docente.nombre_completo }}</td>
+                    <td>{{ formato.estudiante.nombre_completo }}</td>
                     <td>{{ formato.tutoria.codigo }}</td>
                     <td>{{ formato.espacio_academico }}</td>
                     <td>{{ formato.temas_tratados or "N/A" }}</td>
-                    <td>{{ formato.fecha }}</td>
+                    <td>
+                        {% if formato.compromisos_adquiridos %}
+                            {{ formato.compromisos_adquiridos | join(', ') }}
+                        {% else %}
+                            No hay compromisos
+                        {% endif %}
+                    </td>
+                    <td>{{ formato.fecha_realizacion }}</td>
+                    <td>
+                        <a href="{{ url_for('editar_formato', id=formato.id) }}">Editar Formato</a>
+                    </td>
                 </tr>
                 {% else %}
                 <tr>
@@ -50,7 +73,29 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+        <div class="button">
+            <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+        </div>
     </div>
 </body>
+
+<script>
+    function filterHistorialTutorias() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#historialTutoriasTable tbody tr');
+
+        rows.forEach(row => {
+            const estudiante = row.cells[2].textContent.toLowerCase(); // Columna Estudiante
+            const tutoria = row.cells[4].textContent.toLowerCase(); // Columna Tutoria
+            const fecha = row.cells[7].textContent.toLowerCase(); // Columna Estudiantes Inscritos
+
+            // Verifica si el valor de búsqueda coincide con Tutoria, Día, Hora o Estudiante
+            if (estudiante.includes(searchInput) || tutoria.includes(searchInput) || fecha.includes(searchInput)) {
+                row.style.display = ''; // Mostrar la fila
+            } else {
+                row.style.display = 'none'; // Ocultar la fila
+            }
+        });
+    }
+</script>
 </html>
