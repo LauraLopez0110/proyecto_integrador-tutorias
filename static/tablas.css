@@ -30,7 +30,7 @@ body {
     border-radius: 8px;
     padding: 3rem;
     width: 100%;  /* Para que el contenedor ocupe todo el espacio disponible */
-    max-width: 600px; /* Establece un máximo para el ancho */
+    max-width: 800px; /* Establece un máximo para el ancho */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border: 1px solid #d8bfd8; /* Lila claro */
 }

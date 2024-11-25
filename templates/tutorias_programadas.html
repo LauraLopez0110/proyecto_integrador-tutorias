@@ -59,10 +59,13 @@
         <p class="message">No hay tutorías programadas para este docente.</p>
         {% endif %}
 
-        <div class="button-container">
-            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
-            <a href="{{ url_for('exportar_csv', docente_id=docente_id) }}" class="button">Exportar CSV</a>
-            <a href="{{ url_for('exportar_pdf', docente_id=docente_id) }}" class="button">Exportar PDF</a>
+        <div class="button">
+            <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+            <a href="{{ url_for('exportar_csv', docente_id=docente_id) }}" class="btn">Exportar CSV</a>
+            <a href="{{ url_for('exportar_pdf', docente_id=docente_id) }}" class="btn">Exportar PDF</a>
+        </div>
+        <div class="button">
+            
         </div>
     </div>
 
