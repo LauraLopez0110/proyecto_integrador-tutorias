@@ -1024,14 +1024,14 @@ def listar_formato():
         return redirect(url_for('login'))
 
     # Obtener el usuario completo
-    user = User.query.get(user_id)
+    user = session.get(User, user_id)
 
     if not user:
         flash('Usuario no encontrado.', 'danger')
         return redirect(url_for('login'))
 
     # Filtrar los formatos de tutoría solo para el docente que ha iniciado sesión
-    formatos = FormatoTutoria.query.filter_by(docente_id=user.id).all()
+    formatos = FormatoTutoria.query.filter_by(docente_id=user).all()
 
     # Obtener los compromisos relacionados a cada formato de tutoría
     for formato in formatos:
@@ -1114,7 +1114,7 @@ def listar_formato_estudiante():
 
 
 @app.route('/exportar_csv/<int:docente_id>', methods=['GET'])
-def exportar_csv(docente_id):
+def exportar_csv_tutorias_programadas(docente_id):
     # Consultar tutorías del docente que tengan inscripciones
     tutorias_inscritas = (
         Inscripcion.query
@@ -1169,7 +1169,7 @@ def exportar_csv(docente_id):
                      download_name='tutorias_programadas.csv')
 
 @app.route('/exportar_pdf/<int:docente_id>', methods=['GET'])
-def exportar_pdf(docente_id):
+def exportar_pdf_tutorias_programadas(docente_id):
     # Consultar tutorías del docente que tengan inscripciones
     tutorias_inscritas = (
         Inscripcion.query
@@ -1188,6 +1188,7 @@ def exportar_pdf(docente_id):
     if not tutorias_inscritas:
         print(f"No se encontraron tutorías para el docente con ID {docente_id}.")
         return "No hay tutorías inscritas para este docente."
+
 
     print(f"Se encontraron {len(tutorias_inscritas)} inscripciones.")
     for inscripcion in tutorias_inscritas:
@@ -1235,6 +1236,235 @@ def exportar_pdf(docente_id):
 
     # Devolver el archivo PDF como respuesta
     return send_file(output, mimetype='application/pdf', as_attachment=True, download_name='tutorias_programadas.pdf')
+
+@app.route('/exportar_csv_estudiante', methods=['GET'])
+def exportar_csv_estudiante():
+    # Obtener el ID del usuario desde la sesión
+    user_id = session.get('user_id')
+
+    if not user_id:
+        flash('No estás autenticado.', 'danger')
+        return redirect(url_for('login'))
+
+    # Obtener el usuario completo
+    user = User.query.get(user_id)
+
+    if not user or user.role != 'student':
+        flash('No tienes acceso a esta sección.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    # Filtrar los formatos de tutoría para el estudiante y ordenarlos por fecha de realización
+    formatos = FormatoTutoria.query.filter_by(estudiante_id=user.id).order_by(FormatoTutoria.fecha_realizacion).all()
+
+    if not formatos:
+        return "No hay formatos de tutoría registrados para este estudiante."
+
+    # Crear el archivo CSV en memoria
+    output = io.StringIO()
+    writer = csv.writer(output, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+    # Encabezados
+    writer.writerow(['Tutoría', 'Espacio Académico', 'Docente', 'Temas Tratados', 'Compromisos', 'Fecha de Tutoría'])
+
+    # Datos
+    for formato in formatos:
+        compromisos = ", ".join([rel.compromiso.descripcion for rel in formato.compromiso_relaciones])
+        temas_tratados = formato.temas_tratados  # Asumiendo que existe este campo en el modelo
+        writer.writerow([
+            formato.tutoria.codigo,
+            formato.espacio_academico,
+            formato.docente.nombre_completo,
+            temas_tratados,  # Añadimos los temas tratados
+            compromisos,
+            formato.fecha_realizacion.strftime('%Y-%m-%d')
+        ])
+
+    # Preparar el archivo para envío
+    output.seek(0)
+    return send_file(io.BytesIO(output.getvalue().encode('utf-8')),
+                     mimetype='text/csv',
+                     as_attachment=True,
+                     download_name='tutorias_estudiante.csv')
+
+
+
+@app.route('/exportar_pdf_estudiante', methods=['GET'])
+def exportar_pdf_estudiante():
+    user_id = session.get('user_id')
+
+    if not user_id:
+        flash('No estás autenticado.', 'danger')
+        return redirect(url_for('login'))
+
+    user = User.query.get(user_id)
+
+    if not user or user.role != 'student':
+        flash('No tienes acceso a esta sección.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    # Filtrar los formatos de tutoría para el estudiante y ordenarlos por fecha de realización
+    formatos = FormatoTutoria.query.filter_by(estudiante_id=user.id).order_by(FormatoTutoria.fecha_realizacion).all()
+
+    if not formatos:
+        return "No hay formatos de tutoría registrados para este estudiante."
+
+    # Crear el archivo PDF en memoria
+    output = io.BytesIO()
+    c = canvas.Canvas(output, pagesize=letter)
+    width, height = letter
+
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(100, height - 40, "Formatos de Tutoría - Estudiante")
+
+    y_position = height - 80
+    c.setFont("Helvetica", 12)
+
+    for formato in formatos:
+        compromisos = ", ".join([rel.compromiso.descripcion for rel in formato.compromiso_relaciones])
+        temas_tratados = formato.temas_tratados  # Asumiendo que existe este campo en el modelo
+        c.drawString(100, y_position, f"Tutoría: {formato.tutoria.codigo}")
+        c.drawString(100, y_position - 20, f"Espacio Académico: {formato.espacio_academico}")
+        c.drawString(100, y_position - 40, f"Docente: {formato.docente.nombre_completo}")
+        c.drawString(100, y_position - 60, f"Temas Tratados: {temas_tratados}")  # Añadimos los temas tratados
+        c.drawString(100, y_position - 80, f"Compromisos: {compromisos}")
+        c.drawString(100, y_position - 100, f"Fecha: {formato.fecha_realizacion.strftime('%Y-%m-%d')}")
+
+        # Ajustar la posición para la siguiente tutoría con un espacio adicional
+        y_position -= 140  # Espacio aumentado para separar tutorías
+
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 40
+
+    c.save()
+
+    output.seek(0)
+    return send_file(output, mimetype='application/pdf', as_attachment=True, download_name='tutorias_estudiante.pdf')
+
+@app.route('/exportar_csv_docente', methods=['GET'])
+def exportar_csv_docente():
+    user_id = session.get('user_id')
+
+    if not user_id:
+        flash('No estás autenticado.', 'danger')
+        return redirect(url_for('login'))
+
+    # Buscar el usuario con el user_id
+    user = User.query.get(user_id)
+
+    # Verificar si el usuario existe y si es docente
+    if not user or user.role != 'teacher':
+        flash('No tienes acceso a esta sección.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    # Obtener los formatos de tutoría para el docente
+    formatos = FormatoTutoria.query.filter_by(docente_id=user.id).all()
+
+    # Verificar si existen formatos
+    if not formatos:
+        return "No hay formatos de tutoría registrados para este docente."
+
+    output = io.StringIO()
+    writer = csv.writer(output, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    
+    # Agregar título con el nombre del docente
+    writer.writerow([f"Formatos de Tutoría - Docente: {user.nombre_completo}"])
+
+    writer.writerow(['Tutoría', 'Espacio Académico', 'Estudiantes', 'Temas Tratados', 'Compromisos', 'Fecha de Tutoría'])
+
+    # Procesar los formatos y escribir los datos en el CSV
+    for formato in formatos:
+        # Acceder al estudiante relacionado
+        estudiante = formato.estudiante
+        estudiantes_str = estudiante.nombre_completo if estudiante else "No hay estudiante asociado"
+
+        # Obtener los compromisos asociados al formato de tutoría
+        compromisos = ", ".join([rel.compromiso.descripcion for rel in formato.compromiso_relaciones])
+
+        # Escribir los datos de cada formato en el CSV
+        writer.writerow([
+            formato.codigo,
+            formato.espacio_academico,
+            estudiantes_str,
+            formato.temas_tratados,
+            compromisos,
+            formato.fecha_realizacion.strftime('%Y-%m-%d')
+        ])
+
+    output.seek(0)
+    return send_file(io.BytesIO(output.getvalue().encode('utf-8')),
+                     mimetype='text/csv',
+                     as_attachment=True,
+                     download_name='tutorias_docente.csv')
+
+
+
+@app.route('/exportar_pdf_docente', methods=['GET'])
+def exportar_pdf_docente():
+    user_id = session.get('user_id')
+
+    if not user_id:
+        flash('No estás autenticado.', 'danger')
+        return redirect(url_for('login'))
+
+    # Buscar el usuario con el user_id
+    user = User.query.get(user_id)
+
+    if not user or user.role != 'teacher':
+        flash('No tienes acceso a esta sección.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    # Obtener los formatos de tutoría para el docente y cargar las inscripciones
+    formatos = FormatoTutoria.query.options(
+        joinedload(FormatoTutoria.tutoria).joinedload(Tutoria.inscripciones)
+    ).filter_by(docente_id=user.id).all()
+
+    # Verificar si existen formatos
+    if not formatos:
+        return "No hay formatos de tutoría registrados para este docente."
+
+    output = io.BytesIO()
+    c = canvas.Canvas(output, pagesize=letter)
+    width, height = letter
+
+    # Título con el nombre del docente
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(100, height - 40, f"Formatos de Tutoría - Docente: {user.nombre_completo}")
+
+    y_position = height - 80
+    c.setFont("Helvetica", 12)
+
+    for formato in formatos:
+        # Acceder al estudiante relacionado
+        estudiante = formato.estudiante
+        estudiantes_str = estudiante.nombre_completo if estudiante else "No hay estudiante asociado"
+
+        # Obtener los compromisos asociados al formato de tutoría
+        compromisos = ", ".join([rel.compromiso.descripcion for rel in formato.compromiso_relaciones])
+
+        # Escribir los detalles de la tutoría en el PDF
+        c.drawString(100, y_position, f"Tutoría: {formato.tutoria.codigo}")
+        y_position -= 20
+        c.drawString(100, y_position, f"Espacio Académico: {formato.espacio_academico}")
+        y_position -= 20
+        c.drawString(100, y_position, f"Estudiantes: {estudiantes_str}")  # Estudiante único
+        y_position -= 20
+        c.drawString(100, y_position, f"Temas Tratados: {formato.temas_tratados}")
+        y_position -= 20
+        c.drawString(100, y_position, f"Compromisos: {compromisos}")
+        y_position -= 20
+        c.drawString(100, y_position, f"Fecha: {formato.fecha_realizacion.strftime('%Y-%m-%d')}")
+        y_position -= 40  # Espacio entre tutorías
+
+        # Si el espacio es poco, crea una nueva página
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 40
+
+    c.save()
+
+    output.seek(0)
+    return send_file(output, mimetype='application/pdf', as_attachment=True, download_name='tutorias_docente.pdf')
 
 if __name__ == '__main__':
     app.run(debug=True)  # Inicia la aplicación en modo debug

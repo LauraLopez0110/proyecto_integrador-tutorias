@@ -59,11 +59,8 @@
 
         <div class="button">
             <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
-            <a href="{{ url_for('exportar_csv', docente_id=docente_id) }}" class="btn">Exportar CSV</a>
-            <a href="{{ url_for('exportar_pdf', docente_id=docente_id) }}" class="btn">Exportar PDF</a>
-        </div>
-        <div class="button">
-            
+            <a href="{{ url_for('exportar_csv_tutorias_programadas', docente_id=docente_id) }}" class="btn">Exportar CSV</a>
+            <a href="{{ url_for('exportar_pdf_tutorias_programadas', docente_id=docente_id) }}" class="btn">Exportar PDF</a>
         </div>
     </div>
 </body>

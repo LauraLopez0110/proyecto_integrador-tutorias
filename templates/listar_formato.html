@@ -75,7 +75,10 @@
         </table>
         <div class="button">
             <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+            <a href="{{ url_for('exportar_csv_docente', docente_id=docente_id) }}" class="btn">Exportar CSV</a>
+            <a href="{{ url_for('exportar_pdf_docente', docente_id=docente_id) }}" class="btn">Exportar PDF</a>
         </div>
+        
     </div>
 </body>
 
