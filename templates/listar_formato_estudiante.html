@@ -15,7 +15,7 @@
                 <input 
                     type="text" 
                     id="searchInput" 
-                    placeholder="Buscar por estudiante, tutoria o fecha..." 
+                    placeholder="Buscar por docente, tutoria o fecha..." 
                     onkeyup="filterHistorialTutorias()" 
                     class="search-box">
             </div>
@@ -42,7 +42,6 @@
                     <th>Temas Tratados</th>
                     <th>Compromisos Adquiridos</th>
                     <th>Fecha</th>
-                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,9 +61,6 @@
                         {% endif %}
                     </td>
                     <td>{{ formato.fecha_realizacion }}</td>
-                    <td>
-                        <a href="{{ url_for('editar_formato', id=formato.id) }}">Editar Formato</a>
-                    </td>
                 </tr>
                 {% else %}
                 <tr>
@@ -85,12 +81,12 @@
         const rows = document.querySelectorAll('#historialTutoriasTable tbody tr');
 
         rows.forEach(row => {
-            const estudiante = row.cells[2].textContent.toLowerCase(); // Columna Estudiante
+            const docente = row.cells[1].textContent.toLowerCase(); // Columna Docente
             const tutoria = row.cells[4].textContent.toLowerCase(); // Columna Tutoria
             const fecha = row.cells[7].textContent.toLowerCase(); // Columna fecha
 
             // Verifica si el valor de búsqueda coincide con Tutoria, Día, Hora o Estudiante
-            if (estudiante.includes(searchInput) || tutoria.includes(searchInput) || fecha.includes(searchInput)) {
+            if (docente.includes(searchInput) || tutoria.includes(searchInput) || fecha.includes(searchInput)) {
                 row.style.display = ''; // Mostrar la fila
             } else {
                 row.style.display = 'none'; // Ocultar la fila

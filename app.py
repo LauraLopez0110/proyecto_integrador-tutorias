@@ -1080,6 +1080,38 @@ def editar_formato(id):
         compromisos_asignados=compromisos_asignados
     )
 
+@app.route('/listar_formato_estudiante', methods=['GET'])
+def listar_formato_estudiante():
+    # Obtener el ID del usuario desde la sesión
+    user_id = session.get('user_id')
+
+    if not user_id:
+        # Si no hay usuario en la sesión, redirigir o mostrar un error
+        flash('No estás autenticado.', 'danger')
+        return redirect(url_for('login'))
+
+    # Obtener el usuario completo
+    user = User.query.get(user_id)
+
+    if not user:
+        flash('Usuario no encontrado.', 'danger')
+        return redirect(url_for('login'))
+
+    # Verificar si el usuario es un estudiante
+    if not user.role == 'student':  # Cambia `es_estudiante` por el atributo o lógica que determina si es estudiante
+        flash('No tienes acceso a esta sección.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    # Filtrar los formatos de tutoría para el estudiante que ha iniciado sesión
+    formatos = FormatoTutoria.query.filter_by(estudiante_id=user.id).all()
+
+    # Obtener los compromisos relacionados a cada formato de tutoría
+    for formato in formatos:
+        # Accede a los compromisos a través de la relación compromiso_relaciones
+        formato.compromisos_adquiridos = [rel.compromiso.descripcion for rel in formato.compromiso_relaciones]
+
+    return render_template('listar_formato_estudiante.html', formatos=formatos, user=user)
+
 
 @app.route('/exportar_csv/<int:docente_id>', methods=['GET'])
 def exportar_csv(docente_id):
