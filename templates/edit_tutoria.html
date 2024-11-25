@@ -6,28 +6,21 @@
     <title>Editar Tutoría</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 </head>
-<style>
-    .button, button, a {
-        display: inline-block;
-        background-color: #1a5f7a;
-        color: white;
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: background-color 0.3s ease;
-        text-decoration: none;
-        max-height: 34px;
-    }
-</style>
 <body>
-    <div class="container">
-        <h1>Editar Tutoría</h1>
 
+    <!-- Encabezado -->
+    <header class="header">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
+    </header>
+    
+    <!-- Contenido principal -->
+    <main class="container">
+        <h1 class="title">Editar Tutoría</h1>
+
+        <!-- Mensajes Flash -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div>
+                <div class="flash-container">
                     {% for category, message in messages %}
                         <div class="flash {{ category }}">{{ message }}</div>
                     {% endfor %}
@@ -35,35 +28,50 @@
             {% endif %}
         {% endwith %}
 
-        <form method="post">
-            <label for="codigo">Código de la Tutoría</label>
-            <input type="text" id="codigo" name="codigo" 
-                   value="{{ tutoria.codigo }}" 
-                   placeholder="Código de la Tutoría" readonly required>
-        
-         
-            <label for="espacio_academico">Espacio Académico</label>
-            <input type="text" id="espacio_academico" name="espacio_academico" 
-                   value="{{ tutoria.espacio_academico }}" 
-                   placeholder="Espacio Académico" required>
-        
-            <label for="docente">Docente</label>
-            <select id="docente" name="docente" required>
-                <option value="">Seleccionar Docente</option>
-                {% for docente in docentes %}
-                    <option value="{{ docente.id }}" {% if docente.id == tutoria.docente_id %}selected{% endif %}>
-                        {{ docente.username }}
-                    </option>
-                {% endfor %}
-            </select>
+        <!-- Formulario para editar tutoría -->
+        <form method="post" class="form">
+            <div class="form-group">
+                <label for="codigo" class="form-label">Código de la Tutoría</label>
+                <input type="text" id="codigo" name="codigo" 
+                       value="{{ tutoria.codigo }}" 
+                       placeholder="Código de la Tutoría" 
+                       readonly class="form-input" required>
+            </div>
 
+            <div class="form-group">
+                <label for="espacio_academico" class="form-label">Espacio Académico</label>
+                <input type="text" id="espacio_academico" name="espacio_academico" 
+                       value="{{ tutoria.espacio_academico }}" 
+                       placeholder="Espacio Académico" 
+                       class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="docente" class="form-label">Docente</label>
+                <select id="docente" name="docente" class="form-select" required>
+                    <option value="">Seleccionar Docente</option>
+                    {% for docente in docentes %}
+                        <option value="{{ docente.id }}" {% if docente.id == tutoria.docente_id %}selected{% endif %}>
+                            {{ docente.username }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Botones -->
             <div class="button-container">
-                <button type="submit" class = "button">Guardar Cambios</button>
-                <a href="{{ url_for('manage_tutorias') }}" class="button">Volver a la lista de tutorías</a>
-                <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+                <button type="submit" class="button primary-button">Guardar Cambios</button>
+                <a href="{{ url_for('manage_tutorias') }}" class="button secondary-button">Volver a la lista de tutorías</a>
+                <a href="{{ url_for('dashboard') }}" class="button secondary-button">Volver al Dashboard</a>
                 <a href="{{ url_for('logout') }}" class="button logout-button">Cerrar Sesión</a>
             </div>
         </form>
-    </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="footer">
+        <p class="footer-text">Todos los derechos reservados</p>
+    </footer>
+
 </body>
 </html>

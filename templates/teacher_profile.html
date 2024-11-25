@@ -2,57 +2,69 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <title>Ver Perfil</title>
-
 </head>
 <body>
+    <!-- Encabezado -->
+    <header class="header">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
+    </header>
+    
     <div class="container">
         <div class="title-container">
-        <h1>Perfil del Profesor</h1>
+            <h1>Perfil del Profesor</h1>
         </div>
+
         <!-- Mensajes flash de éxito o error -->
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div>
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+        {% if messages %}
+            <div id="flash-messages">
+                {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
         {% endwith %}
 
         <!-- Mostrando los datos del docente -->
-        <div class="profile-field">
-            <label>Nombre Completo:</label>
-            <span class="profile-value">{{ profesor.docente.nombre_completo }}</span>
-        </div>
+        <div class="box">
+            <div class="profile-field">
+                <label>Nombre Completo:</label>
+                <span class="profile-value">{{ profesor.docente.nombre_completo }}</span>
+            </div>
 
-        <div class="profile-field">
-            <label>Identificación:</label>
-            <span class="profile-value">{{ profesor.docente.identificacion }}</span>
-        </div>
+            <div class="profile-field">
+                <label>Identificación:</label>
+                <span class="profile-value">{{ profesor.docente.identificacion }}</span>
+            </div>
         
-        <div class="profile-field">
-            <label>Departamento:</label>
-            <span class="profile-value">{{ profesor.departamento }}</span>
+            <div class="profile-field">
+                <label>Departamento:</label>
+                <span class="profile-value">{{ profesor.departamento }}</span>
+            </div>
+
+            <div class="profile-field">
+                <label>Fecha Ingreso:</label>
+                <span class="profile-value">{{ profesor.fecha_ingreso }}</span>
+            </div>
+
+            <div class="profile-field">
+                <label>Correo institucional:</label>
+                <span class="profile-value">{{ profesor.correo_institucional }}</span>
+            </div>
         </div>
 
-        <div class="profile-field">
-            <label>Fecha Ingreso:</label>
-            <span class="profile-value">{{ profesor.fecha_ingreso }}</span>
-        </div>
-
-        <div class="profile-field">
-            <label>Correo institucional:</label>
-            <span class="profile-value">{{ profesor.correo_institucional }}</span>
-        </div>
-
+        <!-- Botones -->
         <div class="button-container">
-        <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
-        <a href="{{ url_for('logout') }}"class="button logout-button">Cerrar Sesión</a>
-        </div>        
+            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+            <a href="{{ url_for('logout') }}" class="logout-button">Cerrar Sesión</a>
+        </div>
     </div>
+
+    <!-- Pie de página -->
+    <footer class="footer">
+        Todos los derechos reservados
+    </footer>
 </body>
 </html>

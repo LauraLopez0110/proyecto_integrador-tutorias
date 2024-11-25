@@ -5,7 +5,7 @@ body, html {
 }
 
 body {
-    display: flex;
+    width: 100%;
     justify-content: center;
     align-items: flex-start; /* Cambié 'center' por 'flex-start' */
     background-color: #e6e6fa;
@@ -36,7 +36,7 @@ body {
 }
 
 h1 {
-    color: #4b0082; /* Índigo (lila oscuro) */
+    color: #000000; /* Índigo (lila oscuro) */
     text-align: center;
     margin-bottom: 1.5rem;
     margin-top: 20px;
@@ -188,13 +188,14 @@ table {
 /* Estilo de las celdas de la tabla */
 th, td {
     padding: 10px;
-    text-align: left;
+    text-align: center;
     border: 1px solid #d8bfd8;
+    font-weight: bold;  /* Para hacer el texto en negrita */    
 }
 
 /* Estilo para los encabezados */
 th {
-    background-color: #4b0082;
+    background-color: #48bcea;
     color: white;
 }
 
@@ -228,7 +229,7 @@ td select {
     border-radius: 5px; /* Bordes redondeados */
     font-size: 1rem; /* Tamaño de la fuente */
     transition: background-color 0.3s; /* Transición suave para el cambio de color */
-    margin-top: 4px; /* Espaciado superior */
+    margin-top: 20px; /* Espaciado superior */
 }
 
 /* Estilo cuando el mouse pasa sobre el enlace (hover) */
@@ -236,18 +237,6 @@ td select {
     background-color: #45a049; /* Cambia el color de fondo al pasar el mouse */
 }
 
-button {
-    width: auto;
-    background-color: #4b0082; /* Índigo (lila oscuro) */
-    color: #fff;
-    padding: 8px 16px; /* Espaciado interno más amplio para que se vea mejor */
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-bottom: 5px; /* Espacio entre botones */
-}
 button:hover {
     background-color: #6a5acd; /* Azul pizarra */
 }

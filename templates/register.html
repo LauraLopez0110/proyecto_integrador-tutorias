@@ -5,17 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <title>Registro</title>
-
 </head>
 <body>
+
+    <!-- Encabezado -->
+    <header class="header">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
+    </header>
+
     <div class="container">
         <div class="title-container">
             <h1>Registrar Usuario</h1>
         </div>
 
+        <!-- Mensajes Flash -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div>
+                <div id="flash-messages">
                 {% for category, message in messages %}
                     <div class="flash {{ category }}">{{ message }}</div>
                 {% endfor %}
@@ -23,12 +29,21 @@
             {% endif %}
         {% endwith %}
 
+        <!-- Formulario -->
         <form method="post">
-            <input type="text" name="username" placeholder="Usuario" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <input type="text" name="identificacion" placeholder="Identificación" required>
-            <input type="text" name="nombre_completo" placeholder="Nombre Completo" required> <!-- Nuevo campo -->
-            
+            <div class="input-group username">
+                <input type="text" name="username" placeholder="Usuario" required>
+            </div>
+            <div class="input-group password">
+                <input type="password" name="password" placeholder="Contraseña" required>
+            </div>
+            <div class="input-group">
+                <input type="text" name="identificacion" placeholder="Identificación" required>
+            </div>
+            <div class="input-group">
+                <input type="text" name="nombre_completo" placeholder="Nombre Completo" required>
+            </div>
+
             <label for="role">Selecciona el tipo de usuario:</label>
             <select name="role" id="role" required onchange="toggleFields()">
                 <option value="" disabled selected>Seleccione un rol</option>
@@ -36,33 +51,36 @@
                 <option value="teacher">Profesor</option>
                 <option value="admin">Administrador</option>
             </select>
-            
-            <div id="student-fields" class="hidden">
-                <input type="text" name="codigo" placeholder="Código de Estudiante">
+
+            <!-- Campos Estudiante -->
+            <div id="student-fields" class="hidden box">
+                <input type="text"  name="codigo" placeholder="Código de Estudiante">
                 <input type="text" name="semestre" placeholder="Semestre">
                 <input type="text" name="programa_academico" placeholder="Programa Académico">
 
                 <label for="estado">Estado del Estudiante:</label>
-                <select name="estado" id="estado" required>
+                <select name="estado" id="estado">
                     <option value="activo">Activo</option>
                     <option value="inactivo">Inactivo</option>
                     <option value="graduado">Graduado</option>
                 </select>
             </div>  
 
-            <div id="teacher-fields" class="hidden">
+            <!-- Campos Profesor -->
+            <div id="teacher-fields" class="hidden box" type="hidden">
                 <input type="text" name="departamento" placeholder="Departamento">
                 <input type="date" name="fecha_ingreso" placeholder="Fecha de Ingreso">
                 <input type="email" name="correo_institucional" placeholder="Correo Institucional">
             </div>
 
-            <button type="submit">Registrar</button>
+            <button type="submit" class="submit">Registrar</button>
             <div class="button-container">
-                <a href="{{ url_for('dashboard') }}">Volver al dashboard</a>
-                </div>
-                
+                <a href="{{ url_for('dashboard') }}" class="button">Volver al dashboard</a>
+                <a href="{{ url_for('login') }}" class="button">Iniciar Sesión</a>
+            </div>
         </form>
-        <a href="{{ url_for('login') }}" class="button">Iniciar Sesión</a>
+
+        
     </div>
 
     <script>
@@ -74,35 +92,25 @@
             if (role === 'student') {
                 studentFields.classList.remove('hidden');
                 teacherFields.classList.add('hidden');
-                // Asegura que los campos de estudiante sean requeridos
-                document.querySelectorAll('#student-fields input').forEach(input => {
-                    input.setAttribute('required', 'true');
-                });
-                document.querySelectorAll('#teacher-fields input').forEach(input => {
-                    input.removeAttribute('required');
-                });
+                document.querySelectorAll('#student-fields input').forEach(input => input.setAttribute('required', 'true'));
+                document.querySelectorAll('#teacher-fields input').forEach(input => input.removeAttribute('required'));
             } else if (role === 'teacher') {
                 teacherFields.classList.remove('hidden');
                 studentFields.classList.add('hidden');
-                // Asegura que los campos de profesor sean requeridos
-                document.querySelectorAll('#teacher-fields input').forEach(input => {
-                    input.setAttribute('required', 'true');
-                });
-                document.querySelectorAll('#student-fields input').forEach(input => {
-                    input.removeAttribute('required');
-                });
+                document.querySelectorAll('#teacher-fields input').forEach(input => input.setAttribute('required', 'true'));
+                document.querySelectorAll('#student-fields input').forEach(input => input.removeAttribute('required'));
             } else {
                 studentFields.classList.add('hidden');
                 teacherFields.classList.add('hidden');
-                // Elimina los requisitos si no se selecciona ningún rol
-                document.querySelectorAll('#student-fields input').forEach(input => {
-                    input.removeAttribute('required');
-                });
-                document.querySelectorAll('#teacher-fields input').forEach(input => {
-                    input.removeAttribute('required');
-                });
+                document.querySelectorAll('#student-fields input, #teacher-fields input').forEach(input => input.removeAttribute('required'));
             }
         }
     </script>
+
+    <!-- Pie de página -->
+    <footer class="footer">
+        Todos los derechos reservados
+    </footer>
+
 </body>
 </html>
