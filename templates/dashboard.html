@@ -46,11 +46,11 @@
                 <a href="{{ url_for('manage_tutorias') }}" class="button">Gestionar Tutorías</a>
                 <a href="{{ url_for('register') }}" class="button">Registrar Nuevo Usuario</a>
             {% elif role == 'student' %}
-                <a href="{{ url_for('edit_profile') }}">Editar Perfil</a>
-                <a href="{{ url_for('listar_formato_estudiante') }}">Historial de tutorias</a>
-                <a href="{{ url_for('tutorias_disponibles') }}">Ver Tutorías Disponibles</a>
-                <a href="{{ url_for('student_profile') }}">Mi Perfil</a>
-                <a href="{{ url_for('listar_tutorias_inscritas') }}">Mis Tutorías</a>
+                <a href="{{ url_for('edit_profile') }}" class="button">Editar Perfil</a>
+                <a href="{{ url_for('listar_formato_estudiante') }}"class="button">Historial de tutorias</a>
+                <a href="{{ url_for('tutorias_disponibles') }}"class="button">Ver Tutorías Disponibles</a>
+                <a href="{{ url_for('student_profile') }}"class="button">Mi Perfil</a>
+                <a href="{{ url_for('listar_tutorias_inscritas') }}"class="button">Mis Tutorías</a>
             {% elif role == 'teacher' %}
                 <a href="{{ url_for('edit_profile') }}" class="button">Editar Perfil</a>
                 <a href="{{ url_for('listar_formato') }}" class="button">Historial de tutorías</a>
