@@ -1,5 +1,12 @@
 pip install Flask Flask-Bcrypt Flask-SQLAlchemy mysql-connector-python
 pip install flash
+pip install Flask
+pip install Flask-Bcrypt
+pip install Flask-SQLAlchemy
+pip install Flask-Session
+pip install Flask-Login
+pip install reportlab
+pip install apscheduler
 
 CREATE DATABASE users_db;
 
