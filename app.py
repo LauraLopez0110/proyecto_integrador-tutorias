@@ -854,13 +854,15 @@ def editar_inscripcion(inscripcion_id):
     # Obtener la inscripción actual
     inscripcion = Inscripcion.query.get(inscripcion_id)
     if not inscripcion:
-        flash("La inscripción no existe.", "error")
+        flash("La inscripción no existe.", "danger")
         return redirect(url_for('ver_inscripciones'))
 
     # Obtener información actual: horario y materia
     horario_actual = inscripcion.horario
     materia = inscripcion.tutoria.espacio_academico
 
+    flash("Para dejar el mismo horario, no seleccionar ninguno.", "info")
+    
     if request.method == 'POST':
         # Obtener el nuevo horario desde el formulario
         nuevo_horario_id = request.form.get('nuevo_horario')
