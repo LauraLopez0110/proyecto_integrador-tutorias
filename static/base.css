@@ -241,7 +241,9 @@ th {
     color: white;
 }
 
-
+.hidden {
+    display: none;
+}
 
 
 
