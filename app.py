@@ -1041,8 +1041,6 @@ def listar_formato():
     return render_template('listar_formato.html', formatos=formatos, user=user)
 
 
-
-
 @app.route('/editar_formato/<int:id>', methods=['GET', 'POST'])
 def editar_formato(id):
     formato = FormatoTutoria.query.get_or_404(id)
@@ -1051,21 +1049,50 @@ def editar_formato(id):
         # Actualizar los temas tratados
         formato.temas_tratados = request.form.get('temas_tratados') or None
 
-        # Actualizar los compromisos adquiridos
+        # Obtener los compromisos seleccionados
         compromisos_ids = request.form.getlist('compromisos')  # Lista de IDs de compromisos seleccionados
+        nuevos_compromisos = request.form.get('nuevo_compromiso')  # Nuevo compromiso escrito por el usuario
+
         # Limpiar los compromisos actuales del formato
         FormatoTutoriaCompromiso.query.filter_by(formato_tutoria_id=id).delete()
 
-        # Agregar los nuevos compromisos
-        for compromiso_id in compromisos_ids:
-            nuevo_compromiso = FormatoTutoriaCompromiso(
-                formato_tutoria_id=id,
-                compromiso_id=compromiso_id
-            )
-            db.session.add(nuevo_compromiso)
+        # Crear un conjunto para evitar duplicados
+        compromisos_actuales_ids = set([rel.compromiso_id for rel in formato.compromiso_relaciones])
 
-        # Guardar los cambios
+        # Agregar los compromisos seleccionados (sin duplicados)
+        for compromiso_id in compromisos_ids:
+            compromiso_id = int(compromiso_id)  # Asegúrate de que el ID sea un entero
+            if compromiso_id not in compromisos_actuales_ids:
+                nuevo_compromiso = FormatoTutoriaCompromiso(
+                    formato_tutoria_id=id,
+                    compromiso_id=compromiso_id
+                )
+                db.session.add(nuevo_compromiso)
+                compromisos_actuales_ids.add(compromiso_id)
+
+        # Si hay un nuevo compromiso, lo creamos y lo asociamos a la tutoría
+        if nuevos_compromisos:
+            # Verificar si el compromiso ya existe
+            compromiso_existente = Compromiso.query.filter_by(descripcion=nuevos_compromisos).first()
+
+            if not compromiso_existente:
+                # Crear un nuevo compromiso solo si no existe
+                compromiso = Compromiso(descripcion=nuevos_compromisos)
+                db.session.add(compromiso)  # Añadir el nuevo compromiso a la base de datos
+                db.session.commit()  # Commit para asegurar que el compromiso se guarde y tenga un ID
+            else:
+                compromiso = compromiso_existente  # Si ya existe, usar el compromiso existente
+
+            # Relacionar el nuevo compromiso con el formato de tutoría
+            nuevo_compromiso_relacionado = FormatoTutoriaCompromiso(
+                formato_tutoria_id=id,
+                compromiso_id=compromiso.id
+            )
+            db.session.add(nuevo_compromiso_relacionado)
+
+        # Guardar todos los cambios
         db.session.commit()
+
         flash('Formato de tutoría actualizado correctamente.', 'success')
         return redirect(url_for('listar_formato'))
 
@@ -1079,6 +1106,7 @@ def editar_formato(id):
         compromisos_disponibles=compromisos_disponibles,
         compromisos_asignados=compromisos_asignados
     )
+
 
 @app.route('/listar_formato_estudiante', methods=['GET'])
 def listar_formato_estudiante():

@@ -43,6 +43,7 @@
 
             <label for="compromisos">Compromisos Adquiridos:</label>
             <select id="compromisos" name="compromisos">
+                <option value="" {% if not compromisos_asignados %}selected{% endif %}>Seleccione un compromiso</option>
                 {% for compromiso in compromisos_disponibles %}
                     <option value="{{ compromiso.id }}" 
                         {% if compromiso.id in compromisos_asignados %}selected{% endif %}>
@@ -50,6 +51,9 @@
                     </option>
                 {% endfor %}
             </select>
+
+            <label for="nuevo_compromiso">Nuevo Compromiso:</label>
+            <input type="text" id="nuevo_compromiso" name="nuevo_compromiso" placeholder="Escribe un compromiso nuevo">
 
             <!-- Botones -->
             <div class="button-container">
