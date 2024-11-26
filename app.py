@@ -1193,8 +1193,8 @@ def exportar_csv_tutorias_programadas(docente_id):
     output.seek(0)
 
     # Devolver el archivo CSV como respuesta
-    return send_file(io.BytesIO(output.getvalue().encode('utf-8')), 
-                     mimetype='text/csv', 
+    return send_file(io.BytesIO(output.getvalue().encode('utf-8-sig')), 
+                     mimetype='text/csv; charset=utf-8', 
                      as_attachment=True, 
                      download_name='tutorias_programadas.csv')
 
@@ -1311,8 +1311,8 @@ def exportar_csv_estudiante():
 
     # Preparar el archivo para envío
     output.seek(0)
-    return send_file(io.BytesIO(output.getvalue().encode('utf-8')),
-                     mimetype='text/csv',
+    return send_file(io.BytesIO(output.getvalue().encode('utf-8-sig')),
+                     mimetype='text/csv; charset=utf-8',
                      as_attachment=True,
                      download_name='tutorias_estudiante.csv')
 
@@ -1422,8 +1422,8 @@ def exportar_csv_docente():
         ])
 
     output.seek(0)
-    return send_file(io.BytesIO(output.getvalue().encode('utf-8')),
-                     mimetype='text/csv',
+    return send_file(io.BytesIO(output.getvalue().encode('utf-8-sig')),
+                     mimetype='text/csv; charset=utf-8',
                      as_attachment=True,
                      download_name='tutorias_docente.csv')
 
