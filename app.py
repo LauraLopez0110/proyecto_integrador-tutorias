@@ -449,11 +449,18 @@ def delete_tutoria(tutoria_id):
         flash('Acceso denegado. Solo los administradores pueden acceder a esta sección.', 'danger')
         return redirect(url_for('dashboard'))
 
+     
     tutoria_to_delete = Tutoria.query.get(tutoria_id)
+
+   
     if tutoria_to_delete:
-        db.session.delete(tutoria_to_delete)
-        db.session.commit()
-        flash('Tutoría eliminada exitosamente.', 'success')
+       
+        if tutoria_to_delete.horarios:  
+            flash('No se puede eliminar la tutoría porque ya tiene un horario asignado.', 'danger')
+        else:
+            db.session.delete(tutoria_to_delete)
+            db.session.commit()
+            flash('Tutoría eliminada exitosamente.', 'success')
     else:
         flash('Tutoría no encontrada.', 'danger')
     
