@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='tablas.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <title>Lista de Tutorías Disponibles</title>
     <style>
@@ -25,7 +24,7 @@
         <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
     </header>
     
-    <div class='container'>
+    <div class='formulario-grande'>
 
     <h1>Lista de Tutorías Disponibles</h1>
 
@@ -74,10 +73,10 @@
                             <td>
                                 {% if horario.estado == 'Disponible' %}
                                     <form action="{{ url_for('inscribirse_tutoria', tutoria_id=tutoria.id, horario_id=horario.id) }}" method="GET">
-                                        <button type="submit" class="btn-inscribirse">Inscribirse</button>
+                                        <button type="submit" >Inscribirse</button>
                                     </form>
                                 {% else %}
-                                    <button type="button" class="btn-inscribirse" disabled>No disponible</button>
+                                    <button type="button" disabled>No disponible</button>
                                 {% endif %}
                             </td>
                         </tr>
@@ -88,7 +87,7 @@
     {% else %}
         <p>No hay tutorías disponibles.</p>
     {% endif %}
-    <div class="button">
+    <div class="button-container">
         <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
     </div>
     </div>

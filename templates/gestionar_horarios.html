@@ -122,11 +122,11 @@
                                         <option value="No disponible" {% if horario.estado == 'No disponible' %}selected{% endif %}>No disponible</option>
                                         <option value="Ocupado" {% if horario.estado == 'Ocupado' %}selected{% endif %}>Ocupado</option>
                                     </select>
-                                    <button type="submit" name="cambiar_estado" class="form-button small-button">Cambiar Estado</button>
+                                    <button type="submit" name="cambiar_estado" class="form-button">Cambiar Estado</button>
                                 </form>
                                 <form method="POST" action="{{ url_for('gestionar_horarios') }}" class="inline-form">
                                     <input type="hidden" name="horario_id" value="{{ horario.id }}">
-                                    <button type="submit" name="eliminar_horario" class="form-button eliminar-button small-button">Eliminar</button>
+                                    <button type="submit" name="eliminar_horario" >Eliminar</button>
                                 </form>
                             </div>
                         </td>

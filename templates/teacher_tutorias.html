@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabla de Tutorías</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='tablas.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 </head>
 <body>
@@ -61,7 +60,7 @@
                                         <!-- Formulario para eliminar horario -->
                                         <form method="POST" action="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}" style="display: inline;">
                                             <input type="hidden" name="horario_id" value="{{ horario.id }}">
-                                            <button type="submit" name="eliminar_horario" class="inline-button">Eliminar</button>
+                                            <button type="submit" name="eliminar_horario">Eliminar</button>
                                         </form>
                                     </li>
                                 {% endfor %}
@@ -72,7 +71,7 @@
                     </td>
                     <td class="table-cell text-right">
                         <!-- Botón de asignar horario -->
-                        <a href="{{ url_for('asignar_horarios_tutorias', tutoria_id=tutoria.id) }}" class="button">Asignar Horario</a>
+                        <a href="{{ url_for('asignar_horarios_tutorias', tutoria_id=tutoria.id) }}" >Asignar Horario</a>
                     </td>
                 </tr>
                 {% else %}

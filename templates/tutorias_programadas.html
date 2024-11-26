@@ -48,7 +48,7 @@
                         </td>
                         <td>{{ inscripcion.estudiante.nombre_completo }}</td>
                         <td>
-                            <a href="{{ url_for('formato_tutoria', inscripcion_id=inscripcion.id) }}" class="button-link">Llenar formato</a>
+                            <a href="{{ url_for('formato_tutoria', inscripcion_id=inscripcion.id) }}">Llenar formato</a>
                         </td>
                     </tr>
                     {% endfor %}

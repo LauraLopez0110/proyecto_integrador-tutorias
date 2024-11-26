@@ -13,7 +13,7 @@
         <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
     </header>
 
-    <div class="container">
+    <div class="formulario-grande">
         <h1 class="main-title">Listado de Formatos de Tutoría</h1>
 
         <!-- Barra de búsqueda -->
@@ -70,7 +70,7 @@
                     </td>
                     <td>{{ formato.fecha_realizacion }}</td>
                     <td>
-                        <a href="{{ url_for('editar_formato', id=formato.id) }}" class="button button-small">Editar</a>
+                        <a href="{{ url_for('editar_formato', id=formato.id) }}">Editar</a>
                     </td>
                 </tr>
                 {% else %}
@@ -83,9 +83,9 @@
 
         <!-- Botones -->
         <div class="button-container">
-            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
-            <a href="{{ url_for('exportar_csv_docente', docente_id=docente_id) }}" class="button">Exportar CSV</a>
-            <a href="{{ url_for('exportar_pdf_docente', docente_id=docente_id) }}" class="button">Exportar PDF</a>
+            <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+            <a href="{{ url_for('exportar_csv_docente', docente_id=docente_id) }}" >Exportar CSV</a>
+            <a href="{{ url_for('exportar_pdf_docente', docente_id=docente_id) }}" >Exportar PDF</a>
         </div>
     </div>
 
