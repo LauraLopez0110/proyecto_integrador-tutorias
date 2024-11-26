@@ -193,6 +193,12 @@ def register():
             if existing_user.identificacion == identificacion:
                 flash('La identificación ya está registrada. Elige otra.', 'danger')
             return redirect(url_for('register'))  # Redirige si ya existe el usuario
+        
+        if role == 'student':
+            codigo = request.form.get('codigo')  # Obtiene el código de estudiante del formulario
+            if Estudiante.query.filter_by(codigo=codigo).first():
+                flash('El código de estudiante ya está en uso. Ingresa otro.', 'danger')
+                return redirect(url_for('register'))  # Redirige si el código ya existe
 
         # Si el nombre de usuario y la identificación son únicos, crea el nuevo usuario
         new_user = User(username=username, password=hashed_password, role=role, identificacion=identificacion,
@@ -203,6 +209,7 @@ def register():
          # Si el usuario es estudiante, crea el objeto estudiante y lo asocia al usuario
         if role == 'student':
             crear_estudiante(request.form, new_user)
+            
 
         # Si el usuario es docente, crea el objeto docente y lo asocia al usuario
         if role == 'teacher':
@@ -211,8 +218,6 @@ def register():
         return redirect(url_for('login'))  # Redirige a la página de inicio de sesión
 
     return render_template('register.html')  # Renderiza la plantilla de registro
-
-
 
 @app.route('/logout')
 def logout():

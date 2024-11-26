@@ -10,6 +10,7 @@
     <!-- Configura la vista para dispositivos móviles, ajustando el ancho al tamaño del dispositivo y la escala inicial al 100%. -->
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <!-- Enlaza el archivo de hojas de estilo CSS para aplicar estilos a la página. El archivo se carga desde la carpeta estática del servidor. -->
+
 </head>
 <body>
      <!-- Encabezado -->
@@ -18,6 +19,7 @@
         <a href="{{ url_for('logout') }}" class="logout-button">Cerrar sesión</a>
         
     </header>
+    
     <main>
         <!-- Sección principal del contenido de la página. -->
         {% block content %}
@@ -29,6 +31,10 @@
     <footer class="footer">
         Todos los derechos reservados
     </footer>
+
 </body>
+{% block scripts %}
+    <!-- Aquí puedes incluir scripts JS específicos para las páginas hijas -->
+    {% endblock %}
 </html>
 <!-- Fin del documento HTML. -->

@@ -144,6 +144,11 @@ button:hover {
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
+.flash.danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
 
 /* Estilo del pie de página */
 .footer {
