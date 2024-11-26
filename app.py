@@ -4,7 +4,7 @@ from config import Config
 from models import db, User,Tutoria, Estudiante, Docente, HorariosTutoria
 from models import Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaCompromiso
 # Importa db y User, Tutoria
-from datetime import datetime, timezone
+from datetime import datetime
 import io
 import csv
 from reportlab.lib.pagesizes import letter
@@ -12,6 +12,9 @@ from reportlab.pdfgen import canvas
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask_login import current_user
 from sqlalchemy.orm import joinedload
+import asyncio
+from pyppeteer import launch
+from concurrent.futures import ThreadPoolExecutor
 
 
 app = Flask(__name__)
@@ -19,8 +22,12 @@ app.config.from_object(Config)  # Carga la configuración desde el objeto Config
 db.init_app(app)  # Inicializa la base de datos con la app
 bcrypt = Bcrypt(app)  # Inicializa Flask-Bcrypt para manejar el hash de contraseñas
 
-# Función para liberar las tutorías programadas
+import pdfkit
 
+# Configura el path de wkhtmltopdf
+config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
+    
+# Función para liberar las tutorías programadas
 def liberar_tutorias():
     inscripciones = Inscripcion.query.all()
     for inscripcion in inscripciones:
@@ -1197,75 +1204,37 @@ def exportar_csv_tutorias_programadas(docente_id):
                      mimetype='text/csv', 
                      as_attachment=True, 
                      download_name='tutorias_programadas.csv')
-
+    
+## Ruta para exportar PDF
 @app.route('/exportar_pdf/<int:docente_id>', methods=['GET'])
 def exportar_pdf_tutorias_programadas(docente_id):
-    # Consultar tutorías del docente que tengan inscripciones
-    tutorias_inscritas = (
+    # Obtén las tutorías de la base de datos (ajusta esta parte según tu lógica)
+    tutorias = (
         Inscripcion.query
-        .join(Tutoria)  # Unir con la tabla de tutorías
-        .join(HorariosTutoria)  # Unir con la tabla de horarios
-        .filter(Tutoria.docente_id == docente_id)  # Filtrar por el docente
-        .filter(
-            (HorariosTutoria.estado != 'Disponible') & 
-            (HorariosTutoria.estado != 'No disponible')
-        )  # Solo mostrar horarios ocupados
-        .distinct()  # Evitar duplicados
-        .all()  # Obtener todos los resultados
+        .join(Tutoria)
+        .join(HorariosTutoria)
+        .filter(Tutoria.docente_id == docente_id)
+        .distinct()
+        .all()
+    )
+    
+    # Renderiza el HTML con los datos
+    html_content = render_template('pdf_tutorias_programadas.html', tutorias=tutorias)
+
+    # Convierte el HTML a PDF
+    pdf_output = pdfkit.from_string(html_content, False, configuration=config)
+    
+    # Crea un archivo en memoria para el PDF
+    pdf_output_io = io.BytesIO(pdf_output)
+
+    # Devuelve el PDF como archivo adjunto
+    return send_file(
+        pdf_output_io,
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name='tutorias_programadas.pdf'
     )
 
-    # Verificar si la consulta devuelve datos
-    if not tutorias_inscritas:
-        print(f"No se encontraron tutorías para el docente con ID {docente_id}.")
-        return "No hay tutorías inscritas para este docente."
-
-
-    print(f"Se encontraron {len(tutorias_inscritas)} inscripciones.")
-    for inscripcion in tutorias_inscritas:
-        print(f"Estudiante: {inscripcion.estudiante.nombre_completo}, "
-              f"Tutoria: {inscripcion.tutoria.codigo}, "
-              f"Horario: {inscripcion.horario.dia} {inscripcion.horario.hora}, "
-              f"Fecha Inscripción: {inscripcion.fecha_inscripcion}")
-
-    # Crear el archivo PDF en memoria
-    output = io.BytesIO()
-    c = canvas.Canvas(output, pagesize=letter)
-    width, height = letter
-
-    # Título del documento
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(100, height - 40, "Inscripciones a Tutorías")
-
-    # Configurar el contenido en el PDF
-    y_position = height - 80
-    c.setFont("Helvetica", 12)
-
-    # Agregar los datos de las inscripciones
-    for inscripcion in tutorias_inscritas:
-        estudiante_nombre = inscripcion.estudiante.nombre_completo
-        tutoria_codigo = inscripcion.tutoria.codigo
-        horario_info = f"{inscripcion.horario.dia} {inscripcion.horario.hora}"
-        fecha_inscripcion = inscripcion.fecha_inscripcion.strftime('%Y-%m-%d %H:%M:%S')
-
-        # Escribir la fila
-        c.drawString(100, y_position, f"Estudiante: {estudiante_nombre},")
-        c.drawString(100, y_position - 20, f"Tutoria: {tutoria_codigo},")
-        c.drawString(100, y_position - 40, f"Horario: {horario_info},")
-        c.drawString(100, y_position - 60, f"Fecha Inscripción: {fecha_inscripcion}")
-        y_position -= 80
-
-        if y_position < 50:
-            c.showPage()
-            y_position = height - 40
-
-    # Finalizar y guardar el PDF
-    c.save()
-
-    # Mover el puntero al principio del archivo para enviarlo
-    output.seek(0)
-
-    # Devolver el archivo PDF como respuesta
-    return send_file(output, mimetype='application/pdf', as_attachment=True, download_name='tutorias_programadas.pdf')
 
 @app.route('/exportar_csv_estudiante', methods=['GET'])
 def exportar_csv_estudiante():
@@ -1326,50 +1295,48 @@ def exportar_pdf_estudiante():
         flash('No estás autenticado.', 'danger')
         return redirect(url_for('login'))
 
+    # Buscar el usuario con el user_id
     user = User.query.get(user_id)
 
     if not user or user.role != 'student':
         flash('No tienes acceso a esta sección.', 'danger')
         return redirect(url_for('dashboard'))
 
-    # Filtrar los formatos de tutoría para el estudiante y ordenarlos por fecha de realización
-    formatos = FormatoTutoria.query.filter_by(estudiante_id=user.id).order_by(FormatoTutoria.fecha_realizacion).all()
+    # Obtener los formatos de tutoría para el estudiante
+    formatos = FormatoTutoria.query.options(
+    joinedload(FormatoTutoria.tutoria).joinedload(Tutoria.inscripciones),
+    joinedload(FormatoTutoria.compromiso_relaciones)  # Asegúrate de que esta relación se carga
+    ).filter_by(estudiante_id=user.id).order_by(FormatoTutoria.id.asc()).all()
+
 
     if not formatos:
-        return "No hay formatos de tutoría registrados para este estudiante."
+        flash('No hay formatos de tutoría registrados para este estudiante.', 'warning')
+        return redirect(url_for('dashboard'))
 
-    # Crear el archivo PDF en memoria
-    output = io.BytesIO()
-    c = canvas.Canvas(output, pagesize=letter)
-    width, height = letter
+    # Generar el HTML para la exportación a PDF
+    html_content = render_template('pdf_listar_formato_estudiante.html', formatos=formatos)
 
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(100, height - 40, "Formatos de Tutoría - Estudiante")
+    try:
+        # Configuración de pdfkit
+        config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
+        
+        # Convertir el HTML a PDF
+        pdf_output = pdfkit.from_string(html_content, False, configuration=config)
+        
+        # Crear un archivo en memoria para el PDF
+        pdf_output_io = io.BytesIO(pdf_output)
+        
+        # Devolver el PDF como archivo adjunto
+        return send_file(
+            pdf_output_io,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=f'formatos_tutoria_{user.nombre_completo}.pdf'
+        )
+    except Exception as e:
+        flash(f"Error al generar el PDF: {str(e)}", 'danger')
+        return redirect(url_for('dashboard'))
 
-    y_position = height - 80
-    c.setFont("Helvetica", 12)
-
-    for formato in formatos:
-        compromisos = ", ".join([rel.compromiso.descripcion for rel in formato.compromiso_relaciones])
-        temas_tratados = formato.temas_tratados  # Asumiendo que existe este campo en el modelo
-        c.drawString(100, y_position, f"Tutoría: {formato.tutoria.codigo}")
-        c.drawString(100, y_position - 20, f"Espacio Académico: {formato.espacio_academico}")
-        c.drawString(100, y_position - 40, f"Docente: {formato.docente.nombre_completo}")
-        c.drawString(100, y_position - 60, f"Temas Tratados: {temas_tratados}")  # Añadimos los temas tratados
-        c.drawString(100, y_position - 80, f"Compromisos: {compromisos}")
-        c.drawString(100, y_position - 100, f"Fecha: {formato.fecha_realizacion.strftime('%Y-%m-%d')}")
-
-        # Ajustar la posición para la siguiente tutoría con un espacio adicional
-        y_position -= 140  # Espacio aumentado para separar tutorías
-
-        if y_position < 50:
-            c.showPage()
-            y_position = height - 40
-
-    c.save()
-
-    output.seek(0)
-    return send_file(output, mimetype='application/pdf', as_attachment=True, download_name='tutorias_estudiante.pdf')
 
 @app.route('/exportar_csv_docente', methods=['GET'])
 def exportar_csv_docente():
@@ -1428,7 +1395,6 @@ def exportar_csv_docente():
                      download_name='tutorias_docente.csv')
 
 
-
 @app.route('/exportar_pdf_docente', methods=['GET'])
 def exportar_pdf_docente():
     user_id = session.get('user_id')
@@ -1444,58 +1410,42 @@ def exportar_pdf_docente():
         flash('No tienes acceso a esta sección.', 'danger')
         return redirect(url_for('dashboard'))
 
-    # Obtener los formatos de tutoría para el docente y cargar las inscripciones
+    # Obtener los formatos de tutoría para el docente
     formatos = FormatoTutoria.query.options(
-        joinedload(FormatoTutoria.tutoria).joinedload(Tutoria.inscripciones)
-    ).filter_by(docente_id=user.id).all()
+    joinedload(FormatoTutoria.tutoria).joinedload(Tutoria.inscripciones),
+    joinedload(FormatoTutoria.compromiso_relaciones)
+    ).filter_by(docente_id=user.id).order_by(FormatoTutoria.id.asc()).all()
+
 
     # Verificar si existen formatos
     if not formatos:
-        return "No hay formatos de tutoría registrados para este docente."
+        flash('No hay formatos de tutoría registrados para este docente.', 'warning')
+        return redirect(url_for('dashboard'))
 
-    output = io.BytesIO()
-    c = canvas.Canvas(output, pagesize=letter)
-    width, height = letter
+    # Generar el HTML para la exportación a PDF
+    html_content = render_template('pdf_listar_formato.html', formatos=formatos)
 
-    # Título con el nombre del docente
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(100, height - 40, f"Formatos de Tutoría - Docente: {user.nombre_completo}")
-
-    y_position = height - 80
-    c.setFont("Helvetica", 12)
-
-    for formato in formatos:
-        # Acceder al estudiante relacionado
-        estudiante = formato.estudiante
-        estudiantes_str = estudiante.nombre_completo if estudiante else "No hay estudiante asociado"
-
-        # Obtener los compromisos asociados al formato de tutoría
-        compromisos = ", ".join([rel.compromiso.descripcion for rel in formato.compromiso_relaciones])
-
-        # Escribir los detalles de la tutoría en el PDF
-        c.drawString(100, y_position, f"Tutoría: {formato.tutoria.codigo}")
-        y_position -= 20
-        c.drawString(100, y_position, f"Espacio Académico: {formato.espacio_academico}")
-        y_position -= 20
-        c.drawString(100, y_position, f"Estudiantes: {estudiantes_str}")  # Estudiante único
-        y_position -= 20
-        c.drawString(100, y_position, f"Temas Tratados: {formato.temas_tratados}")
-        y_position -= 20
-        c.drawString(100, y_position, f"Compromisos: {compromisos}")
-        y_position -= 20
-        c.drawString(100, y_position, f"Fecha: {formato.fecha_realizacion.strftime('%Y-%m-%d')}")
-        y_position -= 40  # Espacio entre tutorías
-
-        # Si el espacio es poco, crea una nueva página
-        if y_position < 50:
-            c.showPage()
-            y_position = height - 40
-
-    c.save()
-
-    output.seek(0)
-    return send_file(output, mimetype='application/pdf', as_attachment=True, download_name='tutorias_docente.pdf')
-
+    try:
+        # Configuración de pdfkit
+        config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
+        
+        # Convertir el HTML a PDF
+        pdf_output = pdfkit.from_string(html_content, False, configuration=config)
+        
+        # Crear un archivo en memoria para el PDF
+        pdf_output_io = io.BytesIO(pdf_output)
+        
+        # Devolver el PDF como archivo adjunto
+        return send_file(
+            pdf_output_io,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=f'formatos_tutoria_{user.nombre_completo}.pdf'
+        )
+    except Exception as e:
+        flash(f"Error al generar el PDF: {str(e)}", 'danger')
+        return redirect(url_for('dashboard'))
+    
 if __name__ == '__main__':
     app.run(debug=True)  # Inicia la aplicación en modo debug
 
