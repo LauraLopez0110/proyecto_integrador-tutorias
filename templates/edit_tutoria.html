@@ -1,77 +1,58 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Tutoría</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-</head>
-<body>
+{% extends "layout.html" %}
 
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
-    
-    <!-- Contenido principal -->
-    <main class="container">
-        <h1 class="title">Editar Tutoría</h1>
+{% block title %}Editar Tutoría{% endblock %}
 
-        <!-- Mensajes Flash -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-container">
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
+{% block content %}
+<main class="container">
+    <h1 class="title">Editar Tutoría</h1>
 
-        <!-- Formulario para editar tutoría -->
-        <form method="post" class="form">
-            <div class="form-group">
-                <label for="codigo" class="form-label">Código de la Tutoría</label>
-                <input type="text" id="codigo" name="codigo" 
-                       value="{{ tutoria.codigo }}" 
-                       placeholder="Código de la Tutoría" 
-                       readonly class="form-input" required>
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
             </div>
+        {% endif %}
+    {% endwith %}
 
-            <div class="form-group">
-                <label for="espacio_academico" class="form-label">Espacio Académico</label>
-                <input type="text" id="espacio_academico" name="espacio_academico" 
-                       value="{{ tutoria.espacio_academico }}" 
-                       placeholder="Espacio Académico" 
-                       class="form-input" required>
-            </div>
+    <!-- Formulario para editar tutoría -->
+    <form method="post" class="form">
+        <div class="form-group">
+            <label for="codigo" class="form-label">Código de la Tutoría</label>
+            <input type="text" id="codigo" name="codigo" 
+                   value="{{ tutoria.codigo }}" 
+                   placeholder="Código de la Tutoría" 
+                   readonly class="form-input" required>
+        </div>
 
-            <div class="form-group">
-                <label for="docente" class="form-label">Docente</label>
-                <select id="docente" name="docente" class="form-select" required>
-                    <option value="">Seleccionar Docente</option>
-                    {% for docente in docentes %}
-                        <option value="{{ docente.id }}" {% if docente.id == tutoria.docente_id %}selected{% endif %}>
-                            {{ docente.username }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
+        <div class="form-group">
+            <label for="espacio_academico" class="form-label">Espacio Académico</label>
+            <input type="text" id="espacio_academico" name="espacio_academico" 
+                   value="{{ tutoria.espacio_academico }}" 
+                   placeholder="Espacio Académico" 
+                   class="form-input" required>
+        </div>
 
-            <!-- Botones -->
-            <div class="button-container">
-                <button type="submit" class="button primary-button">Guardar Cambios</button>
-                <a href="{{ url_for('manage_tutorias') }}" class="button secondary-button">Volver a la lista de tutorías</a>
-                <a href="{{ url_for('dashboard') }}" class="button secondary-button">Volver al Dashboard</a>
-                <a href="{{ url_for('logout') }}" class="button logout-button">Cerrar Sesión</a>
-            </div>
-        </form>
-    </main>
+        <div class="form-group">
+            <label for="docente" class="form-label">Docente</label>
+            <select id="docente" name="docente" class="form-select" required>
+                <option value="">Seleccionar Docente</option>
+                {% for docente in docentes %}
+                    <option value="{{ docente.id }}" {% if docente.id == tutoria.docente_id %}selected{% endif %}>
+                        {{ docente.username }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <!-- Pie de página -->
-    <footer class="footer">
-        <p class="footer-text">Todos los derechos reservados</p>
-    </footer>
-
-</body>
-</html>
+        <!-- Botones -->
+        <div class="button-container">
+            <button type="submit" class="button primary-button">Guardar Cambios</button>
+            <a href="{{ url_for('manage_tutorias') }}" class="button secondary-button">Volver a la lista de tutorías</a>
+            <a href="{{ url_for('dashboard') }}" class="button secondary-button">Volver al Dashboard</a>
+        </div>
+    </form>
+</main>
+{% endblock %}

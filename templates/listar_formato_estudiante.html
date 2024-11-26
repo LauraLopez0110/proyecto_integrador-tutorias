@@ -1,83 +1,85 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listado de Tutorías</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-</head>
+{% extends "layout.html" %}
 
-<body>
-    <div class="formulario-grande">
-        <h1>Listado de Formatos de Tutoría</h1>
+{% block title %}Listado de Tutorías{% endblock %}
 
-            <!-- Barra de búsqueda -->
-            <div class="search-container">
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    placeholder="Buscar por docente, tutoria o fecha..." 
-                    onkeyup="filterHistorialTutorias()" 
-                    class="search-box">
-            </div>
+{% block content %}
+<div class="container">
+    <h1>Listado de Formatos de Tutoría</h1>
 
-        <!-- Mostrar mensajes flash -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="messages">
-                    {% for category, message in messages %}
-                        <div class="alert {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-        <!-- Tabla de formatos -->
-        <table id="historialTutoriasTable">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Docente</th>
-                    <th>Estudiante</th>
-                    <th>Código Tutoría</th>
-                    <th>Espacio Académico</th>
-                    <th>Temas Tratados</th>
-                    <th>Compromisos Adquiridos</th>
-                    <th>Fecha</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for formato in formatos %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ formato.docente.nombre_completo }}</td>
-                    <td>{{ formato.estudiante.nombre_completo }}</td>
-                    <td>{{ formato.tutoria.codigo }}</td>
-                    <td>{{ formato.espacio_academico }}</td>
-                    <td>{{ formato.temas_tratados or "N/A" }}</td>
-                    <td>
-                        {% if formato.compromisos_adquiridos %}
-                            {{ formato.compromisos_adquiridos | join(', ') }}
-                        {% else %}
-                            No hay compromisos
-                        {% endif %}
-                    </td>
-                    <td>{{ formato.fecha_realizacion }}</td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="7">No hay formatos de tutoría registrados.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="button-container">
-            <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
-            <a href="{{ url_for('exportar_csv_estudiante', estudiante_id=estudiante_id) }}" >Exportar CSV</a>
-            <a href="{{ url_for('exportar_pdf_estudiante', estudiante_id=estudiante_id) }}" >Exportar PDF</a>
-        </div>
+    <!-- Barra de búsqueda -->
+    <div class="search-container box">
+        <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Buscar por docente, tutoría o fecha..." 
+            onkeyup="filterHistorialTutorias()" 
+            class="search-box">
     </div>
-</body>
 
+    <!-- Mostrar mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div id="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Tabla de formatos -->
+    <table id="historialTutoriasTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Docente</th>
+                <th>Estudiante</th>
+                <th>Código Tutoría</th>
+                <th>Espacio Académico</th>
+                <th>Temas Tratados</th>
+                <th>Compromisos Adquiridos</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for formato in formatos %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ formato.docente.nombre_completo }}</td>
+                <td>{{ formato.estudiante.nombre_completo }}</td>
+                <td>{{ formato.tutoria.codigo }}</td>
+                <td>{{ formato.espacio_academico }}</td>
+                <td>{{ formato.temas_tratados or "N/A" }}</td>
+                <td>
+                    {% if formato.compromisos_adquiridos %}
+                        {{ formato.compromisos_adquiridos | join(', ') }}
+                    {% else %}
+                        No hay compromisos
+                    {% endif %}
+                </td>
+                <td>{{ formato.fecha_realizacion }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8">No hay formatos de tutoría registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="button">
+        <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+        <a href="{{ url_for('exportar_csv_estudiante', estudiante_id=estudiante_id) }}" class="btn">Exportar CSV</a>
+        <a href="{{ url_for('exportar_pdf_estudiante', estudiante_id=estudiante_id) }}" class="btn">Exportar PDF</a>
+    </div>
+</div>
+
+<!-- Pie de página -->
+<footer class="footer">
+    Todos los derechos reservados
+</footer>
+
+<!-- Script de búsqueda -->
 <script>
     function filterHistorialTutorias() {
         const searchInput = document.getElementById('searchInput').value.toLowerCase();
@@ -86,9 +88,8 @@
         rows.forEach(row => {
             const docente = row.cells[1].textContent.toLowerCase(); // Columna Docente
             const tutoria = row.cells[4].textContent.toLowerCase(); // Columna Tutoria
-            const fecha = row.cells[7].textContent.toLowerCase(); // Columna fecha
+            const fecha = row.cells[7].textContent.toLowerCase(); // Columna Fecha
 
-            // Verifica si el valor de búsqueda coincide con Tutoria, Día, Hora o Estudiante
             if (docente.includes(searchInput) || tutoria.includes(searchInput) || fecha.includes(searchInput)) {
                 row.style.display = ''; // Mostrar la fila
             } else {
@@ -97,4 +98,4 @@
         });
     }
 </script>
-</html>
+{% endblock %}

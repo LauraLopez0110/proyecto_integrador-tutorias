@@ -1,16 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <title>Ver Perfil</title>
-</head>
-<body>
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
-    
+{% extends "layout.html" %}
+
+{% block title %}Perfil del Profesor{% endblock %}
+
+{% block content %}
     <div class="container">
         <div class="title-container">
             <h1>Perfil del Profesor</h1>
@@ -18,13 +10,13 @@
 
         <!-- Mensajes flash de éxito o error -->
         {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div id="flash-messages">
-                {% for category, message in messages %}
-                <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
+            {% if messages %}
+                <div id="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         {% endwith %}
 
         <!-- Mostrando los datos del docente -->
@@ -58,13 +50,6 @@
         <!-- Botones -->
         <div class="button-container">
             <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
-            <a href="{{ url_for('logout') }}" class="logout-button">Cerrar Sesión</a>
         </div>
     </div>
-
-    <!-- Pie de página -->
-    <footer class="footer">
-        Todos los derechos reservados
-    </footer>
-</body>
-</html>
+{% endblock %}

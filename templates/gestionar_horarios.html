@@ -1,168 +1,151 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <title>Gestión de Horarios</title>
-</head>
-<body>
+{% extends "layout.html" %}
 
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
+{% block title %}Gestión de Horarios{% endblock %}
+
+{% block content %}
+<main class="container">
+    <h1 class="title">Gestión de Horarios de Tutorías</h1>
     
-    <!-- Contenido principal -->
-    <main class="container">
-        <h1 class="title">Gestión de Horarios de Tutorías</h1>
-        
-        <!-- Mensajes Flash -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-container">
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% endwith %}
-
-        <!-- Crear Nuevo Horario -->
-        <section class="form-section">
-            <h2 class="form-title">Crear Nuevo Horario</h2>
-            <form class="form" method="POST" action="{{ url_for('gestionar_horarios') }}">
-                <!-- Selección de Tutoría -->
-                <div class="form-group">
-                    <label for="tutoria_id" class="form-label">Tutoría:</label>
-                    <select name="tutoria_id" class="form-select" required>
-                        <option value="" disabled selected>Seleccione una Tutoría</option>
-                        {% for tutoria in tutorias %}
-                            <option value="{{ tutoria.id }}">{{ tutoria.espacio_academico }} ({{ tutoria.codigo }})</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <!-- Selección de Día -->
-                <div class="form-group">
-                    <label for="dia" class="form-label">Día:</label>
-                    <select name="dia" class="form-select" required>
-                        <option value="" disabled selected>Seleccione un Día</option>
-                        <option value="Lunes">Lunes</option>
-                        <option value="Martes">Martes</option>
-                        <option value="Miércoles">Miércoles</option>
-                        <option value="Jueves">Jueves</option>
-                        <option value="Viernes">Viernes</option>
-                    </select>
-                </div>
-
-                <!-- Selección de Hora -->
-                <div class="form-group">
-                    <label for="hora" class="form-label">Hora:</label>
-                    <select id="hora" name="hora" class="form-select" required>
-                        <option value="" disabled selected>Seleccione una hora</option>
-                        <!-- Opciones de horas -->
-                        {% for hora in ["08:00 AM - 09:00 AM", "09:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", 
-                                        "11:00 AM - 12:00 PM", "12:00 PM - 01:00 PM", "01:00 PM - 02:00 PM",
-                                        "02:00 PM - 03:00 PM", "03:00 PM - 04:00 PM", "04:00 PM - 05:00 PM", 
-                                        "05:00 PM - 06:00 PM"] %}
-                            <option value="{{ hora }}">{{ hora }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- Selección de Estado -->
-                <div class="form-group">
-                    <label for="estado" class="form-label">Estado:</label>
-                    <select name="estado" class="form-select" required>
-                        <option value="Disponible">Disponible</option>
-                        <option value="No disponible">No disponible</option>
-                        <option value="Ocupado">Ocupado</option>
-                    </select>
-                </div>
-
-                <button type="submit" name="crear" class="form-button primary-button">Crear Horario</button>
-            </form>
-        </section>
-
-        <!-- Horarios Existentes -->
-        <section class="table-section">
-            <h2 class="form-title">Horarios Existentes</h2>
-
-            <!-- Barra de búsqueda -->
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Buscar por tutoría o estado..." 
-                       onkeyup="filterHorarios()" class="search-box">
-            </div>
-
-            <!-- Tabla -->
-            <table id="horariosTable" class="table">
-                <thead>
-                    <tr>
-                        <th>Tutoría</th>
-                        <th>Día</th>
-                        <th>Hora</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for horario in horarios %}
-                    <tr>
-                        <td>{{ horario.tutoria.espacio_academico }}</td>
-                        <td>{{ horario.dia }}</td>
-                        <td>{{ horario.hora }}</td>
-                        <td class="estado {{ horario.estado | lower | replace(' ', '-') }}">{{ horario.estado }}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <form method="POST" action="{{ url_for('gestionar_horarios') }}" class="inline-form">
-                                    <input type="hidden" name="horario_id" value="{{ horario.id }}">
-                                    <select name="estado" class="form-select small">
-                                        <option value="Disponible" {% if horario.estado == 'Disponible' %}selected{% endif %}>Disponible</option>
-                                        <option value="No disponible" {% if horario.estado == 'No disponible' %}selected{% endif %}>No disponible</option>
-                                        <option value="Ocupado" {% if horario.estado == 'Ocupado' %}selected{% endif %}>Ocupado</option>
-                                    </select>
-                                    <button type="submit" name="cambiar_estado" class="form-button">Cambiar Estado</button>
-                                </form>
-                                <form method="POST" action="{{ url_for('gestionar_horarios') }}" class="inline-form">
-                                    <input type="hidden" name="horario_id" value="{{ horario.id }}">
-                                    <button type="submit" name="eliminar_horario" >Eliminar</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </section>
-
-        <div class="button-container">
-            <a href="{{ url_for('dashboard') }}" class="button secondary-button">Volver al Dashboard</a>
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
         </div>
-    </main>
+    {% endif %}
+    {% endwith %}
 
-    <!-- Pie de página -->
-    <footer class="footer">
-        <p class="footer-text">Todos los derechos reservados</p>
-    </footer>
+    <!-- Crear Nuevo Horario -->
+    <section class="form-section">
+        <h2 class="form-title">Crear Nuevo Horario</h2>
+        <form class="form" method="POST" action="{{ url_for('gestionar_horarios') }}">
+            <!-- Selección de Tutoría -->
+            <div class="form-group">
+                <label for="tutoria_id" class="form-label">Tutoría:</label>
+                <select name="tutoria_id" class="form-select" required>
+                    <option value="" disabled selected>Seleccione una Tutoría</option>
+                    {% for tutoria in tutorias %}
+                        <option value="{{ tutoria.id }}">{{ tutoria.espacio_academico }} ({{ tutoria.codigo }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Selección de Día -->
+            <div class="form-group">
+                <label for="dia" class="form-label">Día:</label>
+                <select name="dia" class="form-select" required>
+                    <option value="" disabled selected>Seleccione un Día</option>
+                    <option value="Lunes">Lunes</option>
+                    <option value="Martes">Martes</option>
+                    <option value="Miércoles">Miércoles</option>
+                    <option value="Jueves">Jueves</option>
+                    <option value="Viernes">Viernes</option>
+                </select>
+            </div>
 
-    <!-- Script -->
-    <script>
-        function filterHorarios() {
-            const searchInput = document.getElementById('searchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#horariosTable tbody tr');
+            <!-- Selección de Hora -->
+            <div class="form-group">
+                <label for="hora" class="form-label">Hora:</label>
+                <select id="hora" name="hora" class="form-select" required>
+                    <option value="" disabled selected>Seleccione una hora</option>
+                    <!-- Opciones de horas -->
+                    {% for hora in ["08:00 AM - 09:00 AM", "09:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", 
+                                    "11:00 AM - 12:00 PM", "12:00 PM - 01:00 PM", "01:00 PM - 02:00 PM",
+                                    "02:00 PM - 03:00 PM", "03:00 PM - 04:00 PM", "04:00 PM - 05:00 PM", 
+                                    "05:00 PM - 06:00 PM"] %}
+                        <option value="{{ hora }}">{{ hora }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-            rows.forEach(row => {
-                const tutoria = row.cells[0].textContent.toLowerCase();
-                const estado = row.cells[3].textContent.toLowerCase();
+            <!-- Selección de Estado -->
+            <div class="form-group">
+                <label for="estado" class="form-label">Estado:</label>
+                <select name="estado" class="form-select" required>
+                    <option value="Disponible">Disponible</option>
+                    <option value="No disponible">No disponible</option>
+                    <option value="Ocupado">Ocupado</option>
+                </select>
+            </div>
 
-                if (tutoria.includes(searchInput) || estado.includes(searchInput)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+            <button type="submit" name="crear" class="form-button primary-button">Crear Horario</button>
+        </form>
+    </section>
+
+    <!-- Horarios Existentes -->
+    <section class="table-section">
+        <h2 class="form-title">Horarios Existentes</h2>
+
+        <!-- Barra de búsqueda -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Buscar por tutoría o estado..." 
+                   onkeyup="filterHorarios()" class="search-box">
+        </div>
+
+        <!-- Tabla -->
+        <table id="horariosTable" class="table">
+            <thead>
+                <tr>
+                    <th>Tutoría</th>
+                    <th>Día</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for horario in horarios %}
+                <tr>
+                    <td>{{ horario.tutoria.espacio_academico }}</td>
+                    <td>{{ horario.dia }}</td>
+                    <td>{{ horario.hora }}</td>
+                    <td class="estado {{ horario.estado | lower | replace(' ', '-') }}">{{ horario.estado }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <form method="POST" action="{{ url_for('gestionar_horarios') }}" class="inline-form">
+                                <input type="hidden" name="horario_id" value="{{ horario.id }}">
+                                <select name="estado" class="form-select small">
+                                    <option value="Disponible" {% if horario.estado == 'Disponible' %}selected{% endif %}>Disponible</option>
+                                    <option value="No disponible" {% if horario.estado == 'No disponible' %}selected{% endif %}>No disponible</option>
+                                    <option value="Ocupado" {% if horario.estado == 'Ocupado' %}selected{% endif %}>Ocupado</option>
+                                </select>
+                                <button type="submit" name="cambiar_estado" class="form-button">Cambiar Estado</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('gestionar_horarios') }}" class="inline-form">
+                                <input type="hidden" name="horario_id" value="{{ horario.id }}">
+                                <button type="submit" name="eliminar_horario" class="form-button">Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <div class="button-container">
+        <a href="{{ url_for('dashboard') }}" class="button secondary-button">Volver al Dashboard</a>
+    </div>
+</main>
+
+<!-- Script -->
+<script>
+    function filterHorarios() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#horariosTable tbody tr');
+
+        rows.forEach(row => {
+            const tutoria = row.cells[0].textContent.toLowerCase();
+            const estado = row.cells[3].textContent.toLowerCase();
+
+            if (tutoria.includes(searchInput) || estado.includes(searchInput)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+</script>
+{% endblock %}

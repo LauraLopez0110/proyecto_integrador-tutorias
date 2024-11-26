@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutorías Apartadas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-</head>
-<body>
+{% extends "layout.html" %}
 
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
-    
+{% block title %}Tutorías Apartadas{% endblock %}
+
+{% block content %}
     <div class="container">
         <h1>Tutorías Apartadas</h1>
 
@@ -34,12 +24,12 @@
                             <td>
                                 <ul>
                                     {% for inscripcion in tutoria.inscripciones %}
-                                        <a>{{ inscripcion.estudiante.nombre_completo }}</a>  <!-- Nombre completo del estudiante -->
+                                        <li>{{ inscripcion.estudiante.nombre_completo }}</li>  <!-- Nombre completo del estudiante -->
                                     {% endfor %}
                                 </ul>
                             </td>
                             <td>
-                                <a href="" class="btn">Llenar Formulario</a> <!-- Acción para llenar formulario -->
+                                <a href="{{ url_for('llenar_formulario', tutoria_id=tutoria.id) }}" class="btn">Llenar Formulario</a> <!-- Acción para llenar formulario -->
                             </td>
                         </tr>
                     {% endfor %}
@@ -49,14 +39,9 @@
             <p>No hay tutorías apartadas para este docente.</p>
         {% endif %}
 
-        <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+        <div class="button-container">
+            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+        </div>
     </div>
 
-
-     <!-- Pie de página -->
-     <footer class="footer">
-        Todos los derechos reservados
-    </footer>
-    
-</body>
-</html>
+{% endblock %}

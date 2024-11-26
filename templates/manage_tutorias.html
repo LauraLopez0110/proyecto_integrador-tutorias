@@ -1,23 +1,14 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <title>Administrar Tutorías</title>
-</head>
-<body>
+{% extends "layout.html" %}
 
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
+{% block title %}Administrar Tutorías{% endblock %}
 
+{% block content %}
     <div class="container">
         <div class="title-container">
             <h1>Administrar Tutorías</h1>
         </div>
 
+        <!-- Mostrar mensajes flash -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div id="flash-messages">
@@ -28,6 +19,7 @@
             {% endif %}
         {% endwith %}
 
+        <!-- Formulario para crear tutoría -->
         <form method="post" class="box">
             <label for="espacio_academico">Información de la tutoría a crear:</label>
             <input type="text" name="espacio_academico" id="espacio_academico" placeholder="Espacio Académico" required>
@@ -40,6 +32,7 @@
             <button type="submit" class="button">Crear Tutoría</button>
         </form>
 
+        <!-- Listado de tutorías existentes -->
         <h2>Tutorías Existentes</h2>
         <div class="box">
             <table>
@@ -58,9 +51,11 @@
                         <td>{{ tutoria.espacio_academico }}</td>
                         <td>{{ tutoria.docente.username }}</td>
                         <td>
+                            <!-- Formulario para eliminar tutoría -->
                             <form method="POST" action="{{ url_for('delete_tutoria', tutoria_id=tutoria.id) }}" style="display:inline;">
                                 <button type="submit" class="button">Eliminar</button>
                             </form>
+                            <!-- Enlace para editar tutoría -->
                             <a href="{{ url_for('edit_tutoria', tutoria_id=tutoria.id) }}" class="button">Editar</a>
                         </td>
                     </tr>
@@ -69,19 +64,9 @@
             </table>
         </div>
 
-        
-
+        <!-- Botones de navegación -->
         <div class="button-container">
             <a href="{{ url_for('gestionar_horarios') }}">Horarios Tutorías</a>
             <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
-            <a href="{{ url_for('logout') }}" class="button logout-button">Cerrar Sesión</a>
-        </div>
     </div>
-
-    <!-- Pie de página -->
-    <footer class="footer">
-        Todos los derechos reservados
-    </footer>
-
-</body>
-</html>
+{% endblock %}

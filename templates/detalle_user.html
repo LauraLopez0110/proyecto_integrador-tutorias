@@ -1,84 +1,69 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <title>Detalles del Usuario</title>
-</head>
-<body>
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
-    
-    <div class="container">
-        <div class="title-container">
-            <h1>Detalles del Usuario</h1>
-        </div>
-        
-        <h2>Información General</h2>
-        <div class="profile-field">
-            <strong>Nombre de Usuario:</strong>
-            <span class="profile-value">{{ user.username }}</span>
-        </div>
-        <div class="profile-field">
-            <strong>Identificación:</strong>
-            <span class="profile-value">{{ user.identificacion }}</span>
-        </div>
-        <div class="profile-field">
-            <strong>Rol:</strong>
-            <span class="profile-value">{{ user.role }}</span>
-        </div>
-        <div class="profile-field">
-            <strong>Nombre Completo:</strong>
-            <span class="profile-value">{{ user.nombre_completo }}</span>
-        </div>
+{% extends "layout.html" %}
 
-        {% if user.role == 'student' and estudiante %}
-            <h2>Información del Estudiante</h2>
-            <div class="profile-field">
-                <strong>Código del Estudiante:</strong>
-                <span class="profile-value">{{ estudiante.codigo }}</span>
-            </div>
-            <div class="profile-field">
-                <strong>Semestre:</strong>
-                <span class="profile-value">{{ estudiante.semestre }}</span>
-            </div>
-            <div class="profile-field">
-                <strong>Programa Académico:</strong>
-                <span class="profile-value">{{ estudiante.programa_academico }}</span>
-            </div>
-            <div class="profile-field">
-                <strong>Estado:</strong>
-                <span class="profile-value">{{ estudiante.estado }}</span>
-            </div>
-        {% endif %}
+{% block title %}Detalles del Usuario{% endblock %}
 
-        {% if user.role == 'teacher' and docente %}
-            <h2>Información del Docente</h2>
-            <div class="profile-field">
-                <strong>Departamento:</strong>
-                <span class="profile-value">{{ docente.departamento }}</span>
-            </div>
-            <div class="profile-field">
-                <strong>Fecha ingreso:</strong>
-                <span class="profile-value">{{ docente.fecha_ingreso }}</span>
-            </div>
-            <div class="profile-field">
-                <strong>Correo institucional:</strong>
-                <span class="profile-value">{{ docente.correo_institucional }}</span>
-            </div>
-        {% endif %}
-
-        <div class="button-container">
-            <a href="{{ url_for('manage_users') }}" class="button">Volver a Usuarios</a>
-        </div>
+{% block content %}
+<div class="container">
+    <div class="title-container">
+        <h1>Detalles del Usuario</h1>
     </div>
-<!-- Pie de página -->
-<footer class="footer">
-    Todos los derechos reservados
-</footer>
+    
+    <h2>Información General</h2>
+    <div class="profile-field">
+        <strong>Nombre de Usuario:</strong>
+        <span class="profile-value">{{ user.username }}</span>
+    </div>
+    <div class="profile-field">
+        <strong>Identificación:</strong>
+        <span class="profile-value">{{ user.identificacion }}</span>
+    </div>
+    <div class="profile-field">
+        <strong>Rol:</strong>
+        <span class="profile-value">{{ user.role }}</span>
+    </div>
+    <div class="profile-field">
+        <strong>Nombre Completo:</strong>
+        <span class="profile-value">{{ user.nombre_completo }}</span>
+    </div>
 
-</body>
-</html>
+    {% if user.role == 'student' and estudiante %}
+        <h2>Información del Estudiante</h2>
+        <div class="profile-field">
+            <strong>Código del Estudiante:</strong>
+            <span class="profile-value">{{ estudiante.codigo }}</span>
+        </div>
+        <div class="profile-field">
+            <strong>Semestre:</strong>
+            <span class="profile-value">{{ estudiante.semestre }}</span>
+        </div>
+        <div class="profile-field">
+            <strong>Programa Académico:</strong>
+            <span class="profile-value">{{ estudiante.programa_academico }}</span>
+        </div>
+        <div class="profile-field">
+            <strong>Estado:</strong>
+            <span class="profile-value">{{ estudiante.estado }}</span>
+        </div>
+    {% endif %}
+
+    {% if user.role == 'teacher' and docente %}
+        <h2>Información del Docente</h2>
+        <div class="profile-field">
+            <strong>Departamento:</strong>
+            <span class="profile-value">{{ docente.departamento }}</span>
+        </div>
+        <div class="profile-field">
+            <strong>Fecha ingreso:</strong>
+            <span class="profile-value">{{ docente.fecha_ingreso }}</span>
+        </div>
+        <div class="profile-field">
+            <strong>Correo institucional:</strong>
+            <span class="profile-value">{{ docente.correo_institucional }}</span>
+        </div>
+    {% endif %}
+
+    <div class="button-container">
+        <a href="{{ url_for('manage_users') }}" class="button">Volver a Usuarios</a>
+    </div>
+</div>
+{% endblock %}

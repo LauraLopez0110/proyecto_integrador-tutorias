@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <title>Registro</title>
-</head>
-<body>
+{% extends "layout.html" %}
 
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
+{% block title %}Registrar Usuario{% endblock %}
 
+{% block content %}
     <div class="container">
         <div class="title-container">
             <h1>Registrar Usuario</h1>
@@ -22,9 +12,9 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div id="flash-messages">
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
                 </div>
             {% endif %}
         {% endwith %}
@@ -67,21 +57,23 @@
             </div>  
 
             <!-- Campos Profesor -->
-            <div id="teacher-fields" class="hidden box" type="hidden">
+            <div id="teacher-fields" class="hidden box">
                 <input type="text" name="departamento" placeholder="Departamento">
                 <input type="date" name="fecha_ingreso" placeholder="Fecha de Ingreso">
                 <input type="email" name="correo_institucional" placeholder="Correo Institucional">
             </div>
 
-            <button type="submit" >Registrar</button>
+            <button type="submit">Registrar</button>
+
             <div class="button-container">
                 <a href="{{ url_for('dashboard') }}" class="button">Volver al dashboard</a>
             </div>
         </form>
-
-        
     </div>
 
+{% endblock %}
+
+{% block scripts %}
     <script>
         function toggleFields() {
             const role = document.getElementById('role').value;
@@ -105,11 +97,4 @@
             }
         }
     </script>
-
-    <!-- Pie de página -->
-    <footer class="footer">
-        Todos los derechos reservados
-    </footer>
-
-</body>
-</html>
+{% endblock %}
