@@ -62,7 +62,7 @@ body {
 
 /* Contenedor principal */
 .container {
-    margin-top: 200px; /* Añade espacio debajo del encabezado fijo */
+    margin-top: 100px; /* Añade espacio debajo del encabezado fijo */
     width: 600px;
     max-width: 80%;
     margin-left: auto;
@@ -76,7 +76,7 @@ body {
 }
 
 .formulario-grande {
-    margin-top: 200px; /* Añade espacio debajo del encabezado fijo */
+    margin-top: 100px; /* Añade espacio debajo del encabezado fijo */
     width: auto;
     max-width: 80%;
     margin-left: auto;
@@ -148,6 +148,12 @@ button:hover {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+.flash.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
 }
 
 /* Estilo del pie de página */

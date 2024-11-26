@@ -449,11 +449,18 @@ def delete_tutoria(tutoria_id):
         flash('Acceso denegado. Solo los administradores pueden acceder a esta sección.', 'danger')
         return redirect(url_for('dashboard'))
 
+     
     tutoria_to_delete = Tutoria.query.get(tutoria_id)
+
+   
     if tutoria_to_delete:
-        db.session.delete(tutoria_to_delete)
-        db.session.commit()
-        flash('Tutoría eliminada exitosamente.', 'success')
+       
+        if tutoria_to_delete.horarios:  
+            flash('No se puede eliminar la tutoría porque ya tiene un horario asignado.', 'danger')
+        else:
+            db.session.delete(tutoria_to_delete)
+            db.session.commit()
+            flash('Tutoría eliminada exitosamente.', 'success')
     else:
         flash('Tutoría no encontrada.', 'danger')
     
@@ -876,9 +883,12 @@ def editar_inscripcion(inscripcion_id):
         # Obtener el nuevo horario desde el formulario
         nuevo_horario_id = request.form.get('nuevo_horario')
 
+        # Depuración: Verificar el valor de nuevo_horario_id
+        print(f"Nuevo horario seleccionado: {nuevo_horario_id}")
+
         # Si no seleccionó un nuevo horario, no hacer cambios
         if not nuevo_horario_id:
-            flash("No se realizaron cambios a la inscripción.", "info")
+            flash("No se realizaron cambios a la inscripción. El horario se mantiene igual.", "info")
             return redirect(url_for('listar_tutorias_inscritas'))
 
         # Obtener el horario seleccionado y validar
@@ -904,6 +914,10 @@ def editar_inscripcion(inscripcion_id):
         tutoria_id=inscripcion.tutoria_id, estado='Disponible'
     ).all()
 
+    # Agregar depuración para ver si los horarios disponibles son recuperados correctamente
+    if not horarios_disponibles:
+        flash("No hay horarios disponibles para esta tutoría.", "warning")
+
     return render_template(
         'edit_inscripcion.html',
         inscripcion=inscripcion,
@@ -911,6 +925,8 @@ def editar_inscripcion(inscripcion_id):
         materia=materia,
         horarios_disponibles=horarios_disponibles
     )
+
+
    
 def obtener_periodo_academico():
     # Obtener el año actual

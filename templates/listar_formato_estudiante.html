@@ -3,8 +3,8 @@
 {% block title %}Listado de Tutorías{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Listado de Formatos de Tutoría</h1>
+<div class="formulario-grande">
+    <h1>Listado de Formatos de Tutoría</h1> 
 
     <!-- Barra de búsqueda -->
     <div class="search-container box">
@@ -67,10 +67,10 @@
         </tbody>
     </table>
 
-    <div class="button">
+    <div class="button-container">
         <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
-        <a href="{{ url_for('exportar_csv_estudiante', estudiante_id=estudiante_id) }}" class="btn">Exportar CSV</a>
-        <a href="{{ url_for('exportar_pdf_estudiante', estudiante_id=estudiante_id) }}" class="btn">Exportar PDF</a>
+        <a href="{{ url_for('exportar_csv_estudiante', estudiante_id=estudiante_id) }}">Exportar CSV</a>
+        <a href="{{ url_for('exportar_pdf_estudiante', estudiante_id=estudiante_id) }}">Exportar PDF</a>
     </div>
 </div>
 

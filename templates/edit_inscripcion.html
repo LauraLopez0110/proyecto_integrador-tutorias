@@ -31,19 +31,25 @@
         <p>{{ materia }}</p>
     </div>
 
-    <!-- Campo para seleccionar un nuevo horario -->
-    <div>
-        <label for="nuevo_horario">Nuevo Horario:</label>
-        <select name="nuevo_horario" id="nuevo_horario" required>
-            <option value="">Seleccione un horario</option>
-            {% for horario in horarios_disponibles %}
-                <option value="{{ horario.id }}">
-                    {{ horario.dia }} - {{ horario.hora }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
+    <form method="POST">
+        <!-- Campo para seleccionar un nuevo horario -->
+        <div>
+            <label for="nuevo_horario">Nuevo horario</label>
+            <select name="nuevo_horario" id="nuevo_horario">
+                <option value="">Seleccionar horario (Dejar vacío para mantener el horario actual)</option>
+                {% for horario in horarios_disponibles %}
+                    <option value="{{ horario.id }}" {% if horario.id == horario_actual.id %}selected{% endif %}>
+                        {{ horario.dia }} - {{ horario.hora }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <button type="submit" class="button">Actualizar Inscripción</button>
+        <button type="submit" class="button">Actualizar Inscripción</button>
+    </form>
+    <!-- Botón para volver al Dashboard -->
+    <div class="button-container">
+        <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+    </div>
 </div>
 {% endblock %}
