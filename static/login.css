@@ -3,11 +3,9 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Times New Roman', Times, serif;
 }
 
 body {
-    font-family: 'Times New Roman', Times, serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -64,7 +62,7 @@ body {
 
 /* Contenedor principal */
 .container {
-    margin-top: 100px; /* Añade espacio debajo del encabezado fijo */
+    margin-top: 200px; /* Añade espacio debajo del encabezado fijo */
     width: 600px;
     max-width: 80%;
     margin-left: auto;
@@ -313,7 +311,7 @@ td a:hover {
 }
 
 .form-button {
-    width: 100px;
+    width: 60%;
     display: block;
     margin: 20px auto;
     padding: 10px 20px;
