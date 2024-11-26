@@ -1,27 +1,17 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabla de Tutorías</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-</head>
-<body>
+{% extends "layout.html" %}
 
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
-    
+{% block title %}Tabla de Tutorías{% endblock %}
+
+{% block content %}
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div>
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         {% endwith %}
 
         <div class="title-container">
@@ -29,14 +19,15 @@
         </div>
 
         <!-- Barra de búsqueda -->
-            <div class="search-container">
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    placeholder="Buscar por tutoria o codigo..." 
-                    onkeyup="filterTutoriasDocentes()" 
-                    class="search-box">
-            </div>
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Buscar por tutoría o código..." 
+                onkeyup="filterTutoriasDocentes()" 
+                class="search-box">
+        </div>
+
         <table id="tutoriasDocenteTable" class="table">
             <thead class="table-header">
                 <tr>
@@ -48,36 +39,36 @@
             </thead>
             <tbody class="table-body">
                 {% for tutoria in tutorias %}
-                <tr>
-                    <td class="table-cell font-medium">{{ tutoria.codigo }}</td>
-                    <td class="table-cell">{{ tutoria.espacio_academico }}</td>
-                    <td class="table-cell">
-                        {% if tutoria.horarios %}
-                            <ul>
-                                {% for horario in tutoria.horarios %}
-                                    <li>
-                                        {{ horario.dia }} - {{ horario.hora }} ({{ horario.estado }})
-                                        <!-- Formulario para eliminar horario -->
-                                        <form method="POST" action="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}" style="display: inline;">
-                                            <input type="hidden" name="horario_id" value="{{ horario.id }}">
-                                            <button type="submit" name="eliminar_horario">Eliminar</button>
-                                        </form>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            Sin horarios asignados.
-                        {% endif %}
-                    </td>
-                    <td class="table-cell text-right">
-                        <!-- Botón de asignar horario -->
-                        <a href="{{ url_for('asignar_horarios_tutorias', tutoria_id=tutoria.id) }}" >Asignar Horario</a>
-                    </td>
-                </tr>
+                    <tr>
+                        <td class="table-cell font-medium">{{ tutoria.codigo }}</td>
+                        <td class="table-cell">{{ tutoria.espacio_academico }}</td>
+                        <td class="table-cell">
+                            {% if tutoria.horarios %}
+                                <ul>
+                                    {% for horario in tutoria.horarios %}
+                                        <li>
+                                            {{ horario.dia }} - {{ horario.hora }} ({{ horario.estado }})
+                                            <!-- Formulario para eliminar horario -->
+                                            <form method="POST" action="{{ url_for('listar_tutorias_por_docente', docente_id=docente.id) }}" style="display: inline;">
+                                                <input type="hidden" name="horario_id" value="{{ horario.id }}">
+                                                <button type="submit" name="eliminar_horario">Eliminar</button>
+                                            </form>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                Sin horarios asignados.
+                            {% endif %}
+                        </td>
+                        <td class="table-cell text-right">
+                            <!-- Botón de asignar horario -->
+                            <a href="{{ url_for('asignar_horarios_tutorias', tutoria_id=tutoria.id) }}" class="button">Asignar Horario</a>
+                        </td>
+                    </tr>
                 {% else %}
-                <tr>
-                    <td colspan="4" class="table-cell">No hay tutorías asignadas.</td>
-                </tr>
+                    <tr>
+                        <td colspan="4" class="table-cell">No hay tutorías asignadas.</td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -87,12 +78,7 @@
         </div>
     </div>
 
-     <!-- Pie de página -->
-     <footer class="footer">
-        Todos los derechos reservados
-    </footer>
-    
-</body>
+{% endblock %}
 
 <script>
     function filterTutoriasDocentes() {
@@ -100,10 +86,10 @@
         const rows = document.querySelectorAll('#tutoriasDocenteTable tbody tr');
 
         rows.forEach(row => {
-            const codigo = row.cells[0].textContent.toLowerCase(); // Columna nombre codigo
-            const tutoria = row.cells[1].textContent.toLowerCase(); // Columna nombre tutoria
+            const codigo = row.cells[0].textContent.toLowerCase(); // Columna código
+            const tutoria = row.cells[1].textContent.toLowerCase(); // Columna nombre tutoría
 
-            // Verifica si el valor de búsqueda coincide con Tutoría o Estado
+            // Verifica si el valor de búsqueda coincide con tutoría o código
             if (codigo.includes(searchInput) || tutoria.includes(searchInput)) {
                 row.style.display = ''; // Mostrar la fila
             } else {
@@ -112,4 +98,4 @@
         });
     }
 </script>
-</html>
+

@@ -1,17 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <title>Perfil del Estudiante</title>
-</head>
-<body>
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
+{% extends "layout.html" %}
 
+{% block title %}Perfil del Estudiante{% endblock %}
+
+{% block content %}
     <!-- Contenedor principal -->
     <div class="container">
         <div class="title-container">
@@ -65,13 +56,6 @@
         <!-- Botones -->
         <div class="button-container">
             <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
-            <a href="{{ url_for('logout') }}" class="logout-button">Cerrar Sesión</a>
         </div>
     </div>
-
-    <!-- Pie de página -->
-    <footer class="footer">
-        Todos los derechos reservados
-    </footer>
-</body>
-</html>
+{% endblock %}

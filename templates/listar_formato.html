@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listado de Tutorías</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-</head>
-<body>
+{% extends "layout.html" %}
 
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
+{% block title %}Listado de Tutorías{% endblock %}
 
+{% block content %}
     <div class="formulario-grande">
         <h1 class="main-title">Listado de Formatos de Tutoría</h1>
 
@@ -89,11 +79,7 @@
         </div>
     </div>
 
-    <!-- Pie de página -->
-    <footer class="footer">
-        Todos los derechos reservados
-    </footer>
-
+    <!-- Script de búsqueda -->
     <script>
         function filterHistorialTutorias() {
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
@@ -113,6 +99,4 @@
             });
         }
     </script>
-
-</body>
-</html>
+{% endblock %}
