@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutorías Programadas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-</head>
-<body>
+{% extends "layout.html" %}
 
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
-    
+{% block title %}Tutorías Programadas{% endblock %}
+
+{% block content %}
     <div class="container">
         <h1>Tutorías Programadas</h1>
 
@@ -66,11 +56,6 @@
         </div>
     </div>
 
-    <!-- Pie de página -->
-    <footer class="footer">
-        Todos los derechos reservados
-    </footer>
-
     <script>
         function filterTutoriasProgramadas() {
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
@@ -90,5 +75,4 @@
             });
         }
     </script>
-</body>
-</html>
+{% endblock %}

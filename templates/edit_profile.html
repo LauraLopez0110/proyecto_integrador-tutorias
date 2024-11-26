@@ -1,91 +1,71 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <title>Editar Perfil</title>
-    
-</head>
-<body>
+{% extends "layout.html" %}
 
-     <!-- Encabezado -->
-     <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
+{% block title %}Editar Perfil{% endblock %}
 
-    <div class="container">
-        <div class="title-container">
-            <h1>Editar Perfil</h1>
-        </div>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div>
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
-        <form method="post">
-            <label for="username">Usuario</label>
-            <input type="text" id="username" name="username" placeholder="Usuario" value="{{ user.username }}" required>
-            
-            <label for="identificacion">Identificación</label>
-            <input type="text" id="identificacion" name="identificacion" placeholder="Identificación" value="{{ user.identificacion }}" required>
-            
-            <label for="nombre_completo">Nombre Completo</label>
-            <input type="text" id="nombre_completo" name="nombre_completo" placeholder="Nombre Completo" value="{{ user.nombre_completo }}" required>
-            
-            <label for="password">Nueva Contraseña</label>
-            <input type="password" id="password" name="password" placeholder="Dejar en blaco para conservar la misma">
-            
-            <!-- Campos para estudiantes -->
-            {% if user.role == 'student' %}
-                <label for="codigo">Código de Estudiante</label>
-                <input type="text" id="codigo" name="codigo" placeholder="Código de Estudiante" value="{{ est.codigo }}">
-                
-                <label for="semestre">Semestre</label>
-                <input type="text" id="semestre" name="semestre" placeholder="Semestre" value="{{ est.semestre }}">
-                
-                <label for="programa_academico">Programa Académico</label>
-                <input type="text" id="programa_academico" name="programa_academico" placeholder="Programa Académico" value="{{ est.programa_academico }}">
-                
-                <label for="estado">Estado</label>
-                <select id="estado" name="estado" required>
-                    <option value="activo" {% if est.estado == 'activo' %}selected{% endif %}>Activo</option>
-                    <option value="inactivo" {% if est.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
-                    <option value="graduado" {% if est.estado == 'graduado' %}selected{% endif %}>Graduado</option>
-                </select>
-            {% endif %}
-        
-            <!-- Campos para docentes -->
-            {% if user.role == 'teacher' %}
-                <label for="departamento">Departamento</label>
-                <input type="text" id="departamento" name="departamento" placeholder="Departamento" value="{{ doc.departamento }}">
-                
-                <label for="correo_institucional">Correo Institucional</label>
-                <input type="email" id="correo_institucional" name="correo_institucional" placeholder="Correo Institucional" value="{{ doc.correo_institucional }}">
-                
-                <label for="fecha_ingreso">Fecha de Ingreso</label>
-                <input type="date" id="fecha_ingreso" name="fecha_ingreso" placeholder="Fecha de Ingreso" value="{{ doc.fecha_ingreso }}">
-            {% endif %}
-            
-            <div class="button-container">
-                <button type="submit">Actualizar</button>
-                <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
-                <a href="{{ url_for('logout') }}" class="logout-button">Cerrar Sesión</a>
-            </div>
-            
-        </form>
+{% block content %}
+<div class="container">
+    <div class="title-container">
+        <h1>Editar Perfil</h1>
     </div>
 
-    <!-- Pie de página -->
-    <footer class="footer">
-        Todos los derechos reservados
-    </footer>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
-</body>
-</html>
+    <form method="post">
+        <label for="username">Usuario</label>
+        <input type="text" id="username" name="username" placeholder="Usuario" value="{{ user.username }}" required>
+        
+        <label for="identificacion">Identificación</label>
+        <input type="text" id="identificacion" name="identificacion" placeholder="Identificación" value="{{ user.identificacion }}" required>
+        
+        <label for="nombre_completo">Nombre Completo</label>
+        <input type="text" id="nombre_completo" name="nombre_completo" placeholder="Nombre Completo" value="{{ user.nombre_completo }}" required>
+        
+        <label for="password">Nueva Contraseña</label>
+        <input type="password" id="password" name="password" placeholder="Dejar en blanco para conservar la misma">
+
+        <!-- Campos para estudiantes -->
+        {% if user.role == 'student' %}
+            <label for="codigo">Código de Estudiante</label>
+            <input type="text" id="codigo" name="codigo" placeholder="Código de Estudiante" value="{{ est.codigo }}">
+            
+            <label for="semestre">Semestre</label>
+            <input type="text" id="semestre" name="semestre" placeholder="Semestre" value="{{ est.semestre }}">
+            
+            <label for="programa_academico">Programa Académico</label>
+            <input type="text" id="programa_academico" name="programa_academico" placeholder="Programa Académico" value="{{ est.programa_academico }}">
+            
+            <label for="estado">Estado</label>
+            <select id="estado" name="estado" required>
+                <option value="activo" {% if est.estado == 'activo' %}selected{% endif %}>Activo</option>
+                <option value="inactivo" {% if est.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                <option value="graduado" {% if est.estado == 'graduado' %}selected{% endif %}>Graduado</option>
+            </select>
+        {% endif %}
+    
+        <!-- Campos para docentes -->
+        {% if user.role == 'teacher' %}
+            <label for="departamento">Departamento</label>
+            <input type="text" id="departamento" name="departamento" placeholder="Departamento" value="{{ doc.departamento }}">
+            
+            <label for="correo_institucional">Correo Institucional</label>
+            <input type="email" id="correo_institucional" name="correo_institucional" placeholder="Correo Institucional" value="{{ doc.correo_institucional }}">
+            
+            <label for="fecha_ingreso">Fecha de Ingreso</label>
+            <input type="date" id="fecha_ingreso" name="fecha_ingreso" placeholder="Fecha de Ingreso" value="{{ doc.fecha_ingreso }}">
+        {% endif %}
+        
+        <div class="button-container">
+            <button type="submit" class="button">Actualizar</button>
+            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

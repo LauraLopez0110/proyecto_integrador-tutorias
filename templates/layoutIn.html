@@ -10,16 +10,13 @@
     <!-- Configura la vista para dispositivos móviles, ajustando el ancho al tamaño del dispositivo y la escala inicial al 100%. -->
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <!-- Enlaza el archivo de hojas de estilo CSS para aplicar estilos a la página. El archivo se carga desde la carpeta estática del servidor. -->
-
 </head>
 <body>
      <!-- Encabezado -->
      <header class="header">
         <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-        <a href="{{ url_for('logout') }}" class="logout-button">Cerrar sesión</a>
         
     </header>
-    
     <main>
         <!-- Sección principal del contenido de la página. -->
         {% block content %}
@@ -31,10 +28,6 @@
     <footer class="footer">
         Todos los derechos reservados
     </footer>
-
 </body>
-{% block scripts %}
-    <!-- Aquí puedes incluir scripts JS específicos para las páginas hijas -->
-    {% endblock %}
 </html>
 <!-- Fin del documento HTML. -->

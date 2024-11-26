@@ -1,33 +1,24 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <title>Administrar Usuarios</title>
-</head>
-<body>
+{% extends "layout.html" %}
 
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
+{% block title %}Administrar Usuarios{% endblock %}
 
+{% block content %}
     <div class="container">
         <div class="title-container">
             <h1>Administrar Usuarios</h1>
         </div>
 
-            <!-- Barra de búsqueda -->
-    <div class="search-container">
-        <input 
-            type="text" 
-            id="searchInput" 
-            placeholder="Buscar por usuario o rol..." 
-            onkeyup="filterUsers()" 
-            class="search-box">
-    </div>
+        <!-- Barra de búsqueda -->
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Buscar por usuario o rol..." 
+                onkeyup="filterUsers()" 
+                class="search-box">
+        </div>
 
+        <!-- Mostrar mensajes flash -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div>
@@ -38,6 +29,7 @@
             {% endif %}
         {% endwith %}
 
+        <!-- Tabla de usuarios -->
         <table id="userTable">
             <tr>
                 <th>ID</th>
@@ -53,50 +45,46 @@
                 <td>{{ user.role }}</td>
                 <td>{{ user.identificacion }}</td>
                 <td class="button-container">
+                    <!-- Formulario para eliminar usuario -->
                     <form method="post" style="display:inline;" class="button-container">
                         <input type="hidden" name="user_id" value="{{ user.id }}">
                         <button type="submit" name="action" value="delete">Eliminar</button>
-                        <a href="{{ url_for('edit_user', user_id=user.id) }}" class="button">Editar</a>
-                        <a href="{{ url_for('detalle_user', user_id=user.id) }}" class="button">Ver más</a>
                     </form>
-                    
+                    <!-- Enlace para editar usuario -->
+                    <a href="{{ url_for('edit_user', user_id=user.id) }}" class="button">Editar</a>
+                    <!-- Enlace para ver más detalles del usuario -->
+                    <a href="{{ url_for('detalle_user', user_id=user.id) }}" class="button">Ver más</a>
                 </td>
             </tr>
             {% endfor %}
         </table>
 
+        <!-- Botón de navegación -->
         <div class="button-container">
             <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
         </div>
     </div>
 
-     <!-- Pie de página -->
-     <footer class="footer">
-        Todos los derechos reservados
-    </footer>
-    
-</body>
+{% endblock %}
 
-<script>
-    function filterUsers() {
-        const searchInput = document.getElementById('searchInput').value.toLowerCase();
-        const rows = document.querySelectorAll('#userTable tr');
-    
-        rows.forEach((row, index) => {
-            if (index === 0) return; // Saltar la cabecera de la tabla
-    
-            const username = row.cells[1].textContent.toLowerCase();
-            const role = row.cells[2].textContent.toLowerCase();
-    
-            if (username.includes(searchInput) || role.includes(searchInput)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    }
+{% block scripts %}
+    <script>
+        function filterUsers() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#userTable tr');
+        
+            rows.forEach((row, index) => {
+                if (index === 0) return; // Saltar la cabecera de la tabla
+        
+                const username = row.cells[1].textContent.toLowerCase();
+                const role = row.cells[2].textContent.toLowerCase();
+        
+                if (username.includes(searchInput) || role.includes(searchInput)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
     </script>
-
-   
-    
-</html>
+{% endblock %}

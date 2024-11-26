@@ -1,118 +1,102 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <title>Editar Usuario</title>
-</head>
-<body onload="toggleFields()">
+{% extends "layout.html" %}
 
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
-    
-    <div class="container">
-        <div class="title-container">
-            <h1>Editar Usuario</h1>
-        </div>
+{% block title %}Editar Usuario{% endblock %}
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div>
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
-        <form method="post">
-            <label for="username">Usuario:</label>
-            <input type="text" name="username" id="username" value="{{ user.username }}" required>
-            
-            <label for="identificacion">Identificación:</label>
-            <input type="text" name="identificacion" id="identificacion" value="{{ user.identificacion }}" required>
-
-            <label for="role">Selecciona el tipo de usuario:</label>
-            <select name="role" id="role" required>
-                <option value="student" {% if user.role == 'student' %}selected{% endif %}>Estudiante</option>
-                <option value="teacher" {% if user.role == 'teacher' %}selected{% endif %}>Profesor</option>
-                <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Administrador</option>
-            </select>
-
-            <label for="nombre_completo">Nombre Completo:</label>
-            <input type="text" name="nombre_completo" id="nombre_completo" value="{{ user.nombre_completo }}" required>
-
-            
-            <label for="password">Nueva Contraseña (opcional):</label>
-            <input type="password" name="password" id= "password" placeholder="Dejar en blanco para no cambiar">
-            
-            <div id="student-fields" class="{{ 'hidden' if user.role != 'student' }}">
-                
-                <label for="codigo">Código</label>
-                <input type="text" id="codigo" name="codigo" placeholder="Código" value="{{ est.codigo if est else '' }}">
-
-                <label for="semestre">Semestre:</label>
-                <input type="text" id="semestre" name="semestre" placeholder="Semestre" value="{{ est.semestre if est else '' }}">
-
-                <label for="programa_academico">Programa Académico:</label>
-                <input type="text" id="programa_academico" name="programa_academico" placeholder="Programa Académico" value="{{ est.programa_academico if est else '' }}">
-                
-                <label for="estado">Estado del Estudiante:</label>
-                <select name="estado" id="estado">
-                    <option value="activo" {% if est.estado == 'activo' %}selected{% endif %}>Activo</option>
-                    <option value="inactivo" {% if est.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
-                    <option value="graduado"{% if est.estado == 'graduado' %}selected{% endif %}>Graduado</option>
-                </select>
-            </div>
-
-            <div id="teacher-fields" class="{{ 'hidden' if user.role != 'teacher' }}">
-
-                <label for="departamento">Departamento:</label>
-                <input type="text" id="departamento" name="departamento" placeholder="Departamento" value="{{ doc.departamento if doc else '' }}">
-                
-                <label for="fecha_ingreso">Fecha de Ingreso:</label>
-                <input type="date" id="fecha_ingreso" name="fecha_ingreso" value="{{ doc.fecha_ingreso if doc else '' }}" >
-
-                <label for="correo_institucional">Correo Institucional:</label>
-                <input type="email" id="correo_institucional" name="correo_institucional" value="{{ doc.correo_institucional if doc else '' }}" >
-            
-            </div>
-
-            <button type="submit">Actualizar</button>
-            
-        </form>
-        <div class="button-container">
-            <a href="{{ url_for('manage_users') }}">Volver a la administración de usuarios</a>
-            <a href="{{ url_for('logout') }}" class="logout-button">Cerrar Sesión</a>
-        </div>
+{% block content %}
+<main class="container">
+    <div class="title-container">
+        <h1>Editar Usuario</h1>
     </div>
 
-    <script>
-        function toggleFields() {
-            const role = document.getElementById('role').value;
-            const studentFields = document.getElementById('student-fields');
-            const teacherFields = document.getElementById('teacher-fields');
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
-            if (role === 'student') {
-                studentFields.classList.remove('hidden');
-                teacherFields.classList.add('hidden');
-            } else if (role === 'teacher') {
-                teacherFields.classList.remove('hidden');
-                studentFields.classList.add('hidden');
-            } else {
-                studentFields.classList.add('hidden');
-                teacherFields.classList.add('hidden');
-            }
+    <!-- Formulario para editar usuario -->
+    <form method="post">
+        <label for="username">Usuario:</label>
+        <input type="text" name="username" id="username" value="{{ user.username }}" required>
+
+        <label for="identificacion">Identificación:</label>
+        <input type="text" name="identificacion" id="identificacion" value="{{ user.identificacion }}" required>
+
+        <label for="role">Selecciona el tipo de usuario:</label>
+        <select name="role" id="role" required onchange="toggleFields()">
+            <option value="student" {% if user.role == 'student' %}selected{% endif %}>Estudiante</option>
+            <option value="teacher" {% if user.role == 'teacher' %}selected{% endif %}>Profesor</option>
+            <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Administrador</option>
+        </select>
+
+        <label for="nombre_completo">Nombre Completo:</label>
+        <input type="text" name="nombre_completo" id="nombre_completo" value="{{ user.nombre_completo }}" required>
+
+        <label for="password">Nueva Contraseña (opcional):</label>
+        <input type="password" name="password" id="password" placeholder="Dejar en blanco para no cambiar">
+
+        <!-- Campos específicos para estudiantes -->
+        <div id="student-fields" class="{{ 'hidden' if user.role != 'student' }}">
+            <label for="codigo">Código</label>
+            <input type="text" id="codigo" name="codigo" placeholder="Código" value="{{ est.codigo if est else '' }}">
+
+            <label for="semestre">Semestre:</label>
+            <input type="text" id="semestre" name="semestre" placeholder="Semestre" value="{{ est.semestre if est else '' }}">
+
+            <label for="programa_academico">Programa Académico:</label>
+            <input type="text" id="programa_academico" name="programa_academico" placeholder="Programa Académico" value="{{ est.programa_academico if est else '' }}">
+
+            <label for="estado">Estado del Estudiante:</label>
+            <select name="estado" id="estado">
+                <option value="activo" {% if est.estado == 'activo' %}selected{% endif %}>Activo</option>
+                <option value="inactivo" {% if est.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                <option value="graduado"{% if est.estado == 'graduado' %}selected{% endif %}>Graduado</option>
+            </select>
+        </div>
+
+        <!-- Campos específicos para docentes -->
+        <div id="teacher-fields" class="{{ 'hidden' if user.role != 'teacher' }}">
+            <label for="departamento">Departamento:</label>
+            <input type="text" id="departamento" name="departamento" placeholder="Departamento" value="{{ doc.departamento if doc else '' }}">
+
+            <label for="fecha_ingreso">Fecha de Ingreso:</label>
+            <input type="date" id="fecha_ingreso" name="fecha_ingreso" value="{{ doc.fecha_ingreso if doc else '' }}">
+
+            <label for="correo_institucional">Correo Institucional:</label>
+            <input type="email" id="correo_institucional" name="correo_institucional" value="{{ doc.correo_institucional if doc else '' }}">
+        </div>
+
+        <button type="submit">Actualizar</button>
+    </form>
+
+    <div class="button-container">
+        <a href="{{ url_for('manage_users') }}">Volver a la administración de usuarios</a>
+    </div>
+</main>
+
+<script>
+    // Función para mostrar y ocultar campos según el rol seleccionado
+    function toggleFields() {
+        const role = document.getElementById('role').value;
+        const studentFields = document.getElementById('student-fields');
+        const teacherFields = document.getElementById('teacher-fields');
+
+        if (role === 'student') {
+            studentFields.classList.remove('hidden');
+            teacherFields.classList.add('hidden');
+        } else if (role === 'teacher') {
+            teacherFields.classList.remove('hidden');
+            studentFields.classList.add('hidden');
+        } else {
+            studentFields.classList.add('hidden');
+            teacherFields.classList.add('hidden');
         }
-    </script>
+    }
+</script>
 
-    <!-- Pie de página -->
-    <footer class="footer">
-        Todos los derechos reservados
-    </footer>
-    
-</body>
-</html>
+{% endblock %}

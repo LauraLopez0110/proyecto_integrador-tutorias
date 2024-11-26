@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Formatos de Tutoría</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 2px solid #48bcea;
+        }
+
+        header img {
+            height: 70px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        table th, table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #48bcea;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 20px;
+            padding: 10px;
+            border-top: 2px solid #48bcea;
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado -->
+    <header class="header">
+        <img src="{{ request.url_root }}static/images/logo.png" alt="Logo">
+        
+    </header>
+
+    <h1>Listado de Formatos de Tutoría</h1>
+    <!-- Tabla de formatos -->
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Docente</th>
+                <th>Estudiante</th>
+                <th>Código Tutoría</th>
+                <th>Espacio Académico</th>
+                <th>Temas Tratados</th>
+                <th>Compromisos Adquiridos</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for formato in formatos %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ formato.docente.nombre_completo }}</td>
+                <td>{{ formato.estudiante.nombre_completo }}</td>
+                <td>{{ formato.tutoria.codigo }}</td>
+                <td>{{ formato.espacio_academico }}</td>
+                <td>{{ formato.temas_tratados or "N/A" }}</td>
+                <td>
+                    {% if formato.compromiso_relaciones %}
+                        {% for compromiso in formato.compromiso_relaciones %}
+                            {{ compromiso.compromiso.descripcion }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        No hay compromisos
+                    {% endif %}
+                </td>
+                
+                <td>{{ formato.fecha_realizacion }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="text-center">No hay formatos de tutoría registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pie de página -->
+    <footer>
+        Gestión de Tutorías - UDIES
+    </footer>
+</body>
+</html>

@@ -1,68 +1,62 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <title>Asignar Horario</title>
-</head>
+{% extends "layout.html" %}
 
+{% block title %}Asignar Horario{% endblock %}
 
-<body>
-    <div class="container">
-        <div class="title-container">
-            <h1>Asignar Horario a la Tutoría: {{ tutoria.espacio_academico }}</h1>
+{% block content %}
+<div class="container">
+    <div class="title-container">
+        <h1>Asignar Horario a la Tutoría: {{ tutoria.espacio_academico }}</h1>
+    </div>
+
+    <!-- Mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Formulario de asignación de horario -->
+    <form method="POST" class="form">
+        <!-- Selección de día -->
+        <div class="form-group">
+            <label for="dia">Día:</label>
+            <select id="dia" name="dia" required>
+                <option value="" disabled selected>Seleccione un día</option>
+                <option value="Lunes">Lunes</option>
+                <option value="Martes">Martes</option>
+                <option value="Miercoles">Miércoles</option>
+                <option value="Jueves">Jueves</option>
+                <option value="Viernes">Viernes</option>
+            </select>
         </div>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div>
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
+        <!-- Selección de hora -->
+        <div class="form-group">
+            <label for="hora">Hora:</label>
+            <select id="hora" name="hora" required>
+                <option value="" disabled selected>Seleccione una hora</option>
+                <option value="08:00 AM - 09:00 AM">08:00 AM - 09:00 AM</option>
+                <option value="09:00 AM - 10:00 AM">09:00 AM - 10:00 AM</option>
+                <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+                <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+                <option value="01:00 PM - 02:00 PM">01:00 PM - 02:00 PM</option>
+                <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
+                <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+                <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
+                <option value="05:00 PM - 06:00 PM">05:00 PM - 06:00 PM</option>
+            </select>
+        </div>
 
-        <form method="POST" class="form">
-            <!-- Selección de día -->
-            <div class="form-group">
-                <label for="dia">Día:</label>
-                <select id="dia" name="dia" required>
-                    <option value="" disabled selected>Seleccione un día</option>
-                    <option value="Lunes">Lunes</option>
-                    <option value="Martes">Martes</option>
-                    <option value="Miercoles">Miércoles</option>
-                    <option value="Jueves">Jueves</option>
-                    <option value="Viernes">Viernes</option>
-                </select>
-            </div>
-
-
-             <div class="form-group">
-                <label for="hora">Hora:</label>
-                <select id="hora" name="hora" required>
-                    <option value="" disabled selected>Seleccione una hora</option>
-                    <option value="08:00 AM - 09:00 AM">08:00 AM - 09:00 AM</option>
-                    <option value="09:00 AM - 10:00 AM">09:00 AM - 10:00 AM</option>
-                    <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
-                    <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
-                    <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
-                    <option value="01:00 PM - 02:00 PM">01:00 PM - 02:00 PM</option>
-                    <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
-                    <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
-                    <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
-                    <option value="05:00 PM - 06:00 PM">05:00 PM - 06:00 PM</option>
-                </select>
-            </div>
-
-            <!-- Botones -->
-            <div class="button-container">
-                <button type="submit" class="button">Asignar Horario</button>
-                <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
-            </div>
-        </form>
-    </div>
-  
-</body>
-</html>
+        <!-- Botones -->
+        <div class="button-container">
+            <button type="submit" class="button">Asignar Horario</button>
+            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
