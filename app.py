@@ -7,14 +7,10 @@ from models import Inscripcion,FormatoTutoria, Compromiso, FormatoTutoriaComprom
 from datetime import datetime
 import io
 import csv
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask_login import current_user
 from sqlalchemy.orm import joinedload
-import asyncio
-from pyppeteer import launch
-from concurrent.futures import ThreadPoolExecutor
+
 
 
 app = Flask(__name__)
