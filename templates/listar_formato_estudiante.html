@@ -6,13 +6,8 @@
     <title>Listado de Tutorías</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 </head>
-<body>
-    <!-- Encabezado -->
-    <header class="header">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-santoto-tunja-oct-nov-vXZyGoDPKcNpveZxNW6HpQB4TeVc46.png" alt="Logo Santo Tomás" class="logo">
-    </header>
 
-    <!-- Contenedor principal -->
+<body>
     <div class="container">
         <h1>Listado de Formatos de Tutoría</h1>
 
@@ -38,52 +33,48 @@
         {% endwith %}
 
         <!-- Tabla de formatos -->
-        <div class="box">
-            <table id="historialTutoriasTable">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Docente</th>
-                        <th>Estudiante</th>
-                        <th>Código Tutoría</th>
-                        <th>Espacio Académico</th>
-                        <th>Temas Tratados</th>
-                        <th>Compromisos Adquiridos</th>
-                        <th>Fecha</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for formato in formatos %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ formato.docente.nombre_completo }}</td>
-                        <td>{{ formato.estudiante.nombre_completo }}</td>
-                        <td>{{ formato.tutoria.codigo }}</td>
-                        <td>{{ formato.espacio_academico }}</td>
-                        <td>{{ formato.temas_tratados or "N/A" }}</td>
-                        <td>
-                            {% if formato.compromisos_adquiridos %}
-                                {{ formato.compromisos_adquiridos | join(', ') }}
-                            {% else %}
-                                No hay compromisos
-                            {% endif %}
-                        </td>
-                        <td>{{ formato.fecha_realizacion }}</td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="8">No hay formatos de tutoría registrados.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Botones -->
-        <div class="button-container">
-            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
-            <a href="{{ url_for('exportar_csv_estudiante', estudiante_id=estudiante_id) }}" class="button">Exportar CSV</a>
-            <a href="{{ url_for('exportar_pdf_estudiante', estudiante_id=estudiante_id) }}" class="button">Exportar PDF</a>
+        <table id="historialTutoriasTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Docente</th>
+                    <th>Estudiante</th>
+                    <th>Código Tutoría</th>
+                    <th>Espacio Académico</th>
+                    <th>Temas Tratados</th>
+                    <th>Compromisos Adquiridos</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for formato in formatos %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ formato.docente.nombre_completo }}</td>
+                    <td>{{ formato.estudiante.nombre_completo }}</td>
+                    <td>{{ formato.tutoria.codigo }}</td>
+                    <td>{{ formato.espacio_academico }}</td>
+                    <td>{{ formato.temas_tratados or "N/A" }}</td>
+                    <td>
+                        {% if formato.compromisos_adquiridos %}
+                            {{ formato.compromisos_adquiridos | join(', ') }}
+                        {% else %}
+                            No hay compromisos
+                        {% endif %}
+                    </td>
+                    <td>{{ formato.fecha_realizacion }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7">No hay formatos de tutoría registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="button">
+            <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
+            <a href="{{ url_for('exportar_csv_estudiante', estudiante_id=estudiante_id) }}" class="btn">Exportar CSV</a>
+            <a href="{{ url_for('exportar_pdf_estudiante', estudiante_id=estudiante_id) }}" class="btn">Exportar PDF</a>
         </div>
     </div>
 

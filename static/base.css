@@ -64,7 +64,21 @@ body {
 .container {
     margin-top: 200px; /* Añade espacio debajo del encabezado fijo */
     width: 600px;
-    max-width: 1000px;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    margin-bottom: 100px;
+}
+
+.formulario-grande {
+    margin-top: 200px; /* Añade espacio debajo del encabezado fijo */
+    width: auto;
+    max-width: 80%;
     margin-left: auto;
     margin-right: auto;
     padding: 20px;
@@ -93,7 +107,7 @@ input {
 }
 
 button   {
-    width: 60%;
+    width: auto;
     padding: 10px;
     font-size: 1rem;
     background-color: #eb56b7;
@@ -269,5 +283,50 @@ th {
 
 
 
+td a {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #bd186a;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    width: auto;
+}
 
+td a:hover {
+    background-color: #218838;
+}
 
+.form-button {
+    width: 60%;
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #bd186a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+a {
+    width: 50%;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #eb56b7;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    margin-top: 5px
+}
+
+a:hover {
+    background-color: #cd31be;
+}

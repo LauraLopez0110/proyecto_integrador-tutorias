@@ -69,10 +69,11 @@
             </table>
         </div>
 
-        <a href="{{ url_for('gestionar_horarios') }}" class="button">Horarios Tutorías</a>
+        
 
         <div class="button-container">
-            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+            <a href="{{ url_for('gestionar_horarios') }}">Horarios Tutorías</a>
+            <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
             <a href="{{ url_for('logout') }}" class="button logout-button">Cerrar Sesión</a>
         </div>
     </div>

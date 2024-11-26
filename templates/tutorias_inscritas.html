@@ -61,7 +61,7 @@
                         <td>{{ inscripcion.tutoria.docente.nombre_completo }}</td>
                         <td>
                             <a href="{{ url_for('editar_inscripcion', inscripcion_id= inscripcion.id)}}" class="button">Editar</a>  
-                            <a href="{{ url_for('eliminar_inscripcion', inscripcion_id=inscripcion.id) }}" class="button logout-button">Eliminar</a>
+                            <a href="{{ url_for('eliminar_inscripcion', inscripcion_id=inscripcion.id) }}" >Eliminar</a>
                         </td>
                     </tr>
                     {% endfor %}
