@@ -7,7 +7,7 @@ pip install Flask-Session
 pip install Flask-Login
 pip install reportlab
 pip install apscheduler
-pip install weasyprint
+pip install pdfkit
 
 
 CREATE DATABASE users_db;
