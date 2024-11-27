@@ -3,14 +3,15 @@
 {% block title %}Inscripción a Tutoría{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="title-container">
-        <h1>Inscripción a la Tutoría: {{ tutoria.espacio_academico }}</h1>
+<main class="container mt-4">
+    <div class="title-container mb-4">
+        <h1 class="display-4">Inscripción a la Tutoría: {{ tutoria.espacio_academico }}</h1>
     </div>
 
+    <!-- Mensajes Flash -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div>
+            <div class="alert alert-info">
                 {% for category, message in messages %}
                     <div class="flash {{ category }}">{{ message }}</div>
                 {% endfor %}
@@ -18,28 +19,32 @@
         {% endif %}
     {% endwith %}
 
-    <div class="info-container">
-        <h2>Información del Docente</h2>
+    <!-- Información del Docente -->
+    <div class="info-container mb-4">
+        <h2 class="h4">Información del Docente</h2>
         <p><strong>Nombre:</strong> {{ docente.nombre_completo }}</p>
         <p><strong>Departamento:</strong> {{ docente_detalles.departamento }}</p>
         <p><strong>Correo:</strong> {{ docente_detalles.correo_institucional }}</p>
     </div>
 
-    <div class="info-container">
-        <h2>Horario Asignado</h2>
+    <!-- Información del Horario -->
+    <div class="info-container mb-4">
+        <h2 class="h4">Horario Asignado</h2>
         <p><strong>Día:</strong> {{ horario.dia }}</p>
         <p><strong>Hora:</strong> {{ horario.hora }}</p>
     </div>
 
-    <form action="{{ url_for('inscribirse_tutoria', tutoria_id=tutoria.id) }}" method="POST" class="form">
-        <div class="button-container">
-            <button type="submit" class="button">Confirmar Inscripción</button>
+    <!-- Formulario para Inscripción -->
+    <form action="{{ url_for('inscribirse_tutoria', tutoria_id=tutoria.id) }}" method="POST">
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary btn-lg">Confirmar Inscripción</button>
         </div>
     </form>
 
-    <div class="button-container">
-        <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
-        <a href="{{ url_for('tutorias_disponibles') }}" class="button">Volver a tutorías disponibles</a>
+    <!-- Botones de navegación -->
+    <div class="d-flex justify-content-center mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Volver al Dashboard</a>
+        <a href="{{ url_for('tutorias_disponibles') }}" class="btn btn-secondary">Volver a tutorías disponibles</a>
     </div>
-</div>
+</main>
 {% endblock %}

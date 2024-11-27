@@ -3,15 +3,20 @@
 {% block title %}Formato de Tutoría{% endblock %}
 
 {% block content %}
-<main class="container">
-    <h1>Formato de Tutoría</h1>
+<main class="container mt-5">
+    <h1 class="text-center mb-4">Formato de Tutoría</h1>
 
     <!-- Mostrar mensajes flash -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="messages">
+            <div class="messages mb-4">
                 {% for category, message in messages %}
-                    <div class="alert {{ category }}">{{ message }}</div>
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                 {% endfor %}
             </div>
         {% endif %}
@@ -19,55 +24,65 @@
 
     <!-- Formulario -->
     <form method="POST">
-        <div class="form-group">
-            <label>Docente</label>
-            <input type="text" name="docente" value="{{ inscripcion.tutoria.docente.nombre_completo }}" disabled>
+        <div class="form-group mb-3">
+            <label for="docente">Docente</label>
+            <input type="text" id="docente" name="docente" value="{{ inscripcion.tutoria.docente.nombre_completo }}" class="form-control" disabled>
         </div>
-        <div class="form-group">
-            <label>Estudiante</label>
-            <input type="text" name="estudiante" value="{{ inscripcion.estudiante.nombre_completo }}" disabled>
+
+        <div class="form-group mb-3">
+            <label for="estudiante">Estudiante</label>
+            <input type="text" id="estudiante" name="estudiante" value="{{ inscripcion.estudiante.nombre_completo }}" class="form-control" disabled>
         </div>
-        <div class="form-group">
-            <label>Periodo Académico</label>
-            <input type="text" name="periodo_academico" value="{{ periodo_academico }}" required>
+
+        <div class="form-group mb-3">
+            <label for="periodo_academico">Periodo Académico</label>
+            <input type="text" id="periodo_academico" name="periodo_academico" value="{{ periodo_academico }}" class="form-control" required>
         </div>
-        <div class="form-group">
-            <label>Código</label>
-            <input type="text" name="codigo" value="{{ inscripcion.estudiante.estudiantes[0].codigo }}" required>
+
+        <div class="form-group mb-3">
+            <label for="codigo">Código</label>
+            <input type="text" id="codigo" name="codigo" value="{{ inscripcion.estudiante.estudiantes[0].codigo }}" class="form-control" required>
         </div>
-        <div class="form-group">
-            <label>Semestre</label>
-            <input type="text" name="semestre" value="{{ inscripcion.estudiante.estudiantes[0].semestre }}" required>
+
+        <div class="form-group mb-3">
+            <label for="semestre">Semestre</label>
+            <input type="text" id="semestre" name="semestre" value="{{ inscripcion.estudiante.estudiantes[0].semestre }}" class="form-control" required>
         </div>
-        <div class="form-group">
-            <label>Espacio Académico</label>
-            <input type="text" name="espacio_academico" value="{{ inscripcion.tutoria.espacio_academico }}" required>
+
+        <div class="form-group mb-3">
+            <label for="espacio_academico">Espacio Académico</label>
+            <input type="text" id="espacio_academico" name="espacio_academico" value="{{ inscripcion.tutoria.espacio_academico }}" class="form-control" required>
         </div>
-        <div class="form-group">
-            <label>Temas Tratados</label>
-            <textarea name="temas_tratados" required></textarea>
+
+        <div class="form-group mb-3">
+            <label for="temas_tratados">Temas Tratados</label>
+            <textarea name="temas_tratados" id="temas_tratados" class="form-control" required></textarea>
         </div>
-        <div class="form-group">
-            <label>Compromisos Adquiridos</label>
-            <select name="compromisos">
+
+        <div class="form-group mb-3">
+            <label for="compromisos">Compromisos Adquiridos</label>
+            <select name="compromisos" id="compromisos" class="form-control">
                 {% for compromiso in compromisos %}
                     <option value="{{ compromiso.id }}">{{ compromiso.descripcion }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group">
-            <label>Nuevo Compromiso</label>
-            <input type="text" name="nuevo_compromiso" placeholder="Escribe un compromiso nuevo">
-        </div>
-        <div class="form-group">
-            <label>Fecha de Realización</label>
-            <input type="date" name="fecha_realizacion" required>
+
+        <div class="form-group mb-3">
+            <label for="nuevo_compromiso">Nuevo Compromiso</label>
+            <input type="text" id="nuevo_compromiso" name="nuevo_compromiso" placeholder="Escribe un compromiso nuevo" class="form-control">
         </div>
 
-        <button type="submit" class="button primary-button">Guardar Formato</button>
+        <div class="form-group mb-3">
+            <label for="fecha_realizacion">Fecha de Realización</label>
+            <input type="date" id="fecha_realizacion" name="fecha_realizacion" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block mb-3">Guardar Formato</button>
+        
         <!-- Botón para volver al Dashboard -->
-        <div class="button-container">
-            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+        <div class="text-center">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Volver al Dashboard</a>
         </div>
     </form>
 </main>

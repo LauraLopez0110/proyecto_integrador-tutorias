@@ -3,8 +3,8 @@
 {% block title %}Registrar Usuario{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="title-container">
+    <div class="container mt-5">
+        <div class="text-center mb-4">
             <h1>Registrar Usuario</h1>
         </div>
 
@@ -13,7 +13,12 @@
             {% if messages %}
                 <div id="flash-messages">
                     {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                     {% endfor %}
                 </div>
             {% endif %}
@@ -21,52 +26,68 @@
 
         <!-- Formulario -->
         <form method="post">
-            <div class="input-group username">
-                <input type="text" name="username" placeholder="Usuario" required>
+            <div class="form-group mb-3">
+                <input type="text" name="username" class="form-control" placeholder="Usuario" required>
             </div>
-            <div class="input-group password">
-                <input type="password" name="password" placeholder="Contraseña" required>
+            <div class="form-group mb-3">
+                <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
             </div>
-            <div class="input-group">
-                <input type="text" name="identificacion" placeholder="Identificación" required>
+            <div class="form-group mb-3">
+                <input type="text" name="identificacion" class="form-control" placeholder="Identificación" required>
             </div>
-            <div class="input-group">
-                <input type="text" name="nombre_completo" placeholder="Nombre Completo" required>
+            <div class="form-group mb-3">
+                <input type="text" name="nombre_completo" class="form-control" placeholder="Nombre Completo" required>
             </div>
 
-            <label for="role">Selecciona el tipo de usuario:</label>
-            <select name="role" id="role" required onchange="toggleFields()">
-                <option value="" disabled selected>Seleccione un rol</option>
-                <option value="student">Estudiante</option>
-                <option value="teacher">Profesor</option>
-                <option value="admin">Administrador</option>
-            </select>
+            <div class="form-group mb-3">
+                <label for="role">Selecciona el tipo de usuario:</label>
+                <select name="role" id="role" class="form-control" required onchange="toggleFields()">
+                    <option value="" disabled selected>Seleccione un rol</option>
+                    <option value="student">Estudiante</option>
+                    <option value="teacher">Profesor</option>
+                    <option value="admin">Administrador</option>
+                </select>
+            </div>
 
             <!-- Campos Estudiante -->
             <div id="student-fields" class="hidden box">
-                <input type="text"  name="codigo" placeholder="Código de Estudiante">
-                <input type="text" name="semestre" placeholder="Semestre">
-                <input type="text" name="programa_academico" placeholder="Programa Académico">
+                <div class="form-group mb-3">
+                    <input type="text" name="codigo" class="form-control" placeholder="Código de Estudiante">
+                </div>
+                <div class="form-group mb-3">
+                    <input type="text" name="semestre" class="form-control" placeholder="Semestre">
+                </div>
+                <div class="form-group mb-3">
+                    <input type="text" name="programa_academico" class="form-control" placeholder="Programa Académico">
+                </div>
 
-                <label for="estado">Estado del Estudiante:</label>
-                <select name="estado" id="estado">
-                    <option value="activo">Activo</option>
-                    <option value="inactivo">Inactivo</option>
-                    <option value="graduado">Graduado</option>
-                </select>
-            </div>  
+                <div class="form-group mb-3">
+                    <label for="estado">Estado del Estudiante:</label>
+                    <select name="estado" id="estado" class="form-control">
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="graduado">Graduado</option>
+                    </select>
+                </div>
+            </div>
 
             <!-- Campos Profesor -->
             <div id="teacher-fields" class="hidden box">
-                <input type="text" name="departamento" placeholder="Departamento">
-                <input type="date" name="fecha_ingreso" placeholder="Fecha de Ingreso">
-                <input type="email" name="correo_institucional" placeholder="Correo Institucional">
+                <div class="form-group mb-3">
+                    <input type="text" name="departamento" class="form-control" placeholder="Departamento">
+                </div>
+                <div class="form-group mb-3">
+                    <input type="date" name="fecha_ingreso" class="form-control" placeholder="Fecha de Ingreso">
+                </div>
+                <div class="form-group mb-3">
+                    <input type="email" name="correo_institucional" class="form-control" placeholder="Correo Institucional">
+                </div>
             </div>
 
-            <button type="submit">Registrar</button>
+            <button type="submit" class="btn btn-primary btn-block">Registrar</button>
 
-            <div class="button-container">
-                <a href="{{ url_for('dashboard') }}" class="button">Volver al dashboard</a>
+            <div class="text-center mt-4">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Volver al Dashboard</a>
             </div>
         </form>
     </div>

@@ -23,12 +23,14 @@
         <!-- Formulario de inicio de sesión -->
         <form method="post">
             <div class="input-group username">
+                <i class="fas fa-user"></i> <!-- Icono de usuario -->
                 <input type="text" name="username" placeholder="Usuario" required>
             </div>
             <div class="input-group password">
+                <i class="fas fa-lock"></i> <!-- Icono de candado -->
                 <input type="password" name="password" placeholder="Contraseña" required>
             </div>
-            <button type="submit">Iniciar Sesión</button>
+            <button type="submit"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</button> <!-- Icono de entrada -->
         </form>
     </div>
 {% endblock %}

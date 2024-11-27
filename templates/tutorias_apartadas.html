@@ -3,45 +3,44 @@
 {% block title %}Tutorías Apartadas{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h1>Tutorías Apartadas</h1>
+<main class="container mt-4">
+    <h1 class="display-4 mb-4">Tutorías Apartadas</h1>
 
-        {% if tutorias %}
-            <table>
-                <thead>
+    {% if tutorias %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Espacio Académico</th>
+                    <th>Estudiantes Inscritos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tutoria in tutorias %}
                     <tr>
-                        <th>Código</th>
-                        <th>Espacio Académico</th>
-                        <th>Estudiantes Inscritos</th>
-                        <th>Acciones</th>
+                        <td>{{ tutoria.codigo }}</td>
+                        <td>{{ tutoria.espacio_academico }}</td>
+                        <td>
+                            <ul class="list-unstyled">
+                                {% for inscripcion in tutoria.inscripciones %}
+                                    <li>{{ inscripcion.estudiante.nombre_completo }}</li>  <!-- Nombre completo del estudiante -->
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('llenar_formulario', tutoria_id=tutoria.id) }}" class="btn btn-primary">Llenar Formulario</a> <!-- Acción para llenar formulario -->
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for tutoria in tutorias %}
-                        <tr>
-                            <td>{{ tutoria.codigo }}</td>
-                            <td>{{ tutoria.espacio_academico }}</td>
-                            <td>
-                                <ul>
-                                    {% for inscripcion in tutoria.inscripciones %}
-                                        <li>{{ inscripcion.estudiante.nombre_completo }}</li>  <!-- Nombre completo del estudiante -->
-                                    {% endfor %}
-                                </ul>
-                            </td>
-                            <td>
-                                <a href="{{ url_for('llenar_formulario', tutoria_id=tutoria.id) }}" class="btn">Llenar Formulario</a> <!-- Acción para llenar formulario -->
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>No hay tutorías apartadas para este docente.</p>
-        {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay tutorías apartadas para este docente.</p>
+    {% endif %}
 
-        <div class="button-container">
-            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
-        </div>
+    <div class="mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Volver al Dashboard</a>
     </div>
-
+</main>
 {% endblock %}

@@ -3,23 +3,24 @@
 {% block title %}Listado de Tutorías{% endblock %}
 
 {% block content %}
+<main class="container mt-4">
     <div class="formulario-grande">
-        <h1 class="main-title">Listado de Formatos de Tutoría</h1>
+        <h1 class="display-4 mb-4">Listado de Formatos de Tutoría</h1>
 
         <!-- Barra de búsqueda -->
-        <div class="search-container">
+        <div class="mb-4">
             <input 
                 type="text" 
                 id="searchInput" 
-                placeholder="Buscar por estudiante, tutoria o fecha..." 
-                onkeyup="filterHistorialTutorias()" 
-                class="search-box">
+                class="form-control" 
+                placeholder="Buscar por estudiante, tutoría o fecha..." 
+                onkeyup="filterHistorialTutorias()">
         </div>
 
         <!-- Mostrar mensajes flash -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="messages">
+                <div class="mb-4">
                     {% for category, message in messages %}
                         <div class="alert {{ category }}">{{ message }}</div>
                     {% endfor %}
@@ -28,7 +29,7 @@
         {% endwith %}
 
         <!-- Tabla de formatos -->
-        <table class="table" id="historialTutoriasTable">
+        <table class="table table-striped" id="historialTutoriasTable">
             <thead>
                 <tr>
                     <th>#</th>
@@ -60,7 +61,7 @@
                     </td>
                     <td>{{ formato.fecha_realizacion }}</td>
                     <td>
-                        <a href="{{ url_for('editar_formato', id=formato.id) }}">Editar</a>
+                        <a href="{{ url_for('editar_formato', id=formato.id) }}" class="btn btn-sm btn-warning">Editar</a>
                     </td>
                 </tr>
                 {% else %}
@@ -72,31 +73,33 @@
         </table>
 
         <!-- Botones -->
-        <div class="button-container">
-            <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
-            <a href="{{ url_for('exportar_csv_docente', docente_id=docente_id) }}" >Exportar CSV</a>
-            <a href="{{ url_for('exportar_pdf_docente', docente_id=docente_id) }}" >Exportar PDF</a>
+        <div class="d-flex justify-content-center mt-4">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Volver al Dashboard</a>
+            <a href="{{ url_for('exportar_csv_docente', docente_id=docente_id) }}" class="btn btn-success">Exportar CSV</a>
+            <a href="{{ url_for('exportar_pdf_docente', docente_id=docente_id) }}" class="btn btn-danger">Exportar PDF</a>
         </div>
     </div>
+</main>
 
-    <!-- Script de búsqueda -->
-    <script>
-        function filterHistorialTutorias() {
-            const searchInput = document.getElementById('searchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#historialTutoriasTable tbody tr');
+<!-- Script de búsqueda -->
+<script>
+    function filterHistorialTutorias() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#historialTutoriasTable tbody tr');
 
-            rows.forEach(row => {
-                const estudiante = row.cells[2].textContent.toLowerCase(); // Columna Estudiante
-                const tutoria = row.cells[4].textContent.toLowerCase(); // Columna Tutoria
-                const fecha = row.cells[7].textContent.toLowerCase(); // Columna Fecha
+        rows.forEach(row => {
+            const estudiante = row.cells[2].textContent.toLowerCase(); // Columna Estudiante
+            const tutoria = row.cells[4].textContent.toLowerCase(); // Columna Tutoria
+            const fecha = row.cells[7].textContent.toLowerCase(); // Columna Fecha
 
-                // Verifica si el valor de búsqueda coincide con Estudiante, Tutoría o Fecha
-                if (estudiante.includes(searchInput) || tutoria.includes(searchInput) || fecha.includes(searchInput)) {
-                    row.style.display = ''; // Mostrar la fila
-                } else {
-                    row.style.display = 'none'; // Ocultar la fila
-                }
-            });
-        }
-    </script>
+            // Verifica si el valor de búsqueda coincide con Estudiante, Tutoría o Fecha
+            if (estudiante.includes(searchInput) || tutoria.includes(searchInput) || fecha.includes(searchInput)) {
+                row.style.display = ''; // Mostrar la fila
+            } else {
+                row.style.display = 'none'; // Ocultar la fila
+            }
+        });
+    }
+</script>
+
 {% endblock %}

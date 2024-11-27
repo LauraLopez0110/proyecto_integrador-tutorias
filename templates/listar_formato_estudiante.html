@@ -3,17 +3,17 @@
 {% block title %}Listado de Tutorías{% endblock %}
 
 {% block content %}
-<div class="formulario-grande">
-    <h1>Listado de Formatos de Tutoría</h1> 
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Listado de Formatos de Tutoría</h1> 
 
     <!-- Barra de búsqueda -->
-    <div class="search-container box">
+    <div class="input-group mb-4">
         <input 
             type="text" 
             id="searchInput" 
             placeholder="Buscar por docente, tutoría o fecha..." 
             onkeyup="filterHistorialTutorias()" 
-            class="search-box">
+            class="form-control">
     </div>
 
     <!-- Mostrar mensajes flash -->
@@ -21,15 +21,20 @@
         {% if messages %}
             <div id="flash-messages">
                 {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                 {% endfor %}
             </div>
         {% endif %}
     {% endwith %}
 
     <!-- Tabla de formatos -->
-    <table id="historialTutoriasTable">
-        <thead>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
             <tr>
                 <th>#</th>
                 <th>Docente</th>
@@ -61,21 +66,23 @@
             </tr>
             {% else %}
             <tr>
-                <td colspan="8">No hay formatos de tutoría registrados.</td>
+                <td colspan="8" class="text-center">No hay formatos de tutoría registrados.</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <div class="button-container">
-        <a href="{{ url_for('dashboard') }}">Volver al Dashboard</a>
-        <a href="{{ url_for('exportar_csv_estudiante', estudiante_id=estudiante_id) }}">Exportar CSV</a>
-        <a href="{{ url_for('exportar_pdf_estudiante', estudiante_id=estudiante_id) }}">Exportar PDF</a>
+    <div class="d-flex justify-content-center mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Volver al Dashboard</a>
+        <div>
+            <a href="{{ url_for('exportar_csv_estudiante', estudiante_id=estudiante_id) }}" class="btn btn-success mr-2">Exportar CSV</a>
+            <a href="{{ url_for('exportar_pdf_estudiante', estudiante_id=estudiante_id) }}" class="btn btn-danger">Exportar PDF</a>
+        </div>
     </div>
 </div>
 
 <!-- Pie de página -->
-<footer class="footer">
+<footer class="footer mt-5 py-3 bg-light text-center">
     Todos los derechos reservados
 </footer>
 

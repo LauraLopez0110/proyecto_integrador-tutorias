@@ -3,22 +3,22 @@
 {% block title %}Tutorías Programadas{% endblock %}
 
 {% block content %}
-    <div class="formulario-grande">
-        <h1>Tutorías Programadas</h1>
+<main class="container mt-4">
+    <h1 class="display-4 mb-4">Tutorías Programadas</h1>
 
-        <!-- Barra de búsqueda -->
-        <div class="search-container">
-            <input 
-                type="text" 
-                id="searchInput" 
-                placeholder="Buscar por tutoría, horario o estudiante..." 
-                onkeyup="filterTutoriasProgramadas()" 
-                class="search-box">
-        </div>
+    <!-- Barra de búsqueda -->
+    <div class="mb-4">
+        <input 
+            type="text" 
+            id="searchInput" 
+            class="form-control" 
+            placeholder="Buscar por tutoría, horario o estudiante..." 
+            onkeyup="filterTutoriasProgramadas()">
+    </div>
 
-        {% if tutorias %}
-        <div class="box">
-            <table id="tutoriasProgramadasTable" class="styled-table">
+    {% if tutorias %}
+        <div class="table-responsive">
+            <table id="tutoriasProgramadasTable" class="table table-striped">
                 <thead>
                     <tr>
                         <th>Código</th>
@@ -30,49 +30,51 @@
                 </thead>
                 <tbody>
                     {% for inscripcion in tutorias %}
-                    <tr>
-                        <td>{{ inscripcion.tutoria.codigo }}</td>
-                        <td>{{ inscripcion.tutoria.espacio_academico }}</td>
-                        <td>
-                            <strong>{{ inscripcion.horario.dia }}:</strong> {{ inscripcion.horario.hora }}
-                        </td>
-                        <td>{{ inscripcion.estudiante.nombre_completo }}</td>
-                        <td>
-                            <a href="{{ url_for('formato_tutoria', inscripcion_id=inscripcion.id) }}">Llenar formato</a>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>{{ inscripcion.tutoria.codigo }}</td>
+                            <td>{{ inscripcion.tutoria.espacio_academico }}</td>
+                            <td>
+                                <strong>{{ inscripcion.horario.dia }}:</strong> {{ inscripcion.horario.hora }}
+                            </td>
+                            <td>{{ inscripcion.estudiante.nombre_completo }}</td>
+                            <td>
+                                <a href="{{ url_for('formato_tutoria', inscripcion_id=inscripcion.id) }}" class="btn btn-primary btn-sm">Llenar Formato</a>
+                            </td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        {% else %}
-        <p class="message">No hay tutorías programadas para este docente.</p>
-        {% endif %}
+    {% else %}
+        <p class="alert alert-info">No hay tutorías programadas para este docente.</p>
+    {% endif %}
 
-        <div class="button-container">
-            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
-            <a href="{{ url_for('exportar_csv_tutorias_programadas', docente_id=docente_id) }}" class="button">Exportar CSV</a>
-            <a href="{{ url_for('exportar_pdf_tutorias_programadas', docente_id=docente_id) }}" class="button">Exportar PDF</a>
-        </div>
+    <!-- Botones -->
+    <div class="mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Volver al Dashboard</a>
+        <a href="{{ url_for('exportar_csv_tutorias_programadas', docente_id=docente_id) }}" class="btn btn-success">Exportar CSV</a>
+        <a href="{{ url_for('exportar_pdf_tutorias_programadas', docente_id=docente_id) }}" class="btn btn-danger">Exportar PDF</a>
     </div>
+</main>
 
-    <script>
-        function filterTutoriasProgramadas() {
-            const searchInput = document.getElementById('searchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#tutoriasProgramadasTable tbody tr');
+<script>
+    function filterTutoriasProgramadas() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#tutoriasProgramadasTable tbody tr');
 
-            rows.forEach(row => {
-                const tutoria = row.cells[1].textContent.toLowerCase(); // Columna Espacio Académico
-                const dia = row.cells[2].textContent.toLowerCase(); // Columna Día y Hora
-                const estudiante = row.cells[3].textContent.toLowerCase(); // Columna Estudiante Inscrito
+        rows.forEach(row => {
+            const tutoria = row.cells[1].textContent.toLowerCase(); // Columna Espacio Académico
+            const dia = row.cells[2].textContent.toLowerCase(); // Columna Día y Hora
+            const estudiante = row.cells[3].textContent.toLowerCase(); // Columna Estudiante Inscrito
 
-                // Verifica si el valor de búsqueda coincide con Tutoría, Día, Hora o Estudiante
-                if (tutoria.includes(searchInput) || dia.includes(searchInput) || estudiante.includes(searchInput)) {
-                    row.style.display = ''; // Mostrar la fila
-                } else {
-                    row.style.display = 'none'; // Ocultar la fila
-                }
-            });
-        }
-    </script>
+            // Verifica si el valor de búsqueda coincide con Tutoría, Día, Hora o Estudiante
+            if (tutoria.includes(searchInput) || dia.includes(searchInput) || estudiante.includes(searchInput)) {
+                row.style.display = ''; // Mostrar la fila
+            } else {
+                row.style.display = 'none'; // Ocultar la fila
+            }
+        });
+    }
+</script>
+
 {% endblock %}

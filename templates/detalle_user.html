@@ -3,67 +3,79 @@
 {% block title %}Detalles del Usuario{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="title-container">
+<div class="container mt-5">
+    <div class="text-center mb-4">
         <h1>Detalles del Usuario</h1>
     </div>
     
     <h2>Información General</h2>
-    <div class="profile-field">
-        <strong>Nombre de Usuario:</strong>
-        <span class="profile-value">{{ user.username }}</span>
-    </div>
-    <div class="profile-field">
-        <strong>Identificación:</strong>
-        <span class="profile-value">{{ user.identificacion }}</span>
-    </div>
-    <div class="profile-field">
-        <strong>Rol:</strong>
-        <span class="profile-value">{{ user.role }}</span>
-    </div>
-    <div class="profile-field">
-        <strong>Nombre Completo:</strong>
-        <span class="profile-value">{{ user.nombre_completo }}</span>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Nombre de Usuario:</strong></div>
+                <div class="col-md-9">{{ user.username }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Identificación:</strong></div>
+                <div class="col-md-9">{{ user.identificacion }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Rol:</strong></div>
+                <div class="col-md-9">{{ user.role }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Nombre Completo:</strong></div>
+                <div class="col-md-9">{{ user.nombre_completo }}</div>
+            </div>
+        </div>
     </div>
 
     {% if user.role == 'student' and estudiante %}
         <h2>Información del Estudiante</h2>
-        <div class="profile-field">
-            <strong>Código del Estudiante:</strong>
-            <span class="profile-value">{{ estudiante.codigo }}</span>
-        </div>
-        <div class="profile-field">
-            <strong>Semestre:</strong>
-            <span class="profile-value">{{ estudiante.semestre }}</span>
-        </div>
-        <div class="profile-field">
-            <strong>Programa Académico:</strong>
-            <span class="profile-value">{{ estudiante.programa_academico }}</span>
-        </div>
-        <div class="profile-field">
-            <strong>Estado:</strong>
-            <span class="profile-value">{{ estudiante.estado }}</span>
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>Código del Estudiante:</strong></div>
+                    <div class="col-md-9">{{ estudiante.codigo }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>Semestre:</strong></div>
+                    <div class="col-md-9">{{ estudiante.semestre }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>Programa Académico:</strong></div>
+                    <div class="col-md-9">{{ estudiante.programa_academico }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>Estado:</strong></div>
+                    <div class="col-md-9">{{ estudiante.estado }}</div>
+                </div>
+            </div>
         </div>
     {% endif %}
 
     {% if user.role == 'teacher' and docente %}
         <h2>Información del Docente</h2>
-        <div class="profile-field">
-            <strong>Departamento:</strong>
-            <span class="profile-value">{{ docente.departamento }}</span>
-        </div>
-        <div class="profile-field">
-            <strong>Fecha ingreso:</strong>
-            <span class="profile-value">{{ docente.fecha_ingreso }}</span>
-        </div>
-        <div class="profile-field">
-            <strong>Correo institucional:</strong>
-            <span class="profile-value">{{ docente.correo_institucional }}</span>
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>Departamento:</strong></div>
+                    <div class="col-md-9">{{ docente.departamento }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>Fecha Ingreso:</strong></div>
+                    <div class="col-md-9">{{ docente.fecha_ingreso }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>Correo Institucional:</strong></div>
+                    <div class="col-md-9">{{ docente.correo_institucional }}</div>
+                </div>
+            </div>
         </div>
     {% endif %}
 
-    <div class="button-container">
-        <a href="{{ url_for('manage_users') }}" class="button">Volver a Usuarios</a>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('manage_users') }}" class="btn btn-primary">Volver a Usuarios</a>
     </div>
 </div>
 {% endblock %}

@@ -3,15 +3,15 @@
 {% block title %}Editar Usuario{% endblock %}
 
 {% block content %}
-<main class="container">
-    <div class="title-container">
+<main class="container mt-4">
+    <div class="title-container mb-4">
         <h1>Editar Usuario</h1>
     </div>
 
     <!-- Mensajes Flash -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div>
+            <div class="alert alert-info">
                 {% for category, message in messages %}
                     <div class="flash {{ category }}">{{ message }}</div>
                 {% endfor %}
@@ -20,62 +20,72 @@
     {% endwith %}
 
     <!-- Formulario para editar usuario -->
-    <form method="post">
-        <label for="username">Usuario:</label>
-        <input type="text" name="username" id="username" value="{{ user.username }}" required>
+    <form method="post" class="form">
+        <div class="mb-3">
+            <label for="username" class="form-label">Usuario:</label>
+            <input type="text" name="username" id="username" value="{{ user.username }}" class="form-control" required>
+        </div>
 
-        <label for="identificacion">Identificación:</label>
-        <input type="text" name="identificacion" id="identificacion" value="{{ user.identificacion }}" required>
+        <div class="mb-3">
+            <label for="identificacion" class="form-label">Identificación:</label>
+            <input type="text" name="identificacion" id="identificacion" value="{{ user.identificacion }}" class="form-control" required>
+        </div>
 
-        <label for="role">Selecciona el tipo de usuario:</label>
-        <select name="role" id="role" required onchange="toggleFields()">
-            <option value="student" {% if user.role == 'student' %}selected{% endif %}>Estudiante</option>
-            <option value="teacher" {% if user.role == 'teacher' %}selected{% endif %}>Profesor</option>
-            <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Administrador</option>
-        </select>
+        <div class="mb-3">
+            <label for="role" class="form-label">Selecciona el tipo de usuario:</label>
+            <select name="role" id="role" class="form-select" required onchange="toggleFields()">
+                <option value="student" {% if user.role == 'student' %}selected{% endif %}>Estudiante</option>
+                <option value="teacher" {% if user.role == 'teacher' %}selected{% endif %}>Profesor</option>
+                <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Administrador</option>
+            </select>
+        </div>
 
-        <label for="nombre_completo">Nombre Completo:</label>
-        <input type="text" name="nombre_completo" id="nombre_completo" value="{{ user.nombre_completo }}" required>
+        <div class="mb-3">
+            <label for="nombre_completo" class="form-label">Nombre Completo:</label>
+            <input type="text" name="nombre_completo" id="nombre_completo" value="{{ user.nombre_completo }}" class="form-control" required>
+        </div>
 
-        <label for="password">Nueva Contraseña (opcional):</label>
-        <input type="password" name="password" id="password" placeholder="Dejar en blanco para no cambiar">
+        <div class="mb-3">
+            <label for="password" class="form-label">Nueva Contraseña (opcional):</label>
+            <input type="password" name="password" id="password" placeholder="Dejar en blanco para no cambiar" class="form-control">
+        </div>
 
         <!-- Campos específicos para estudiantes -->
-        <div id="student-fields" class="{{ 'hidden' if user.role != 'student' }}">
-            <label for="codigo">Código</label>
-            <input type="text" id="codigo" name="codigo" placeholder="Código" value="{{ est.codigo if est else '' }}">
+        <div id="student-fields" class="mb-3 {{ 'd-none' if user.role != 'student' }}">
+            <label for="codigo" class="form-label">Código:</label>
+            <input type="text" id="codigo" name="codigo" placeholder="Código" value="{{ est.codigo if est else '' }}" class="form-control">
 
-            <label for="semestre">Semestre:</label>
-            <input type="text" id="semestre" name="semestre" placeholder="Semestre" value="{{ est.semestre if est else '' }}">
+            <label for="semestre" class="form-label">Semestre:</label>
+            <input type="text" id="semestre" name="semestre" placeholder="Semestre" value="{{ est.semestre if est else '' }}" class="form-control">
 
-            <label for="programa_academico">Programa Académico:</label>
-            <input type="text" id="programa_academico" name="programa_academico" placeholder="Programa Académico" value="{{ est.programa_academico if est else '' }}">
+            <label for="programa_academico" class="form-label">Programa Académico:</label>
+            <input type="text" id="programa_academico" name="programa_academico" placeholder="Programa Académico" value="{{ est.programa_academico if est else '' }}" class="form-control">
 
-            <label for="estado">Estado del Estudiante:</label>
-            <select name="estado" id="estado">
+            <label for="estado" class="form-label">Estado del Estudiante:</label>
+            <select name="estado" id="estado" class="form-select">
                 <option value="activo" {% if est.estado == 'activo' %}selected{% endif %}>Activo</option>
                 <option value="inactivo" {% if est.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
-                <option value="graduado"{% if est.estado == 'graduado' %}selected{% endif %}>Graduado</option>
+                <option value="graduado" {% if est.estado == 'graduado' %}selected{% endif %}>Graduado</option>
             </select>
         </div>
 
         <!-- Campos específicos para docentes -->
-        <div id="teacher-fields" class="{{ 'hidden' if user.role != 'teacher' }}">
-            <label for="departamento">Departamento:</label>
-            <input type="text" id="departamento" name="departamento" placeholder="Departamento" value="{{ doc.departamento if doc else '' }}">
+        <div id="teacher-fields" class="mb-3 {{ 'd-none' if user.role != 'teacher' }}">
+            <label for="departamento" class="form-label">Departamento:</label>
+            <input type="text" id="departamento" name="departamento" placeholder="Departamento" value="{{ doc.departamento if doc else '' }}" class="form-control">
 
-            <label for="fecha_ingreso">Fecha de Ingreso:</label>
-            <input type="date" id="fecha_ingreso" name="fecha_ingreso" value="{{ doc.fecha_ingreso if doc else '' }}">
+            <label for="fecha_ingreso" class="form-label">Fecha de Ingreso:</label>
+            <input type="date" id="fecha_ingreso" name="fecha_ingreso" value="{{ doc.fecha_ingreso if doc else '' }}" class="form-control">
 
-            <label for="correo_institucional">Correo Institucional:</label>
-            <input type="email" id="correo_institucional" name="correo_institucional" value="{{ doc.correo_institucional if doc else '' }}">
+            <label for="correo_institucional" class="form-label">Correo Institucional:</label>
+            <input type="email" id="correo_institucional" name="correo_institucional" value="{{ doc.correo_institucional if doc else '' }}" class="form-control">
         </div>
 
-        <button type="submit">Actualizar</button>
+        <button type="submit" class="btn btn-primary mt-4">Actualizar</button>
     </form>
 
-    <div class="button-container">
-        <a href="{{ url_for('manage_users') }}">Volver a la administración de usuarios</a>
+    <div class="mt-3">
+        <a href="{{ url_for('manage_users') }}" class="btn btn-dashboard">Volver a la administración de usuarios</a>
     </div>
 </main>
 
@@ -87,14 +97,14 @@
         const teacherFields = document.getElementById('teacher-fields');
 
         if (role === 'student') {
-            studentFields.classList.remove('hidden');
-            teacherFields.classList.add('hidden');
+            studentFields.classList.remove('d-none');
+            teacherFields.classList.add('d-none');
         } else if (role === 'teacher') {
-            teacherFields.classList.remove('hidden');
-            studentFields.classList.add('hidden');
+            teacherFields.classList.remove('d-none');
+            studentFields.classList.add('d-none');
         } else {
-            studentFields.classList.add('hidden');
-            teacherFields.classList.add('hidden');
+            studentFields.classList.add('d-none');
+            teacherFields.classList.add('d-none');
         }
     }
 </script>

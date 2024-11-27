@@ -3,91 +3,100 @@
 {% block title %}Tutorías Inscritas{% endblock %}
 
 {% block content %}
-    <div class="formulario-grande">
-        <h1>Tutorías en las que te has inscrito</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Tutorías en las que te has inscrito</h1>
 
-        <!-- Mensajes flash -->
-        <div id="flash-messages">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div>
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            {% endwith %}
-        </div>
+    <!-- Mensajes Flash -->
+    <div id="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+    </div>
 
-        <!-- Barra de búsqueda -->
-        <div class="box">
+    <!-- Barra de búsqueda -->
+    <div class="mb-4">
+        <div class="input-group">
             <input 
                 type="text" 
                 id="searchInput" 
                 placeholder="Buscar por espacio académico, día, hora o docente..." 
                 onkeyup="filterInscripciones()" 
-                class="search-box">
-        </div>
-
-        <!-- Tabla de inscripciones -->
-        {% if inscripciones %}
-        <div class="box">
-            <table id="inscripcionTable">
-                <thead>
-                    <tr>
-                        <th>Tutoría</th>
-                        <th>Día</th>
-                        <th>Hora</th>
-                        <th>Docente</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for inscripcion in inscripciones %}
-                    <tr>
-                        <td>{{ inscripcion.tutoria.espacio_academico }}</td>
-                        <td>{{ inscripcion.horario.dia }}</td>
-                        <td>{{ inscripcion.horario.hora }}</td>
-                        <td>{{ inscripcion.tutoria.docente.nombre_completo }}</td>
-                        <td>
-                            <a href="{{ url_for('editar_inscripcion', inscripcion_id=inscripcion.id) }}" class="button">Editar</a>  
-                            <a href="{{ url_for('eliminar_inscripcion', inscripcion_id=inscripcion.id) }}" class="button">Eliminar</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <div class="box">
-            <p>No te has inscrito en ninguna tutoría.</p>
-        </div>
-        {% endif %}
-
-        <!-- Botón para volver al Dashboard -->
-        <div class="button-container">
-            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+                class="form-control">
         </div>
     </div>
 
-    <script>
-        function filterInscripciones() {
-            const searchInput = document.getElementById('searchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#inscripcionTable tbody tr');
+    <!-- Tabla de inscripciones -->
+    {% if inscripciones %}
+    <div class="table-responsive">
+        <table id="inscripcionTable" class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Tutoría</th>
+                    <th>Día</th>
+                    <th>Hora</th>
+                    <th>Docente</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inscripcion in inscripciones %}
+                <tr>
+                    <td>{{ inscripcion.tutoria.espacio_academico }}</td>
+                    <td>{{ inscripcion.horario.dia }}</td>
+                    <td>{{ inscripcion.horario.hora }}</td>
+                    <td>{{ inscripcion.tutoria.docente.nombre_completo }}</td>
+                    <td class="text-center">
+                        <a href="{{ url_for('editar_inscripcion', inscripcion_id=inscripcion.id) }}" class="btn btn-warning btn-sm">Editar</a>  
+                        <a href="{{ url_for('eliminar_inscripcion', inscripcion_id=inscripcion.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta inscripción?')">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center" role="alert">
+        No te has inscrito en ninguna tutoría.
+    </div>
+    {% endif %}
 
-            rows.forEach(row => {
-                const espacioAcademico = row.cells[0].textContent.toLowerCase();
-                const dia = row.cells[1].textContent.toLowerCase();
-                const hora = row.cells[2].textContent.toLowerCase();
-                const docente = row.cells[3].textContent.toLowerCase();
+    <!-- Botón para volver al Dashboard -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Volver al Dashboard</a>
+    </div>
+</div>
 
-                if (espacioAcademico.includes(searchInput) || dia.includes(searchInput) || hora.includes(searchInput)
-                    || docente.includes(searchInput)) {
-                    row.style.display = ''; // Mostrar la fila
-                } else {
-                    row.style.display = 'none'; // Ocultar la fila
-                }
-            });
-        }
-    </script>
+<script>
+    // Función de búsqueda para filtrar las inscripciones según tutoría, día, hora o docente
+    function filterInscripciones() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#inscripcionTable tbody tr');
+
+        rows.forEach(row => {
+            const espacioAcademico = row.cells[0].textContent.toLowerCase();
+            const dia = row.cells[1].textContent.toLowerCase();
+            const hora = row.cells[2].textContent.toLowerCase();
+            const docente = row.cells[3].textContent.toLowerCase();
+
+            if (espacioAcademico.includes(searchInput) || dia.includes(searchInput) || hora.includes(searchInput)
+                || docente.includes(searchInput)) {
+                row.style.display = ''; // Mostrar la fila
+            } else {
+                row.style.display = 'none'; // Ocultar la fila
+            }
+        });
+    }
+</script>
+
 {% endblock %}

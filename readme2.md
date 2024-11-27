@@ -144,6 +144,42 @@ Flask-Session: Esta extensión permite gestionar sesiones en la aplicación Flas
 
 /admin/tutorias/delete/<int:tutoria_id>: Elimina una tutoría específica. Solo accesible para usuarios con rol de administrador.
 
-/admin/tutorias/edit/<int:tutoria_id>: Permite a los administradores editar los detalles de una tutoría específica.
+/admin/tutorias/edit/<int:tutoria_id>: Permite a los administradores editar los campos de una tutoría específica.
 
 /profile/edit: Permite a los usuarios editar su perfil (nombre de usuario, identificación, contraseña). Requiere autenticación. 
+
+/teacher/<int:docente_id>/tutorias: Muestra una lista de las tutorías asignadas al docente identificado por docente_id. Requiere autenticación y rol de docente.
+
+/teacher/asignar_horarios/<int:tutoria_id>: Permite al docente asignar horarios a una tutoría específica identificada por tutoria_id. Requiere autenticación y rol de docente.
+
+/student/inscribirse/<int:tutoria_id>:Permite a un estudiante inscribirse en una tutoría específica identificada por tutoria_id. Requiere que el estudiante esté autenticado.
+
+/admin/gestionar_horarios:Permite a un administrador gestionar horarios de tutorías. Los administradores pueden crear nuevos horarios, cambiar el estado de los existentes o eliminar horarios si no tienen inscripciones activas.
+
+/tutorias/disponibles: Muestra todas las tutorías disponibles. Este endpoint ayuda a los estudiantes a ver las tutorías que pueden elegir según la disponibilidad.
+
+/teacher/tutorias-apartadas/<int:docente_id>: Muestra las tutorías que un docente ha apartado, es decir, aquellas que ya tienen inscripciones y no están disponibles para más estudiantes.
+
+/student/tutorias-inscritas: Muestra las tutorías en las que un estudiante está inscrito.
+
+/student/tutorias-inscritas/eliminar/<int:inscripcion_id>:Permite a un estudiante eliminar una inscripción previamente realizada a una tutoría.
+
+/student/tutorias-inscritas/editar/<int:inscripcion_id> Permite a un estudiante modificar la tutoría en la que está inscrito, cambiando el horario asignado.
+
+/formato_tutoria/<int:inscripcion_id>: Crea un formato de tutoría basado en una inscripción existente. Este formato puede incluir detalles como temas tratados y compromisos.
+
+/editar_formato/<int:id> Permite a un docente modificar un formato de tutoría existente, actualizando los temas tratados y otros compromisos relacionados con la tutoría.
+
+/listar_formato_estudiante: Muestra una lista de formatos de tutoría asociados a un estudiante.
+
+/exportar_csv/<int:docente_id>: Genera un archivo CSV con las tutorías inscritas para un docente específico, mostrando detalles como el estudiante, horario y fecha de inscripción.
+
+/exportar_pdf/<int:docente_id>: Genera un archivo PDF con las tutorías inscritas de un docente, organizadas y mostradas de forma legible.
+
+/exportar_csv_estudiante: Exporta a CSV los formatos de tutoría asociados al estudiante autenticado, incluyendo temas tratados, compromisos y fechas.
+
+/exportar_pdf_estudiante: Genera un archivo PDF con los formatos de tutoría registrados para el estudiante autenticado.
+
+/exportar_csv_docente: Crea un archivo CSV con los formatos de tutoría del docente autenticado, detallando temas tratados, estudiantes y compromisos.
+
+/exportar_pdf_docente: Genera un archivo PDF con los formatos de tutoría registrados para el docente autenticado, organizado con toda la información relevante.

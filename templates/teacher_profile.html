@@ -3,53 +3,55 @@
 {% block title %}Perfil del Profesor{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="title-container">
-            <h1>Perfil del Profesor</h1>
+<main class="container mt-5">
+    <h1 class="display-4 mb-4">Perfil del Profesor</h1>
+
+    <!-- Mensajes flash de éxito o error -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div id="flash-messages" class="mb-4">
+                {% for category, message in messages %}
+                    <div class="alert {{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Mostrando los datos del docente -->
+    <div class="card p-4">
+        <div class="mb-3">
+            <label class="fw-bold">Nombre Completo:</label>
+            <p class="form-control-plaintext">{{ profesor.docente.nombre_completo }}</p>
         </div>
 
-        <!-- Mensajes flash de éxito o error -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div id="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
-        <!-- Mostrando los datos del docente -->
-        <div class="box">
-            <div class="profile-field">
-                <label>Nombre Completo:</label>
-                <span class="profile-value">{{ profesor.docente.nombre_completo }}</span>
-            </div>
-
-            <div class="profile-field">
-                <label>Identificación:</label>
-                <span class="profile-value">{{ profesor.docente.identificacion }}</span>
-            </div>
-        
-            <div class="profile-field">
-                <label>Departamento:</label>
-                <span class="profile-value">{{ profesor.departamento }}</span>
-            </div>
-
-            <div class="profile-field">
-                <label>Fecha Ingreso:</label>
-                <span class="profile-value">{{ profesor.fecha_ingreso }}</span>
-            </div>
-
-            <div class="profile-field">
-                <label>Correo institucional:</label>
-                <span class="profile-value">{{ profesor.correo_institucional }}</span>
-            </div>
+        <div class="mb-3">
+            <label class="fw-bold">Identificación:</label>
+            <p class="form-control-plaintext">{{ profesor.docente.identificacion }}</p>
         </div>
 
-        <!-- Botones -->
-        <div class="button-container">
-            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+        <div class="mb-3">
+            <label class="fw-bold">Departamento:</label>
+            <p class="form-control-plaintext">{{ profesor.departamento }}</p>
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-bold">Fecha Ingreso:</label>
+            <p class="form-control-plaintext">{{ profesor.fecha_ingreso }}</p>
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-bold">Correo Institucional:</label>
+            <p class="form-control-plaintext">{{ profesor.correo_institucional }}</p>
         </div>
     </div>
+
+    <!-- Botones -->
+    <div class="mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Volver al Dashboard</a>
+        <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">Editar Perfil</a>
+    </div>
+</main>
 {% endblock %}

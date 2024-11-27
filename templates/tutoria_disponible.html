@@ -3,76 +3,80 @@
 {% block title %}Lista de Tutorías Disponibles{% endblock %}
 
 {% block content %}
-    <div class="formulario-grande">
-        <h1>Lista de Tutorías Disponibles</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Lista de Tutorías Disponibles</h1>
 
-        <!-- Mensajes Flash -->
-        <div id="flash-messages">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <div>
-                        {% for category, message in messages %}
-                            <div class="flash {{ category }}">{{ message }}</div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endwith %}
-        </div>
+    <!-- Mensajes Flash -->
+    <div id="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
 
-        <!-- Barra de búsqueda -->
-        <div class="search-container">
+    <!-- Barra de búsqueda -->
+    <div class="mb-4">
+        <div class="input-group">
             <input 
                 type="text" 
                 id="searchInput" 
                 placeholder="Buscar por tutoría, día, hora o estado..." 
                 onkeyup="filterTutoriasDisponibles()" 
-                class="search-box">
-        </div>
-
-        {% if tutorias %}
-            <table id="tutoriasDisponiblesTable">
-                <thead>
-                    <tr>
-                        <th>Código</th>
-                        <th>Nombre de la Tutoría</th>
-                        <th>Día</th>
-                        <th>Hora</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for tutoria in tutorias %}
-                        {% for horario in tutoria.horarios %}
-                            <tr>
-                                <td>{{ tutoria.codigo }}</td>
-                                <td>{{ tutoria.espacio_academico }}</td>
-                                <td>{{ horario.dia }}</td>
-                                <td>{{ horario.hora }}</td>
-                                <td class="estado {{ horario.estado | lower | replace(' ', '-') }}">{{ horario.estado }}</td>
-                                <td>
-                                    {% if horario.estado == 'Disponible' %}
-                                        <form action="{{ url_for('inscribirse_tutoria', tutoria_id=tutoria.id, horario_id=horario.id) }}" method="GET">
-                                            <button type="submit">Inscribirse</button>
-                                        </form>
-                                    {% else %}
-                                        <button type="button" disabled>No disponible</button>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>No hay tutorías disponibles.</p>
-        {% endif %}
-
-        <!-- Botón para volver al Dashboard -->
-        <div class="button-container">
-            <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+                class="form-control">
         </div>
     </div>
+
+    {% if tutorias %}
+    <table id="tutoriasDisponiblesTable" class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Código</th>
+                <th>Nombre de la Tutoría</th>
+                <th>Día</th>
+                <th>Hora</th>
+                <th>Estado</th>
+                <th class="text-center">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tutoria in tutorias %}
+                {% for horario in tutoria.horarios %}
+                    <tr>
+                        <td>{{ tutoria.codigo }}</td>
+                        <td>{{ tutoria.espacio_academico }}</td>
+                        <td>{{ horario.dia }}</td>
+                        <td>{{ horario.hora }}</td>
+                        <td class="estado {{ horario.estado | lower | replace(' ', '-') }}">{{ horario.estado }}</td>
+                        <td class="text-center">
+                            {% if horario.estado == 'Disponible' %}
+                                <form action="{{ url_for('inscribirse_tutoria', tutoria_id=tutoria.id, horario_id=horario.id) }}" method="GET">
+                                    <button type="submit" class="btn btn-success btn-sm">Inscribirse</button>
+                                </form>
+                            {% else %}
+                                <button type="button" class="btn btn-secondary btn-sm" disabled>No disponible</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="text-center">No hay tutorías disponibles.</p>
+    {% endif %}
+
+    <!-- Botón para volver al Dashboard -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Volver al Dashboard</a>
+    </div>
+</div>
 
 {% endblock %}
 
@@ -98,4 +102,3 @@
         });
     }
 </script>
-

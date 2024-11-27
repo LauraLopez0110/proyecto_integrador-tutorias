@@ -3,12 +3,12 @@
 {% block title %}Editar Tutoría{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Editar Tutoría</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">Editar Tutoría</h1>
     
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div>
+            <div class="alert alert-info">
                 {% for category, message in messages %}
                     <div class="flash {{ category }}">{{ message }}</div>
                 {% endfor %}
@@ -18,44 +18,60 @@
 
     <form action="{{ url_for('editar_formato', id=formato.id) }}" method="POST">
         <!-- Campos solo lectura -->
-        <label for="docente">Docente:</label>
-        <input type="text" id="docente" name="docente" value="{{ formato.docente.nombre_completo }}" readonly>
+        <div class="mb-3">
+            <label for="docente" class="form-label">Docente:</label>
+            <input type="text" id="docente" name="docente" class="form-control" value="{{ formato.docente.nombre_completo }}" readonly>
+        </div>
         
-        <label for="estudiante">Estudiante:</label>
-        <input type="text" id="estudiante" name="estudiante" value="{{ formato.estudiante.nombre_completo }}" readonly>
+        <div class="mb-3">
+            <label for="estudiante" class="form-label">Estudiante:</label>
+            <input type="text" id="estudiante" name="estudiante" class="form-control" value="{{ formato.estudiante.nombre_completo }}" readonly>
+        </div>
 
-        <label for="tutoria">Tutoría:</label>
-        <input type="text" id="tutoria" name="tutoria" value="{{ formato.tutoria.codigo }}" readonly>
+        <div class="mb-3">
+            <label for="tutoria" class="form-label">Tutoría:</label>
+            <input type="text" id="tutoria" name="tutoria" class="form-control" value="{{ formato.tutoria.codigo }}" readonly>
+        </div>
 
-        <label for="espacio_academico">Espacio Académico:</label>
-        <input type="text" id="espacio_academico" name="espacio_academico" value="{{ formato.espacio_academico }}" readonly>
+        <div class="mb-3">
+            <label for="espacio_academico" class="form-label">Espacio Académico:</label>
+            <input type="text" id="espacio_academico" name="espacio_academico" class="form-control" value="{{ formato.espacio_academico }}" readonly>
+        </div>
 
-        <label for="fecha_realizacion">Fecha de Realización:</label>
-        <input type="date" id="fecha_realizacion" name="fecha_realizacion" value="{{ formato.fecha_realizacion }}" readonly>
+        <div class="mb-3">
+            <label for="fecha_realizacion" class="form-label">Fecha de Realización:</label>
+            <input type="date" id="fecha_realizacion" name="fecha_realizacion" class="form-control" value="{{ formato.fecha_realizacion }}" readonly>
+        </div>
 
         <!-- Campos editables -->
-        <label for="temas_tratados">Temas Tratados:</label>
-        <textarea id="temas_tratados" name="temas_tratados" rows="4">{{ formato.temas_tratados or '' }}</textarea>
+        <div class="mb-3">
+            <label for="temas_tratados" class="form-label">Temas Tratados:</label>
+            <textarea id="temas_tratados" name="temas_tratados" class="form-control" rows="4">{{ formato.temas_tratados or '' }}</textarea>
+        </div>
 
-        <label for="compromisos">Compromisos Adquiridos:</label>
-        <select id="compromisos" name="compromisos">
-            <option value="" {% if not compromisos_asignados %}selected{% endif %}>Seleccione un compromiso</option>
-            {% for compromiso in compromisos_disponibles %}
-                <option value="{{ compromiso.id }}" 
-                    {% if compromiso.id in compromisos_asignados %}selected{% endif %}>
-                    {{ compromiso.descripcion }}
-                </option>
-            {% endfor %}
-        </select>
+        <div class="mb-3">
+            <label for="compromisos" class="form-label">Compromisos Adquiridos:</label>
+            <select id="compromisos" name="compromisos" class="form-select">
+                <option value="" {% if not compromisos_asignados %}selected{% endif %}>Seleccione un compromiso</option>
+                {% for compromiso in compromisos_disponibles %}
+                    <option value="{{ compromiso.id }}" 
+                        {% if compromiso.id in compromisos_asignados %}selected{% endif %}>
+                        {{ compromiso.descripcion }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
-        <label for="nuevo_compromiso">Añadir otro compromiso:</label>
-        <input type="text" id="nuevo_compromiso" name="nuevo_compromiso" placeholder="Escribe un compromiso nuevo">
+        <div class="mb-3">
+            <label for="nuevo_compromiso" class="form-label">Añadir otro compromiso:</label>
+            <input type="text" id="nuevo_compromiso" name="nuevo_compromiso" class="form-control" placeholder="Escribe un compromiso nuevo">
+        </div>
 
         <!-- Botones -->
-        <div class="button-container">
-            <button type="submit" class="button">Guardar Cambios</button>
-            <a href="{{ url_for('listar_formato') }}" class="button">Listado de Formatos</a>
-            <a href="{{ url_for('dashboard') }}" class="button">Dashboard</a>
+        <div class="d-flex justify-content-center mt-4">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <a href="{{ url_for('listar_formato') }}" class="btn btn-secondary">Listado de Formatos</a>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Dashboard</a>
         </div>
     </form>
 </div>

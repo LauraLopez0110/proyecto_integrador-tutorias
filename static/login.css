@@ -1,132 +1,132 @@
 /* Estilo general */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    font-family: 'Roboto', Times, serif;
+    background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(107, 104, 104, 0.2)),
                 url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fondo.jpg-HcPAJX2I147pvOG4eESJdWJnexEfJ1.jpeg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    padding-top: 70px; /* Espacio para el encabezado fijo */
+    padding-bottom: 50px; /* Espacio para el pie de página fijo */
 }
 
-.logout-button {
-    background-color: #e01e1e; /* Rojo */
-    color: white;
-    padding: 10px 15px;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-    width: 50%;
-}
-
-.logout-button:hover {
-    background-color: #c50c0c; /* Rojo más oscuro al pasar el cursor */
-}
-
-/* Estilo del encabezado */
+/* Encabezado (Navbar) */
 .header {
-    background-color: #48bcea; /* Azul claro */
-    width: 100%;
-    padding: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Espaciado entre el logo y el botón */
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: #4a73ab;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: fixed; /* Fija el encabezado arriba */
-    top: 0;
+    z-index: 1050; /* Más alto para estar encima de otros elementos */
+    position: fixed; /* Fijar el encabezado */
+    top: 0; /* Posición al inicio de la pantalla */
     left: 0;
-    z-index: 1000; /* Asegura que quede sobre otros elementos */
+    width: 100%; /* Abarcar todo el ancho */
+    height: 70px; /* Ajustar altura */
+    align-items: center; /* Centrar contenido verticalmente */
 }
-
-.logo {
-    height: 60px;
+.header .navbar-brand {
+    color: #ffffff !important;
+    font-weight: bold;
+    font-size: 1.2rem;
     width: auto;
-    object-fit: contain;
 }
-
-
-
-
-
-/* Contenedor principal */
-.container {
-    margin-top: 200px; /* Añade espacio debajo del encabezado fijo */
-    width: 600px;
-    max-width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.header .nav-link {
+    color: #000000 !important;
+    background-color: #d4b78f;
+    transition: color 0.3s ease;
+    border-radius: 7px;
+    cursor: pointer;
+    margin: 10px;
+}
+.header .nav-link:hover {
+    color: #1a1925 !important;
+    background-color: #c0965b;
+}
+.header .btn {
     text-align: center;
-    margin-bottom: 100px;
+    background-color: #d51818;
+    color: white;
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+.header .btn:hover {
+    background-color: #bb1709;
+}
+.navbar-toggler-icon {
+    color: white;
 }
 
-.formulario-grande {
-    margin-top: 100px; /* Añade espacio debajo del encabezado fijo */
-    width: auto;
-    max-width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+/* Pie de página */
+.footer {
+    height: 35px;
+    background-color: #4a73ab;
+    color: white;
     text-align: center;
-    margin-bottom: 100px;
-}
-
-h1 {
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-}
-
-.input-group {
-    margin-bottom: 15px;
-}
-
-input {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    position: fixed;
+    bottom: 0;
     width: 100%;
-    padding: 10px;
-    font-size: 1rem;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+
+    /* Usar Flexbox para centrar el contenido vertical y horizontalmente */
+    display: flex;
+    align-items: center; /* Centra el texto verticalmente */
+    justify-content: center; /* Centra el texto horizontalmente */
+}
+
+/* Estilo para las cajas de texto con iconos */
+.input-group {
+    position: relative;
+    margin-bottom: 20px; /* Aumentamos el margen */
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 35px 12px 40px; /* Ajustamos el padding para mayor espacio */
     border: 1px solid #ccc;
     border-radius: 5px;
+    background-color: #f7f7f7;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
 }
 
-button   {
-    width: auto;
-    padding: 10px;
-    font-size: 1rem;
-    background-color: #eb56b7;
-    color: white;
+.input-group input:focus {
+    background-color: #e9ecef;
+    border-color: #007bff;
+}
+
+.input-group i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7a7a7a;
+}
+
+/* Estilo para el botón de iniciar sesión */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #d4b78f; /* Color del botón */
+    color: rgb(0, 0, 0);
     border: none;
     border-radius: 5px;
-    cursor: pointer;
     font-size: 1rem;
-    font-weight: bold;
-    margin-bottom: 5px
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #cd31be;
-    font-size: 1rem;
+    background-color: #c0965b !important; /* Hover más oscuro */
+    color: #ffffff;
 }
 
-/* Mensajes Flash */
-.flash {
+/* Mensajes flash */
+#flash-messages .flash {
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 5px;
@@ -139,12 +139,7 @@ button:hover {
     border: 1px solid #c3e6cb;
 }
 
-.flash.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-.flash.danger {
+.flash.error, .flash.danger {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
@@ -156,188 +151,33 @@ button:hover {
     border: 1px solid #ffeeba;
 }
 
-/* Estilo del pie de página */
-.footer {
-    background-color: #48bcea; /* Azul claro */
-    width: 100%;
-    padding: 1rem;
-    position: fixed; /* Fija el pie de página */
-    bottom: 0;
-    left: 0;
-    text-align: center;
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Sombra superior */
-    font-size: 0.9rem;
-    color: white;
-    z-index: 1000; /* Asegura que esté sobre otros elementos */
-}
-.input-group.username::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23663399'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'%3E%3C/path%3E%3C/svg%3E");
-}
-.input-group.password::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23663399'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'%3E%3C/path%3E%3C/svg%3E");
-}
-
-
-/*-------------------------------
-
-
-/* Estilo para los mensajes flash */
-#flash-messages {
-    margin-bottom: 20px;
-}
-
-
 .flash.info {
     background-color: #2196F3;
     color: white;
 }
 
-
-/* Estilo para los enlaces en el dashboard */
-h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-}
-
-/* Estilo de la caja de botones */
-.button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 10px
-}
-
-.button {
-    width: 70%;
-    padding: 10px;
-    font-size: 1rem;
-    background-color: #eb56b7;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    text-decoration: none;
-    margin-top: 15px
-}
-
-.button:hover {
-    background-color: #cd31be;
-    font-size: 1rem;
-}
-
-.logout-button {
+/* Contenedor principal */
+.container {
     
-    width: auto;
-    padding: 10px;
-    font-size: 1rem;
-    background-color: #e01e1e;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    text-decoration: none;
+    width: 300px; /* Reducir el tamaño */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 50px; /* Ajuste para evitar que el contenedor quede oculto debajo del encabezado fijo */
 }
 
-.box {
-    border: 1px solid #eb56b7;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: #e8fcff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
-/* Estilo para los títulos dentro de las cajas */
-label {
-    font-weight: bold;  /* Para hacer el texto en negrita */
-    text-align: left;   /* Alinea el texto a la izquierda */
-    display: block;     /* Asegura que el label ocupe toda la línea */
-    margin-bottom: 8px; /* Espacio debajo del label */
-    color: #333;        /* Color de texto para los labels */
-}
-
-/* Estilo para los campos de entrada */
-input, select, .submit {
-    width: 100%;        /* Hace que los campos ocupen todo el ancho del contenedor */
-    padding: 8px;       /* Espaciado interno */
-    margin-bottom: 16px; /* Espacio entre los campos */
-    border: 1px solid #ccc; /* Borde de los campos */
-    border-radius: 4px; /* Bordes redondeados */
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-th, td {
-    padding: 10px;
-    border: 1px solid #ccc;
+/* Formulario de inicio de sesión */
+h1 {
+    font-size: 1.8rem;
     text-align: center;
-    font-weight: bold;  /* Para hacer el texto en negrita */
-    margin-bottom: 16px;    
+    margin-bottom: 20px;
 }
 
-th {
-    background-color: #48bcea;
-    color: white;
-}
-
-.hidden {
-    display: none;
-}
-
-
-
-td a {
-    display: inline-block;
-    padding: 10px 15px;
-    background-color: #bd186a;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-    width: auto;
-}
-
-td a:hover {
-    background-color: #218838;
-}
-
-.form-button {
-    width: 60%;
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    background-color: #bd186a;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-a {
-    width: 50%;
-    padding: 10px;
-    font-size: 1rem;
-    background-color: #eb56b7;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    text-decoration: none;
-    margin-top: 5px
-}
-
-a:hover {
-    background-color: #cd31be;
+@media (max-width: 576px) {
+    /* Sobrescribir el max-width de los contenedores de Bootstrap */
+    .container, .container-md, .container-sm {
+        max-width: 520px; /* Establecer el max-width a 520px */
+    }
 }

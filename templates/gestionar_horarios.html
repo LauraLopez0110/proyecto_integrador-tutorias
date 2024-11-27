@@ -3,28 +3,31 @@
 {% block title %}Gestión de Horarios{% endblock %}
 
 {% block content %}
-<main class="formulario-grande">
-    <h1 class="title">Gestión de Horarios de Tutorías</h1>
+<main class="container mt-5">
+    <h1 class="text-center mb-4">Gestión de Horarios de Tutorías</h1>
     
     <!-- Mensajes Flash -->
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-        <div class="flash-container">
+        <div class="alert alert-dismissible fade show" role="alert">
             {% for category, message in messages %}
-                <div class="flash {{ category }}">{{ message }}</div>
+                <div class="alert-{{ category }}">{{ message }}</div>
             {% endfor %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     {% endif %}
     {% endwith %}
 
     <!-- Crear Nuevo Horario -->
-    <section class="form-section">
-        <h2 class="form-title">Crear Nuevo Horario</h2>
+    <section class="mb-5">
+        <h2 class="h4 mb-3">Crear Nuevo Horario</h2>
         <form class="form" method="POST" action="{{ url_for('gestionar_horarios') }}">
             <!-- Selección de Tutoría -->
             <div class="form-group">
-                <label for="tutoria_id" class="form-label">Tutoría:</label>
-                <select name="tutoria_id" class="form-select" required>
+                <label for="tutoria_id">Tutoría:</label>
+                <select name="tutoria_id" class="form-control" required>
                     <option value="" disabled selected>Seleccione una Tutoría</option>
                     {% for tutoria in tutorias %}
                         <option value="{{ tutoria.id }}">{{ tutoria.espacio_academico }} ({{ tutoria.codigo }})</option>
@@ -34,8 +37,8 @@
             
             <!-- Selección de Día -->
             <div class="form-group">
-                <label for="dia" class="form-label">Día:</label>
-                <select name="dia" class="form-select" required>
+                <label for="dia">Día:</label>
+                <select name="dia" class="form-control" required>
                     <option value="" disabled selected>Seleccione un Día</option>
                     <option value="Lunes">Lunes</option>
                     <option value="Martes">Martes</option>
@@ -47,8 +50,8 @@
 
             <!-- Selección de Hora -->
             <div class="form-group">
-                <label for="hora" class="form-label">Hora:</label>
-                <select id="hora" name="hora" class="form-select" required>
+                <label for="hora">Hora:</label>
+                <select id="hora" name="hora" class="form-control" required>
                     <option value="" disabled selected>Seleccione una hora</option>
                     <!-- Opciones de horas -->
                     {% for hora in ["08:00 AM - 09:00 AM", "09:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", 
@@ -62,30 +65,30 @@
 
             <!-- Selección de Estado -->
             <div class="form-group">
-                <label for="estado" class="form-label">Estado:</label>
-                <select name="estado" class="form-select" required>
+                <label for="estado">Estado:</label>
+                <select name="estado" class="form-control" required>
                     <option value="Disponible">Disponible</option>
                     <option value="No disponible">No disponible</option>
                     <option value="Ocupado">Ocupado</option>
                 </select>
             </div>
 
-            <button type="submit" name="crear" class="form-button primary-button">Crear Horario</button>
+            <button type="submit" name="crear" class="btn btn-primary">Crear Horario</button>
         </form>
     </section>
 
     <!-- Horarios Existentes -->
-    <section class="table-section">
-        <h2 class="form-title">Horarios Existentes</h2>
+    <section class="mb-5">
+        <h2 class="h4 mb-3">Horarios Existentes</h2>
 
         <!-- Barra de búsqueda -->
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Buscar por tutoría o estado..." 
-                   onkeyup="filterHorarios()" class="search-box">
+        <div class="mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar por tutoría o estado..." 
+                   onkeyup="filterHorarios()">
         </div>
 
         <!-- Tabla -->
-        <table id="horariosTable" class="table">
+        <table id="horariosTable" class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <th>Tutoría</th>
@@ -103,19 +106,22 @@
                     <td>{{ horario.hora }}</td>
                     <td class="estado {{ horario.estado | lower | replace(' ', '-') }}">{{ horario.estado }}</td>
                     <td>
-                        <div class="action-buttons">
-                            <form method="POST" action="{{ url_for('gestionar_horarios') }}" class="inline-form">
+                        <div class="d-flex">
+                            <!-- Formulario para cambiar estado -->
+                            <form method="POST" action="{{ url_for('gestionar_horarios') }}" class="mr-2">
                                 <input type="hidden" name="horario_id" value="{{ horario.id }}">
-                                <select name="estado" class="form-select small">
+                                <select name="estado" class="form-control form-control-sm">
                                     <option value="Disponible" {% if horario.estado == 'Disponible' %}selected{% endif %}>Disponible</option>
                                     <option value="No disponible" {% if horario.estado == 'No disponible' %}selected{% endif %}>No disponible</option>
                                     <option value="Ocupado" {% if horario.estado == 'Ocupado' %}selected{% endif %}>Ocupado</option>
                                 </select>
-                                <button type="submit" name="cambiar_estado" class="form-button">Cambiar Estado</button>
+                                <button type="submit" name="cambiar_estado" class="btn btn-warning btn-sm mt-2">Cambiar Estado</button>
                             </form>
-                            <form method="POST" action="{{ url_for('gestionar_horarios') }}" class="inline-form">
+
+                            <!-- Formulario para eliminar horario -->
+                            <form method="POST" action="{{ url_for('gestionar_horarios') }}">
                                 <input type="hidden" name="horario_id" value="{{ horario.id }}">
-                                <button type="submit" name="eliminar_horario" class="form-button">Eliminar</button>
+                                <button type="submit" name="eliminar_horario" class="btn btn-danger btn-sm mt-2">Eliminar</button>
                             </form>
                         </div>
                     </td>
@@ -125,8 +131,8 @@
         </table>
     </section>
 
-    <div class="button-container">
-        <a href="{{ url_for('dashboard') }}" class="button secondary-button">Volver al Dashboard</a>
+    <div class="text-center">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Volver al Dashboard</a>
     </div>
 </main>
 

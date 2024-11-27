@@ -3,16 +3,21 @@
 {% block title %}Editar Inscripción{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h3>Editar Inscripción</h3>
+<div class="container mt-5">
+    <h3 class="text-center mb-4">Editar Inscripción</h3>
 
+    <!-- Mensajes flash -->
     <div id="flash-messages">
-        <!-- Bloque para mostrar los mensajes flash -->
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div>
                 {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                 {% endfor %}
             </div>
         {% endif %}
@@ -20,22 +25,22 @@
     </div>
 
     <!-- Mostrar el horario actual inscrito -->
-    <div>
-        <label>Horario Actual:</label>
+    <div class="mb-4">
+        <label class="font-weight-bold">Horario Actual:</label>
         <p>{{ horario_actual.dia }} - {{ horario_actual.hora }}</p>
     </div>
 
     <!-- Mostrar la materia (espacio académico) -->
-    <div>
-        <label>Materia:</label>
+    <div class="mb-4">
+        <label class="font-weight-bold">Materia:</label>
         <p>{{ materia }}</p>
     </div>
 
+    <!-- Formulario para seleccionar un nuevo horario -->
     <form method="POST">
-        <!-- Campo para seleccionar un nuevo horario -->
-        <div>
-            <label for="nuevo_horario">Nuevo horario</label>
-            <select name="nuevo_horario" id="nuevo_horario">
+        <div class="form-group mb-3">
+            <label for="nuevo_horario">Nuevo Horario</label>
+            <select name="nuevo_horario" id="nuevo_horario" class="form-control">
                 <option value="">Seleccionar horario (Dejar vacío para mantener el horario actual)</option>
                 {% for horario in horarios_disponibles %}
                     <option value="{{ horario.id }}" {% if horario.id == horario_actual.id %}selected{% endif %}>
@@ -45,11 +50,12 @@
             </select>
         </div>
 
-        <button type="submit" class="button">Actualizar Inscripción</button>
+        <button type="submit" class="btn btn-primary btn-block">Actualizar Inscripción</button>
     </form>
+
     <!-- Botón para volver al Dashboard -->
-    <div class="button-container">
-        <a href="{{ url_for('dashboard') }}" class="button">Volver al Dashboard</a>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">Volver al Dashboard</a>
     </div>
 </div>
 {% endblock %}

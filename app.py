@@ -269,6 +269,9 @@ def manage_users():
 
 @app.route('/student_profile', methods=['GET'])
 def student_profile():
+    
+    role = session.get('role')  # Recupera el rol de la sesión
+
     # Obtener el ID del usuario logueado
     current_user_id = session.get('user_id')
     
@@ -287,10 +290,13 @@ def student_profile():
         return redirect(url_for('dashboard'))  # Redirige a una página válida
 
     # Renderiza el template con los datos del estudiante
-    return render_template('student_profile.html', estudiante=estudiante)
+    return render_template('student_profile.html', estudiante=estudiante, role=role)
 
 @app.route('/teacher_profile', methods=['GET'])
 def teacher_profile():
+    
+    role = session.get('role')  # Recupera el rol de la sesión
+    
     # Obtener el ID del usuario logueado
     current_user_id = session.get('user_id')
 
@@ -308,7 +314,7 @@ def teacher_profile():
         return redirect(url_for('dashboard'))  # Redirige a una página válida
 
     # Renderiza el template con los datos del profesor
-    return render_template('teacher_profile.html', profesor=profesor)
+    return render_template('teacher_profile.html', profesor=profesor, role=role)
 
 @app.route('/admin/users/edit/<int:user_id>', methods=['GET', 'POST'])
 def edit_user(user_id):
@@ -505,6 +511,9 @@ def edit_tutoria(tutoria_id):
 
 @app.route('/profile/edit', methods=['GET', 'POST']) 
 def edit_profile():
+    
+    role = session.get('role')  # Recupera el rol de la sesión
+    
     if 'user_id' not in session:
         flash('Debes iniciar sesión primero', 'danger')
         return redirect(url_for('login'))
@@ -565,7 +574,7 @@ def edit_profile():
         flash('Perfil actualizado exitosamente.', 'success')
         return redirect(url_for('dashboard'))
 
-    return render_template('edit_profile.html', user=user, doc=doc, est=est)
+    return render_template('edit_profile.html', user=user, doc=doc, est=est, role=role)
 
 
 
